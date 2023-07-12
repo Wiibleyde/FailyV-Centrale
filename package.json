@@ -1,0 +1,31 @@
+{
+  "name": "iris-lsms",
+  "version": "1.0.0-DEV",
+  "description": "Discord bot manager of the LSMS server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Wiibleyde/FailyV-Centrale"
+  },
+  "keywords": [
+    "Discord",
+    "bot"
+  ],
+  "author": "ailedeuxplume, Wiibleyde, TheNicolas190",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/Wiibleyde/FailyV-Centrale/issues"
+  },
+  "homepage": "https://github.com/Wiibleyde/FailyV-Centrale#readme",
+  "devDependencies": {
+    "discord.js": "^14.11.0",
+    "dotenv": "^16.0.3",
+    "forever-monitor": "^3.0.3",
+    "log4js": "^6.9.1",
+    "mysql": "^2.18.1",
+    "readline": "^1.3.0"
+  }
+}

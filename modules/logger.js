@@ -28,4 +28,7 @@ module.exports = {
     error: function(error) {
         logger.error(error);
     },
+    getStartDate: function() {
+        return logDate;
+    }
 }

@@ -149,8 +149,13 @@ module.exports = {
             //Envois du message
             await msg.edit({ embeds: [serviceEmb], components: [radioBtns, btns] });
             //Confirmation du succès de l'opération à Discord
-            await interaction.deferUpdate();
+            await interaction.message.delete();
         }
+    },
+    
+    //Fonction séparée pour attendre la fin du check des messages un par un
+    getMessages: (messages, client) => {
+        return getMessages(messages, client);
     }
 }
 
@@ -158,7 +163,7 @@ module.exports = {
 function getMessages(messages, client) {
     return new Promise((resolve, reject) => {
         messages.forEach(msg => {
-            if(msg.author.username == client.user.username && msg.embeds != null) {
+            if(msg.author.username == client.user.username && msg.embeds[0] != null) {
                 if(msg.embeds[0].author.name == 'Gestion du service') {
                     resolve(msg);
                     return;

@@ -49,6 +49,10 @@ module.exports = {
             //Appel du fichier spécifique pour chaques interactions
             if(interaction.customId == 'checkDebug') { const checkDebug = require('./../buttons/checkDebug'); checkDebug.execute(interaction, errEmb); }
             if(interaction.customId == 'denyDebug') { const denyDebug = require('./../buttons/denyDebug'); denyDebug.execute(interaction, errEmb); }
+            if(interaction.customId == 'serviceRegenLSMS') { const serviceRegen = require('./../buttons/serviceRegen'); serviceRegen.execute(interaction, errEmb); }
+            if(interaction.customId == 'serviceRegenBCMS') { const serviceRegen = require('./../buttons/serviceRegen'); serviceRegen.execute(interaction, errEmb); }
+            if(interaction.customId == 'serviceRegenEvent') { const serviceRegen = require('./../buttons/serviceRegen'); serviceRegen.execute(interaction, errEmb); }
+            if(interaction.customId == 'serviceManage') { const serviceManage = require('./../buttons/serviceManage'); serviceManage.execute(interaction, errEmb); }
         }
         //Lorsqu'il s'agit d'un Select Menu
         if(interaction.isChannelSelectMenu() || interaction.isStringSelectMenu()) {
@@ -57,6 +61,7 @@ module.exports = {
             //Pré-écriture d'un message d'erreur (pour éviter de l'écrire dans tout les fichers)
             const errEmb = emb.generate(`Oups! Une erreur s'est produite :(`, null, `Il semblerait qu'une erreur se soit produite lors de l'interaction avec le menu de séléction, si le problème persiste n'hésitez pas à faire une demande de débug via le </debug:${process.env.IRIS_DEBUG_COMMAND_ID}> avec le plus de détails possible ! (Merci d'avance <:green_heart:1112687922651594762>)`, `#ff0000`, null, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true);
             //Appel du fichier spécifique pour chaques interactions
+            if(interaction.customId == 'serviceManageSelect') { const serviceManageSelect = require('./../selectMenus/serviceManageSelect'); serviceManageSelect.execute(interaction, errEmb); }
         }
 
     },

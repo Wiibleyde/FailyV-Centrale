@@ -52,7 +52,7 @@ module.exports = {
 
         try {
             //Envois de l'embed avec boutons
-            await chan.send({ content: '**<@&1128704532159922318> bug report !**', embeds: [ createdEmbed ], components: [ btns ] });
+            await chan.send({ content: '**<@&' + process.env.IRIS_DEBUG_ROLE_ID + '> bug report !**', embeds: [ createdEmbed ], components: [ btns ] });
             //Confermation à l'utilisateur du succès de la commande
             await interaction.user.send({ embeds: [ responseEmbed ] });
             await interaction.followUp({ embeds: [emb.generate('Merci !', null, `Votre bug report à bien été prise en compte !`, '#3cb34b', null, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });

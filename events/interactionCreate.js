@@ -56,6 +56,10 @@ module.exports = {
             if(interaction.customId == 'serviceSwitch') { const serviceSwitch = require('./../buttons/serviceSwitch'); serviceSwitch.execute(interaction, errEmb); }
             if(interaction.customId == 'serviceDispatch') { const serviceDispatch = require('./../buttons/serviceDispatch'); serviceDispatch.execute(interaction, errEmb); }
             if(interaction.customId == 'serviceSwitchOff') { const serviceSwitchOff = require('./../buttons/serviceSwitchOff'); serviceSwitchOff.execute(interaction, errEmb); }
+            if(interaction.customId == 'rendezVousAnnule') { const rendezVousAnnule = require('./../buttons/rendezVousAnnule'); rendezVousAnnule.execute(interaction, errEmb); }
+            if(interaction.customId == 'rendezVousPris') { const rendezVousPris = require('./../buttons/rendezVousPris'); rendezVousPris.execute(interaction, errEmb); }
+            if(interaction.customId == 'rendezVousContacte') { const rendezVousContacte = require('./../buttons/rendezVousContacte'); rendezVousContacte.execute(interaction, errEmb); }
+            if(interaction.customId == 'rendezVousFini') { const rendezVousFini = require('./../buttons/rendezVousFini'); rendezVousFini.execute(interaction, errEmb); }
         }
         //Lorsqu'il s'agit d'un Select Menu
         if(interaction.isChannelSelectMenu() || interaction.isStringSelectMenu()) {

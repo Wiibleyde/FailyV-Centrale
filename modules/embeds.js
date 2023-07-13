@@ -10,7 +10,7 @@ module.exports = {
 
         const emb = new EmbedBuilder();
 
-        if(title != null) { emb.setTitle(title); } else { err = 'Il faut obligatoirement un titre pour générer un embed !'; logger.error(err); }
+        if(title != null) { emb.setTitle(title); }
         if(url != null) { emb.setURL(url); }
         if(desc != null) { emb.setDescription(desc); }
         if(color != null) { emb.setColor(color); }
@@ -27,6 +27,7 @@ module.exports = {
         if(footer != null && footerImg != null) { emb.setFooter({ text: footer, iconURL: footerImg }); }
         if(footer == null && footerImg != null) { err = 'Il faut obligatoirement un footer text pour mettre une image !'; logger.error(err); }
         if(timestamp == true) { emb.setTimestamp(); }
+        if(title == null && url == null && desc == null && color == null && thumb == null && img == null && author == null && authorImg == null && authorLink == null && footer == null && footerImg == null && timestamp == null) { err = 'Il faut obligatoirement un titre pour générer un embed !'; logger.error(err); }
 
         var errEmb = new EmbedBuilder();
 

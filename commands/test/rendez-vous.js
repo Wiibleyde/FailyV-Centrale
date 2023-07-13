@@ -5,9 +5,6 @@ const logger = require('../../modules/logger');
 //Récup du créateur d'embed
 const emb = require('../../modules/embeds');
 
-//Récupération du créateur d'embed
-const emb = require('../../functions/embed');
-
 //Création d'un tableau de choix pour les channels d'envois des rendez-vous
 const rendezVousChannelsChoices = [
     {
@@ -20,17 +17,15 @@ const rendezVousChannelsChoices = [
     },
 ];
 
-//Création d'un tableau de choix pour le rendez-vous
-const rendezVousChoices = [
-    {
-        name: 'Psychologie',
-        value: 'psychologie',
-    },
-    {
-        name: 'Chirurgie',
-        value: 'chirurgie',
-    },
-];
+//Création de constantes pour le choix de rendez-vous
+const rdvChir = {
+    name: 'Chirurgie',
+    value: 'chirurgie',
+};
+const rdvPsy = {
+    name: 'Psychologie',
+    value: 'psychologie',
+};
 
 module.exports = {
     //Création de la commande
@@ -42,7 +37,7 @@ module.exports = {
             option.setName('type')
                 .setDescription('Type de rendez-vous')
                 .setRequired(true)
-                .addChoices(rendezVousChoices)
+                .addChoices(rdvChir, rdvPsy)
         ),
     async execute(interaction) {
         const rendezVousModal = new ModalBuilder().setCustomId('rendezVousModal').setTitle('Ajout d\'un rendez-vous');

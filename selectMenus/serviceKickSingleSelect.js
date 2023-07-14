@@ -2,6 +2,9 @@
 const logger = require('./../modules/logger');
 //Récup du créateur d'embed
 const emb = require('./../modules/embeds');
+//Récup du systeme de logs RP
+const logRP = require('./../modules/logsRP');
+
 
 const serviceID = process.env.IRIS_SERVICE_ROLE_ID;
 const dispatchID = process.env.IRIS_DISPATCH_ROLE_ID;
@@ -32,14 +35,14 @@ module.exports = {
                 if(user.roles.cache.has(dispatchID)) {
                     let dispatchRole = interaction.guild.roles.cache.find(role => role.id === dispatchID);
                     user.roles.remove(dispatchRole);
+                    logRP.fdd(interaction.guild, user.nickname, interaction.guild.members.cache.get(interaction.user.id).nickname);
                 }
                 if(user.roles.cache.has(offID)) {
                     let offRole = interaction.guild.roles.cache.find(role => role.id === offID);
                     user.roles.remove(offRole);
                 }
                 user.roles.remove(switchRole);
-            } else {
-                user.roles.add(switchRole);
+                logRP.fds(interaction.guild, user.nickname, interaction.guild.members.cache.get(interaction.user.id).nickname);
             }
         }
         interaction.followUp({ embeds: [emb.generate(null, null, respContent + ` a/ont correctement été retiré(e)(s) du service !`, `#0DE600`, null, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });

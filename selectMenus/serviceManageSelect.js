@@ -6,6 +6,8 @@ const logger = require('./../modules/logger');
 const service = require('./../modules/service');
 //Récup du créateur d'embed
 const emb = require('./../modules/embeds');
+//Récup du systeme de logs RP
+const logRP = require('./../modules/logsRP');
 
 module.exports = {
     execute: async function(interaction, errEmb) {
@@ -50,6 +52,10 @@ module.exports = {
             const allMembers = serviceRole.members;
             allMembers.map(d => {
                 d.roles.remove(serviceRole);
+                logRP.fds(interaction.guild, d.nickname, interaction.guild.members.cache.get(interaction.user.id).nickname);
+                if(d.roles.cache.has(process.env.IRIS_DISPATCH_ROLE_ID)) {
+                    logRP.fdd(interaction.guild, d.nickname, interaction.guild.members.cache.get(interaction.user.id).nickname);
+                }
                 d.roles.remove(dispatchRole);
                 d.roles.remove(offole);
             });

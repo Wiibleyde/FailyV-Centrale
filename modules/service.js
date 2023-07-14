@@ -160,7 +160,9 @@ module.exports = {
             await sql.updatedRadioDisplay('event', '0');
             //Envois du message
             await msg.edit({ embeds: [radioEmb], components: [radioBtns] });
-            await interaction.deferUpdate();
+            if(interaction != null) {
+                await interaction.deferUpdate();
+            }
         }
     },
     

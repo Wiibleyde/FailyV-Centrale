@@ -30,7 +30,7 @@ module.exports = {
         } else {
             content = `Prise de dispatch`;
         }
-        chan.send({ embeds: [emb.generate(null, null, `${nickname}`, `#84FFFF`, null, null, content, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)] });
+        chan.send({ embeds: [emb.generate(null, null, `${nickname}`, `#FFF1D0`, null, null, content, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)] });
     },
     fdd: (guild, nickname, forcer) => {
         let content;
@@ -40,6 +40,6 @@ module.exports = {
         } else {
             content = `Dispatch relaché`;
         }
-        chan.send({ embeds: [emb.generate(null, null, `${nickname}`, `#84FFFF`, null, null, content, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)] });
+        chan.send({ embeds: [emb.generate(null, null, `${nickname}`, `#FFF1D0`, null, null, content, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)] });
     }
 }

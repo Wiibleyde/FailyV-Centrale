@@ -8,6 +8,12 @@ require('./../modules/deployCommands');
 //Déployement des commandes
 const service = require('./../modules/service');
 
+//Récup du service de kick
+const userservice = require('./../modules/kickservice');
+
+//System pour le kick auto de 6h
+const CronJob = require('cron').CronJob;
+
 module.exports = {
     name: 'ready',
     once: true,
@@ -32,6 +38,14 @@ module.exports = {
             }, 5000);
         }
         service.start(client);
+
+        const job = new CronJob('06 00 00 * * *', function() {
+            userservice.kick(guild, guild.members.cache.get(process.env.IRIS_DISCORD_ID).nickname);
+            service.resetRadios(client, null);
+            logger.log(`Reboot de 06h00 effectué !`);
+        });
+        job.start();
+
     },
 
 };

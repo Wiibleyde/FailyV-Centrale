@@ -6,6 +6,7 @@ const emb = require('./../modules/embeds');
 module.exports = {
     //Dès qu'une interaction Discord avec le bot est executée
     name: 'interactionCreate',
+    once: false,
     async execute(interaction) {
         //Lorsqu'il s'agit d'une commande
         if(interaction.isChatInputCommand()) {

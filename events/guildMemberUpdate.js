@@ -10,6 +10,7 @@ const dispatchRoleId = process.env.IRIS_DISPATCH_ROLE_ID;
 
 module.exports = {
     name: 'guildMemberUpdate',
+    once: false,
     async execute(oldMember, newMember) {
         //logger.debug(oldMember);
         if (newMember.roles.cache.has(serviceRoleId) || oldMember.roles.cache.has(serviceRoleId) || newMember.roles.cache.has(dispatchRoleId) || oldMember.roles.cache.has(dispatchRoleId)) {

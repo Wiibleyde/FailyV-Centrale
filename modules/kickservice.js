@@ -25,7 +25,7 @@ module.exports = {
                 } else {
                     footerText = footerText + forcer.nickname;
                 }
-                await user.send({ embeds: [emb.generate(`Bonjour ${d.nickname}`, null, `Vous n'avez pas pris votre fin de service.\nMerci de penser à la prendre à l'avenir !`, `#FF0000`, null, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, footerText, null, true)] });
+                await user.send({ embeds: [emb.generate(`Bonjour, ${d.nickname}`, null, `Vous n'avez pas pris votre fin de service.\nMerci de penser à la prendre à l'avenir !`, `#FF0000`, null, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, footerText, null, true)] });
             } catch(err) {
             }
         });

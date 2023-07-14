@@ -15,7 +15,7 @@ module.exports = {
             const freqDeci = Math.floor(Math.random() * 10);
             const freq = freqUnit + '.' + freqDeci;
             //Recréation de l'embed pour édition du message
-            const embed = emb.generate(null, null, interaction.message.embeds[0].description, interaction.message.embeds[0].color, interaction.message.embeds[0].thumbnail.url, null, interaction.message.embeds[0].author.name, interaction.message.embeds[0].thumbnail.url, null, null, null, false);
+            const embed = emb.generate(null, null, interaction.message.embeds[0].description, interaction.message.embeds[0].color, interaction.message.embeds[0].thumbnail.url, null, interaction.message.embeds[0].author.name, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
             //Récupération de la radio LSMS si non régénérée
             var freqLSMS = interaction.message.embeds[0].fields[0].value;
             var freqFDO = interaction.message.embeds[0].fields[1].value;

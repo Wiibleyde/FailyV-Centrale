@@ -10,27 +10,22 @@ const dispatchID = process.env.IRIS_DISPATCH_ROLE_ID;
 
 module.exports = {
     execute: async function(interaction, errEmb) {
-        if(cooldown.get() == 0) {
-            cooldown.start();
-            try {
-                if(interaction.member.roles.cache.has(serviceID)) {
-                    let switchRole = interaction.guild.roles.cache.find(role => role.id === dispatchID);
-                    if(interaction.member.roles.cache.has(dispatchID)) {
-                        interaction.member.roles.remove(switchRole);
-                    } else {
-                        interaction.member.roles.add(switchRole);
-                    }
-                    //Confirmation à Discord du succès de l'opération
-                    await interaction.deferUpdate();
+        try {
+            if(interaction.member.roles.cache.has(serviceID)) {
+                let switchRole = interaction.guild.roles.cache.find(role => role.id === dispatchID);
+                if(interaction.member.roles.cache.has(dispatchID)) {
+                    interaction.member.roles.remove(switchRole);
                 } else {
-                    await interaction.reply({ embeds: [emb.generate(`Action impossible !`, null, `Désolé, vous devez obligatoirement être en service pour prendre le dispatch !`, `#ff0000`, null, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
+                    interaction.member.roles.add(switchRole);
                 }
-            } catch(err) {
-                logger.error(err);
-                await interaction.reply({ embeds: [errEmb], ephemeral: true });
+                //Confirmation à Discord du succès de l'opération
+                await interaction.deferUpdate();
+            } else {
+                await interaction.reply({ embeds: [emb.generate(`Action impossible !`, null, `Désolé, vous devez obligatoirement être en service pour prendre le dispatch !`, `#ff0000`, null, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
             }
-        } else {
-            await interaction.reply({ embeds: [emb.generate(`Action impossible !`, null, `Désolé, une cooldown est actuellement en cours sur la gestion du service !\nVeuillez patienter encore ${cooldown.get()}s`, `#ff0000`, null, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
+        } catch(err) {
+            logger.error(err);
+            await interaction.reply({ embeds: [errEmb], ephemeral: true });
         }
     }
 }

@@ -27,26 +27,20 @@ module.exports = {
             } else {
                 respContent = respContent + ` et <@${interaction.values[i]}>`
             }
-            setTimeout(async () => {
             let switchRole = interaction.guild.roles.cache.find(role => role.id === serviceID);
             if(user.roles.cache.has(serviceID)) {
                 if(user.roles.cache.has(dispatchID)) {
                     let dispatchRole = interaction.guild.roles.cache.find(role => role.id === dispatchID);
-                        setTimeout(() => {
                     user.roles.remove(dispatchRole);
-                        }, 2000);
                 }
                 if(user.roles.cache.has(offID)) {
                     let offRole = interaction.guild.roles.cache.find(role => role.id === offID);
-                        setTimeout(() => {
                     user.roles.remove(offRole);
-                        }, 4000);
                 }
                 user.roles.remove(switchRole);
             } else {
                 user.roles.add(switchRole);
             }
-            }, 2000);
         }
         interaction.followUp({ embeds: [emb.generate(null, null, respContent + ` a/ont correctement été retiré(e)(s) du service !`, `#0DE600`, null, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });
     }

@@ -7,9 +7,6 @@ const logger = require('./../modules/logger');
 require('./../modules/deployCommands');
 //Déployement des commandes
 const service = require('./../modules/service');
-//Démarrage de la cooldown de service
-const serviceCooldown = require('./../modules/serviceCooldown');
-
 
 module.exports = {
     name: 'ready',
@@ -26,9 +23,12 @@ module.exports = {
         //Affichage de l'activitée du bot
         if(process.env.MODE == 'DEV') { client.user.setPresence({ activities: [{ name: `🤖 Dev mode!`, type: ActivityType.Competing }], status: 'idle' }); }
         else if(process.env.MODE == 'MAINTENANCE'){ client.user.setPresence({ activities: [{ name: `Maintenance en cours...`, type: ActivityType.Watching }], status: 'dnd' }); }
-        else { client.user.setPresence({ activities: [{ name: `🚑 ` + serviceCount + ` | 🎙️ ` + dispatchCount, type: ActivityType.Watching }], status: 'online' }); }
+        else {
+            setInterval(() => {
+                client.user.setPresence({ activities: [{ name: `🚑 ` + serviceCount + ` | 🎙️ ` + dispatchCount, type: ActivityType.Watching }], status: 'online' });
+            }, 1000);
+        }
         service.start(client);
-        serviceCooldown.init();
     },
 
 };

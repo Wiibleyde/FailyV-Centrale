@@ -48,6 +48,6 @@ module.exports = {
                 }
             }, 2000);
         }
-        interaction.followUp({ embeds: [emb.generate(null, null, respContent + ` a/ont correctement été(e)(s) retiré(e)(s) du service !`, `#0DE600`, null, null, `Gestion du service`, `https://cdn.discordapp.com/attachments/1083724872045297734/1124914370217005127/LSMS.png`, null, null, null, true)], ephemeral: true });
+        interaction.followUp({ embeds: [emb.generate(null, null, respContent + ` a/ont correctement été retiré(e)(s) du service !`, `#0DE600`, null, null, `Gestion du service`, `https://cdn.discordapp.com/attachments/1083724872045297734/1124914370217005127/LSMS.png`, null, null, null, true)], ephemeral: true });
     }
 }

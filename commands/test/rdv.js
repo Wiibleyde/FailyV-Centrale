@@ -30,7 +30,7 @@ const rdvPsy = {
 module.exports = {
     //Création de la commande
     data: new SlashCommandBuilder()
-        .setName('rendez-vous')
+        .setName('rdv')
         .setDescription('Ajouter un rendez-vous à l\'agenda.')
         //Ajout des choix pour le type de rendez-vous
         .addStringOption(option =>

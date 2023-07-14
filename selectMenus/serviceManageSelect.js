@@ -4,6 +4,8 @@ const { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder
 const logger = require('./../modules/logger');
 //Fichier de service pour reset
 const service = require('./../modules/service');
+//Récup du créateur d'embed
+const emb = require('./../modules/embeds');
 
 module.exports = {
     execute: async function(interaction, errEmb) {
@@ -38,6 +40,16 @@ module.exports = {
             }
         }
         if(interaction.values[0] == 'serviceResetEveryone') {
+            await interaction.deferReply({ ephemeral: true });
+            setTimeout(() => {
+                interaction.message.delete();
+            }, 1000);
+            const serviceRole = interaction.guild.roles.cache.get(process.env.IRIS_SERVICE_ROLE_ID);
+            const allMembers = serviceRole.members;
+            allMembers.map(d => {
+                d.roles.remove(serviceRole);
+            });
+            interaction.followUp({ embeds: [emb.generate(null, null, `Toutes les personnes ont correctement été retirées du service !`, `#0DE600`, null, null, `Gestion du service`, `https://cdn.discordapp.com/attachments/1083724872045297734/1124914370217005127/LSMS.png`, null, null, null, true)], ephemeral: true })
         }
     }
 }

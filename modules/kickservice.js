@@ -21,7 +21,7 @@ module.exports = {
             try {
                 let footerText = `Cordialement, `;
                 if(forcer.id == process.env.IRIS_DISCORD_ID) {
-                    footerText = footerText + `votre secrétaire ${forcer.nickname}`;
+                    footerText = footerText + `votre secrétaire préférée`;
                 } else {
                     footerText = footerText + forcer.nickname;
                 }

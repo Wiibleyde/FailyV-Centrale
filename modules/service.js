@@ -129,7 +129,7 @@ module.exports = {
             }
         }, 1000);
     },
-    resetRadios: async (radio, client, interaction) => {
+    resetRadios: async (client, interaction) => {
         //Récupération du serveur Discord LSMS
         const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
         //Récupération du channel des radios

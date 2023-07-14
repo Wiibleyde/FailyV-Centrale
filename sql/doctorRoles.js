@@ -4,6 +4,13 @@ const logger = require('./../modules/logger');
 const mysql = require('./../modules/sql');
 
 module.exports = {
+    //Fonction qui créé la base table
+    createdoctorRolesTable: () => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query("CREATE TABLE IF NOT EXISTS `doctorRoles` (`discordUserId` varchar(255) NOT NULL,`rolesId` TEXT)")
+            resolve();
+        });
+    },
     //Fonction qui ajoute une liste de rôles dans la DB
     addRoles: (discordUserId, rolesId) => {
         return new Promise((resolve, reject) => {

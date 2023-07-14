@@ -25,7 +25,7 @@ module.exports = {
             } else if(i != interaction.values.length - 1) {
                 respContent = respContent + `, <@${interaction.values[i]}>`
             } else {
-                respContent = respContent + ` et <@${interaction.values[i]}> `
+                respContent = respContent + ` et <@${interaction.values[i]}>`
             }
             setTimeout(async () => {
                 let switchRole = interaction.guild.roles.cache.find(role => role.id === serviceID);
@@ -48,6 +48,6 @@ module.exports = {
                 }
             }, 2000);
         }
-        interaction.followUp({ embeds: [emb.generate(null, null, respContent + `a/ont correctement été(e)(s) retiré(e)(s) du service !`, `#0DE600`, null, null, `Gestion du service`, `https://cdn.discordapp.com/attachments/1083724872045297734/1124914370217005127/LSMS.png`, null, null, null, true)], ephemeral: true });
+        interaction.followUp({ embeds: [emb.generate(null, null, respContent + ` a/ont correctement été(e)(s) retiré(e)(s) du service !`, `#0DE600`, null, null, `Gestion du service`, `https://cdn.discordapp.com/attachments/1083724872045297734/1124914370217005127/LSMS.png`, null, null, null, true)], ephemeral: true });
     }
 }

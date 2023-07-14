@@ -17,7 +17,7 @@ const radioBtns = new ActionRowBuilder().addComponents(
 const btns = new ActionRowBuilder().addComponents(
     new ButtonBuilder().setLabel('Service').setCustomId('serviceSwitch').setStyle(ButtonStyle.Danger),
     new ButtonBuilder().setLabel('Dispatch').setCustomId('serviceDispatch').setStyle(ButtonStyle.Primary),
-    new ButtonBuilder().setLabel('Off radio').setCustomId('serviceSwitchOff').setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder().setLabel('Aïe la tête').setCustomId('serviceSwitchOff').setStyle(ButtonStyle.Secondary),
     new ButtonBuilder().setCustomId('serviceManage').setStyle(ButtonStyle.Secondary).setEmoji('1128896218672681090')
 );
 

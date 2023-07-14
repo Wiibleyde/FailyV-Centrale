@@ -30,6 +30,21 @@ module.exports = {
                 dispatch = newMember.guild.roles.cache.get(dispatchRoleId).members.size;
             }
 
+            const guild = newMember.guild;
+            const chan = guild.channels.cache.get(process.env.IRIS_SERVICE_LOGS_ID);
+            if(addedRoles.map(d => d.id) == serviceRoleId) {
+                chan.send({ embeds: [emb.generate(null, null, `${newMember.nickname}`, `#0DE600`, null, null, `Prise de service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${newMember.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)] });
+            }
+            if(removedRoles.map(d => d.id) == serviceRoleId) {
+                chan.send({ embeds: [emb.generate(null, null, `${newMember.nickname}`, `#FF0000`, null, null, `Fin de service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${newMember.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)] });
+            }
+            if(addedRoles.map(d => d.id) == dispatchRoleId) {
+                chan.send({ embeds: [emb.generate(null, null, `${newMember.nickname}`, `#84FFFF`, null, null, `Prise de dispatch`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${newMember.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)] });
+            }
+            if(removedRoles.map(d => d.id) == dispatchRoleId) {
+                chan.send({ embeds: [emb.generate(null, null, `${newMember.nickname}`, `#84FFFF`, null, null, `Dispatch relaché`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${newMember.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)] });
+            }
+
             //Affichage de l'activitée du bot
             if(countPDS != null && dispatch != null) {
                 newMember.client.user.setPresence({ activities: [{ name: `🚑 ` + countPDS + ` | 🎙️ ` + dispatch, type: ActivityType.Watching }], status: 'online' });

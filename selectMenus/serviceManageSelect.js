@@ -49,7 +49,7 @@ module.exports = {
             allMembers.map(d => {
                 d.roles.remove(serviceRole);
             });
-            interaction.followUp({ embeds: [emb.generate(null, null, `Toutes les personnes ont correctement été retirées du service !`, `#0DE600`, null, null, `Gestion du service`, `https://cdn.discordapp.com/attachments/1083724872045297734/1124914370217005127/LSMS.png`, null, null, null, true)], ephemeral: true })
+            interaction.followUp({ embeds: [emb.generate(null, null, `Toutes les personnes ont correctement été retirées du service !`, `#0DE600`, null, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true })
         }
     }
 }

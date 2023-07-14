@@ -35,7 +35,7 @@ module.exports = {
             //Si pas présent recréation du message
             if(!found) {
                 //Base de l'embed
-                const serviceEmb = emb.generate(null, null, `**Pour indiquer une prise/fin de service - Appuyez sur 🔴 \n\nPour prendre le dispatch - Appuyez sur 🔵 \n\nPour indiquer un off radio - Appuyez sur ⚫**\n\n\u200b`, `#FF0000`, `https://cdn.discordapp.com/attachments/1083724872045297734/1124914370217005127/LSMS.png`, null, `Gestion du service`, `https://cdn.discordapp.com/attachments/1083724872045297734/1124914370217005127/LSMS.png`, null, null, null, false);
+                const serviceEmb = emb.generate(null, null, `**Pour indiquer une prise/fin de service - Appuyez sur 🔴 \n\nPour prendre le dispatch - Appuyez sur 🔵 \n\nPour indiquer un off radio - Appuyez sur ⚫**\n\n\u200b`, `#FF0000`, `https://cdn.discordapp.com/attachments/1083724872045297734/1124914370217005127/LSMS.png`, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
                 //Radios
                 var freqLSMS = await sql.getRadio('lsms');
                 freqLSMS = freqLSMS[0].lsms;
@@ -127,7 +127,7 @@ module.exports = {
         const msg = await getMessages(messages, client);
         if(msg != false) {
             //Reset de l'embed
-            const serviceEmb = emb.generate(null, null, `**Pour indiquer une prise/fin de service - Appuyez sur 🔴 \n\nPour prendre le dispatch - Appuyez sur 🔵 \n\nPour indiquer un off radio - Appuyez sur ⚫**\n\n\u200b`, `#FF0000`, `https://cdn.discordapp.com/attachments/1083724872045297734/1124914370217005127/LSMS.png`, null, `Gestion du service`, `https://cdn.discordapp.com/attachments/1083724872045297734/1124914370217005127/LSMS.png`, null, null, null, false);
+            const serviceEmb = emb.generate(null, null, `**Pour indiquer une prise/fin de service - Appuyez sur 🔴 \n\nPour prendre le dispatch - Appuyez sur 🔵 \n\nPour indiquer un off radio - Appuyez sur ⚫**\n\n\u200b`, `#FF0000`, `https://cdn.discordapp.com/attachments/1083724872045297734/1124914370217005127/LSMS.png`, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
             serviceEmb.addFields([
                 {
                     name: `💉 Radio LSMS`,

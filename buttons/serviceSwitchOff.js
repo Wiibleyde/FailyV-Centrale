@@ -2,6 +2,8 @@
 const logger = require('./../modules/logger');
 //Récup du créateur d'embed
 const emb = require('./../modules/embeds');
+//Fonction pour attendre
+const wait = require('node:timers/promises').setTimeout;
 
 const serviceID = process.env.IRIS_SERVICE_ROLE_ID;
 const offID = process.env.IRIS_OFF_ROLE_ID;
@@ -21,8 +23,14 @@ module.exports = {
                 }
                 //Confirmation à l'utilisateur du succès de l'opération
                 await interaction.reply({ embeds: [embed], ephemeral: true });
+                // Supprime la réponse après 5s
+                await wait(5000);
+                await interaction.deleteReply();
             } else {
                 await interaction.reply({ embeds: [emb.generate(`Action impossible !`, null, `Désolé, vous devez obligatoirement être en service pour prendre un off radio !`, `#ff0000`, null, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
+                // Supprime la réponse après 5s
+                await wait(5000);
+                await interaction.deleteReply();
             }
         } catch(err) {
             logger.error(err);

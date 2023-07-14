@@ -4,7 +4,8 @@ const logger = require('./../modules/logger');
 const emb = require('./../modules/embeds');
 //Récup du systeme de logs RP
 const logRP = require('./../modules/logsRP');
-
+//Fonction pour attendre
+const wait = require('node:timers/promises').setTimeout;
 
 const serviceID = process.env.IRIS_SERVICE_ROLE_ID;
 const dispatchID = process.env.IRIS_DISPATCH_ROLE_ID;
@@ -17,9 +18,9 @@ module.exports = {
         
         //Confirmation à Discord du succès de l'opération
         await interaction.deferReply({ ephemeral: true });
-        setTimeout(() => {
+        /*setTimeout(() => {
             interaction.message.delete();
-        }, 1000);
+        }, 1000);*/
         let respContent = '';
         for(i=0;i<interaction.values.length;i++) {
             const user = interaction.guild.members.cache.get(interaction.values[i]);
@@ -46,5 +47,8 @@ module.exports = {
             }
         }
         interaction.followUp({ embeds: [emb.generate(null, null, respContent + ` a/ont correctement été retiré(e)(s) du service !`, `#0DE600`, null, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });
+        // Supprime la réponse après 5s
+        await wait(5000);
+        await interaction.deleteReply();
     }
 }

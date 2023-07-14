@@ -4,6 +4,8 @@ const logger = require('./../modules/logger');
 const emb = require('./../modules/embeds');
 //Récup du systeme de logs RP
 const logRP = require('./../modules/logsRP');
+//Fonction pour attendre
+const wait = require('node:timers/promises').setTimeout;
 
 const serviceID = process.env.IRIS_SERVICE_ROLE_ID;
 const dispatchID = process.env.IRIS_DISPATCH_ROLE_ID;
@@ -25,8 +27,14 @@ module.exports = {
                 }
                 //Confirmation à l'utilisateur du succès de l'opération
                 await interaction.reply({ embeds: [embed], ephemeral: true });
+                // Supprime la réponse après 5s
+                await wait(5000);
+                await interaction.deleteReply();
             } else {
                 await interaction.reply({ embeds: [emb.generate(`Action impossible !`, null, `Désolé, vous devez obligatoirement être en service pour prendre le dispatch !`, `#ff0000`, null, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
+                // Supprime la réponse après 5s
+                await wait(5000);
+                await interaction.deleteReply();
             }
         } catch(err) {
             logger.error(err);

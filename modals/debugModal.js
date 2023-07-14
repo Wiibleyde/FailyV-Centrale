@@ -4,6 +4,8 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const logger = require('./../modules/logger');
 //Récup du créateur d'embed
 const emb = require('./../modules/embeds');
+//Fonction pour attendre
+const wait = require('node:timers/promises').setTimeout;
 
 module.exports = {
     execute: async function(interaction, errEmb) {
@@ -35,7 +37,7 @@ module.exports = {
             //Création d'un embed de réponse
             responseEmbed = emb.generate('Prise en compte de votre demande de debug', null, '**Nous avons bien enregistré votre demande de debug** \nVous recevrez une réponse sous peu.', '#ffffff', 'https://cdn.discordapp.com/attachments/1083724872045297734/1093600460511920138/loading.gif', null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true);
         } catch (err) {
-            interaction.channel.send({ content: `${interaction.user}`, embeds: [errEmb], ephemeral: true });
+            interaction.channel.send({ content: `${interaction.user}`, embeds: [errEmb] });
             logger.error(err);
         }
 
@@ -56,6 +58,9 @@ module.exports = {
             //Confermation à l'utilisateur du succès de la commande
             await interaction.user.send({ embeds: [ responseEmbed ] });
             await interaction.followUp({ embeds: [emb.generate('Merci !', null, `Votre bug report à bien été prise en compte !`, '#3cb34b', null, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
+            // Supprime la réponse après 5s
+            await wait(5000);
+            await interaction.deleteReply();
         } catch (err) {
             //Si l'utilisateur à ses MP de fermés
             if(err.code == 50007) {
@@ -64,6 +69,9 @@ module.exports = {
                 } catch (err) {
                     logger.error(err);
                     await interaction.followUp({ embeds: [errEmb], ephemeral: true });
+                    // Supprime la réponse après 5s
+                    await wait(5000);
+                    await interaction.deleteReply();
                 }
             //Lors d'une vraie erreur
             } else {

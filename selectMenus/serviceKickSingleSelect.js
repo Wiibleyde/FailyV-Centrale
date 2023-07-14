@@ -44,6 +44,10 @@ module.exports = {
                 }
                 user.roles.remove(switchRole);
                 logRP.fds(interaction.guild, user.nickname, interaction.guild.members.cache.get(interaction.user.id).nickname);
+                try {
+                    await user.send({ embeds: [emb.generate(`Bonjour ${user.nickname}`, null, `Vous n'avez pas pris votre fin de service.\nMerci de penser à la prendre à l'avenir !`, `#FF0000`, null, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, `Cordialement, ${interaction.guild.members.cache.get(interaction.user.id).nickname}`, null, true)] });
+                } catch(err) {
+                }
             }
         }
         interaction.followUp({ embeds: [emb.generate(null, null, respContent + ` a/ont correctement été retiré(e)(s) du service !`, `#0DE600`, null, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });

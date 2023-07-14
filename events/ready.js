@@ -40,7 +40,7 @@ module.exports = {
         service.start(client);
 
         const job = new CronJob('06 00 00 * * *', function() {
-            userservice.kick(guild, guild.members.cache.get(process.env.IRIS_DISCORD_ID).nickname);
+            userservice.kick(guild, guild.members.cache.get(process.env.IRIS_DISCORD_ID));
             service.resetRadios(client, null);
             logger.log(`Reboot de 06h00 effectué !`);
         });

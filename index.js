@@ -18,7 +18,7 @@ const logger = require('./modules/logger');
 
 //Discord init
 const { Client, GatewayIntentBits, Collection, Events } = require('discord.js');
-const client = new Client({ intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildMembers ]});
+const client = new Client({ intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent ]});
 //Init des commandes Discord
 client.commands = new Collection();
 const foldersPath = path.join(__dirname, 'commands');

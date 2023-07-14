@@ -45,9 +45,13 @@ module.exports = {
                 interaction.message.delete();
             }, 1000);
             const serviceRole = interaction.guild.roles.cache.get(process.env.IRIS_SERVICE_ROLE_ID);
+            const dispatchRole = interaction.guild.roles.cache.get(process.env.IRIS_DISPATCH_ROLE_ID);
+            const offole = interaction.guild.roles.cache.get(process.env.IRIS_OFF_ROLE_ID);
             const allMembers = serviceRole.members;
             allMembers.map(d => {
                 d.roles.remove(serviceRole);
+                d.roles.remove(dispatchRole);
+                d.roles.remove(offole);
             });
             interaction.followUp({ embeds: [emb.generate(null, null, `Toutes les personnes ont correctement été retirées du service !`, `#0DE600`, null, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true })
         }

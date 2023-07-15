@@ -13,9 +13,10 @@ module.exports = {
     },
     //Fonction qui ajoute une liste de rôles dans la DB
     addRoles: (discordUserId, rolesId) => {
+        logger.debug(discordUserId + " " + rolesId)
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                slq: "INSERT INTO `doctorRoles`(`discordUserId`, `rolesId`) VALUES (?, ?)",
+                sql: "INSERT INTO `doctorRoles`(`discordUserId`, `rolesId`) VALUES (?, ?)",
                 timeout: 40000,
                 values: [discordUserId, rolesId]
             }, (reqErr, result, fields) => {

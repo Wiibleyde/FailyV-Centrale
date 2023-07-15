@@ -37,6 +37,10 @@ module.exports = {
                 client.user.setPresence({ activities: [{ name: `🚑 ` + serviceCount + ` | 🎙️ ` + dispatchCount, type: ActivityType.Watching }], status: 'online' });
             }, 5000);
         }
+        const privateClient = guild.members.cache.get(process.env.IRIS_DISCORD_ID);
+        if(privateClient.nickname != 'Chantrale') {
+            privateClient.setNickname('Chantrale');
+        }
         service.start(client);
 
         const job = new CronJob('00 00 06 * * *', function() {

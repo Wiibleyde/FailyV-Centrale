@@ -10,7 +10,7 @@ module.exports = {
         } else {
             content = `Prise de service`;
         }
-        chan.send({ embeds: [emb.generate(null, null, `${nickname}`, `#0DE600`, null, null, content, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)] });
+        chan.send({ embeds: [emb.generate(null, null, `${nickname}`, `#0DE600`, process.env.LSMS_LOGO_V2, null, content, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)] });
     },
     fds: (guild, nickname, forcer) => {
         let content;
@@ -20,7 +20,7 @@ module.exports = {
         } else {
             content = `Fin de service`;
         }
-        chan.send({ embeds: [emb.generate(null, null, `${nickname}`, `#FF0000`, null, null, content, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)] });
+        chan.send({ embeds: [emb.generate(null, null, `${nickname}`, `#FF0000`, process.env.LSMS_LOGO_V2, null, content, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)] });
     },
     pdd: (guild, nickname, forcer) => {
         let content;
@@ -30,7 +30,7 @@ module.exports = {
         } else {
             content = `Prise de dispatch`;
         }
-        chan.send({ embeds: [emb.generate(null, null, `${nickname}`, `#FFF1D0`, null, null, content, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)] });
+        chan.send({ embeds: [emb.generate(null, null, `${nickname}`, `#FFF1D0`, process.env.LSMS_LOGO_V2, null, content, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)] });
     },
     fdd: (guild, nickname, forcer) => {
         let content;
@@ -40,6 +40,6 @@ module.exports = {
         } else {
             content = `Dispatch relaché`;
         }
-        chan.send({ embeds: [emb.generate(null, null, `${nickname}`, `#FFF1D0`, null, null, content, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)] });
+        chan.send({ embeds: [emb.generate(null, null, `${nickname}`, `#FFF1D0`, process.env.LSMS_LOGO_V2, null, content, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)] });
     }
 }

@@ -150,10 +150,10 @@ module.exports = {
             await interaction.deferUpdate();
             const pingMessage = await interaction.channel.send({ content: pingMsg });
             // Supprime la réponse après 1min
-            await wait(60000);
+            await wait(120000);
             await pingMessage.delete();
         } else {
-            await interaction.reply({ embeds: [emb.generate(`Action impossible !`, null, `Désolé, vous devez être en service pour régénérer une radio !`, `#ff0000`, null, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
+            await interaction.reply({ embeds: [emb.generate(`Action impossible !`, null, `Désolé, vous devez être en service pour régénérer une radio !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
             // Supprime la réponse après 5s
             await wait(5000);
             await interaction.deleteReply();

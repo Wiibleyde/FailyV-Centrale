@@ -31,7 +31,7 @@ module.exports = {
                 await interaction.reply({ embeds: [errEmb], ephemeral: true });
             }
         } else {
-            await interaction.reply({ embeds: [emb.generate(null, null, `Désolé :(\nIl n'y a actuellement personnes en service`, `#FF0000`, null, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
+            await interaction.reply({ embeds: [emb.generate(null, null, `Désolé :(\nIl n'y a actuellement personnes en service`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
             // Supprime la réponse après 5s
             await wait(5000);
             await interaction.deleteReply();

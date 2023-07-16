@@ -125,18 +125,43 @@ module.exports = {
         await doctorSql.addDoctor(firstName, lastName, phone, grade, tag.id, arrivalDate, channel.id);
 
         // Message de bienvenue
-        const welcomeEmbed = emb.generate(":new: Bienvenue", null, `${doctorRankData[grade].name} ${firstName} ${lastName} qui nous rejoint :wave:`, "#367db4", null, null, null, null, null, null, null, true);
+        const welcomeEmbed = emb.generate(
+            null,
+            null,
+            `:new: Bienvenue à ${firstName} ${lastName} nous rejoint en tant que <@&${doctorRankData[grade].role_id}> :wave:`,
+            interaction.guild.roles.cache.get(doctorRankData[grade].role_id).hexColor, null, null,
+            "Annonce",
+            `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`,
+            null,
+            `${interaction.guild.members.cache.get(interaction.user.id).nickname}`,
+            null,
+            true
+        );
         const welcomeMessage = await interaction.client.channels.cache.get(process.env.IRIS_ANNOUNCEMENT_CHANNEL_ID).send({ content: `<@&${process.env.IRIS_LSMS_ROLE}>`, embeds: [welcomeEmbed] });
         welcomeMessage.react("👋");
 
         // Création de la fiche d'interne
+        let message;
         for (const [_, value] of Object.entries(doctorCardData)) {
             const embed = emb.generate(value.name, null, null, value.color, null, null, null, null, null, null, null, false);
-            await channel.send({ embeds: [embed] });
-            value.elements.forEach(async element => {
-                await channel.send(`- ${element}`);
-            });
+            if (value.position === 0) {
+                message = await channel.send({ embeds: [embed] });
+            } else {
+                await channel.send({ embeds: [embed] });
+            }
+            for (const i in value.elements) {
+                await channel.send(`- ${value.elements[i]}`);
+            }
         }
+        await message.pin();
+        channel.messages.fetch({ limit: 1 }).then(messages => {
+            let lastMessage = messages.first();
+            
+            if (lastMessage.author.bot) {
+                lastMessage.delete();
+            }
+          })
+          .catch(logger.error);
 
         // Confirmation de la création
         const validationEmbed = emb.generate("Succès", null, `La fiche pour ${firstName} ${lastName} a été créé ici : <#${channel.id}>`, "#0ce600", null, null, null, null, null, null, null, false);

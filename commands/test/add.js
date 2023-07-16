@@ -6,6 +6,8 @@ const logger = require('../../modules/logger');
 const { Rank, hasAuthorization } = require('../../modules/rankAuthorization');
 //Récup du créateur d'embed
 const emb = require('../../modules/embeds');
+//Récup du générateur d'effectif
+const workforce = require('../../modules/workforce');
 //Récup des requêtes SQL
 const doctorCardSql = require('../../sql/doctorCard');
 const doctorRankSql = require('../../sql/doctorRank');
@@ -90,7 +92,7 @@ module.exports = {
         const firstName = interaction.options.getString("prenom");
         const lastName = interaction.options.getString("nom");
 
-        const existChannelID = await doctorSql.getDoctorChannelID(firstName, lastName, tag.id);
+        const existChannelID = await doctorSql.getDoctorChannelID(phone);
 
         // Check si une fiche n'existe pas déjà pour le docteur
         if (existChannelID !== "-1") {
@@ -124,6 +126,8 @@ module.exports = {
         // Ajout des information du docteur en base de donnée
         await doctorSql.addDoctor(firstName, lastName, phone, grade, tag.id, arrivalDate, channel.id);
 
+        workforce.generateWorkforce(interaction.guild);
+
         // Message de bienvenue
         const welcomeEmbed = emb.generate(
             null,
@@ -155,13 +159,13 @@ module.exports = {
         }
         await message.pin();
         channel.messages.fetch({ limit: 1 }).then(messages => {
-            let lastMessage = messages.first();
-            
-            if (lastMessage.author.bot) {
-                lastMessage.delete();
-            }
-          })
-          .catch(logger.error);
+                let lastMessage = messages.first();
+                
+                if (lastMessage.author.bot) {
+                    lastMessage.delete();
+                }
+            })
+            .catch(logger.error);
 
         // Confirmation de la création
         const validationEmbed = emb.generate("Succès", null, `La fiche pour ${firstName} ${lastName} a été créé ici : <#${channel.id}>`, "#0ce600", null, null, null, null, null, null, null, false);

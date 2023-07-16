@@ -52,7 +52,7 @@ module.exports = {
             //Changement de la fréquence si radio BCMS régen
             if(interaction.customId == 'serviceRegenBCMS') { freqBCMS = freq; genBCMS = '1'; await sql.updatedRadioDisplay('bcms', '1'); await sql.setRadio('bcms', freqBCMS); freqToRegen = 'bcms'; pingMsg = pingMsg + 'LSMS - BCMS !'; }
             //Changement de la fréquence si radio Event régen
-            if(interaction.customId == 'serviceRegenEvent') { freqEvent = freq; genEvent = '1'; await sql.updatedRadioDisplay('event', '1'); await sql.setRadio('event', freqEvent); freqToRegen = 'event'; pingMsg = pingMsg + 'évènementiel !'; }
+            if(interaction.customId == 'serviceRegenEvent') { freqEvent = freq; genEvent = '1'; await sql.updatedRadioDisplay('event', '1'); await sql.setRadio('event', freqEvent); freqToRegen = 'event'; pingMsg = pingMsg + 'évènementielle !'; }
             if(genBCMS == '1' && genEvent == '0') {
                 //Récupération de la radio BCMS si non régénérée
                 if(interaction.message.embeds[0].fields[3] != null) {

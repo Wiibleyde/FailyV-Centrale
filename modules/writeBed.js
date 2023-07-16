@@ -62,7 +62,7 @@ module.exports = {
                                 }
                             );
                             if(lastname != null) {
-                                fontCanvas.print(font, 8, 63,
+                                fontCanvas.print(font, 8, 56,
                                     {
                                         text: lastname,
                                         alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
@@ -109,7 +109,7 @@ function generateBeds(patient, letter, surveillance, client) {
                     if(letter[i] == 'p') { x1 = 99; y1 = 560; }
                     if(letter[i] == 'q') { x1 = 1299; y1 = 353; }
                     if(letter[i] == 'r') { x1 = 1651; y1 = 353; }
-                    let x2 = x1; let y2 = y1 + 58;
+                    let x2 = x1; let y2 = y1 + 51;
 
                     //Séparation du prénom et nom pour retour à la ligne
                     patientName = patient[i].split(' ');

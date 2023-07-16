@@ -13,8 +13,6 @@ const emb = require('./../../modules/embeds');
 //Récup du service
 const service = require('./../../modules/service');
 //Récup des réactions
-const reactions = require('./../../modules/getReaction');
-//Récup des réactions
 const btnCreator = require('./../../modules/btnCreator');
 
 module.exports = {

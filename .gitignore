@@ -163,3 +163,4 @@ node_modules/
 .vscode/
 .idea/
 logs/
+src/img/generated/

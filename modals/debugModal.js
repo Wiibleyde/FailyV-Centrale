@@ -26,7 +26,7 @@ module.exports = {
                 footName = interactGuild.name;
                 footIcon = interactGuild.iconURL();
             }
-            createdEmbed = emb.generate('Commande: ' + interaction.components[0].components[0].value, null, '**Comment cela ce produit-il ?** \n' + interaction.components[1].components[0].value, 'Gold', process.env.LSMS_LOGO_V2, null, `${interaction.user.username} (<@${interaction.user.id}>)`, interaction.user.avatarURL(), null, footName, footIcon, true);
+            createdEmbed = emb.generate('Commande: ' + interaction.components[0].components[0].value, null, '**Comment cela se produit-il ?** \n' + interaction.components[1].components[0].value, 'Gold', process.env.LSMS_LOGO_V2, null, `${interaction.user.username} (<@${interaction.user.id}>)`, interaction.user.avatarURL(), null, footName, footIcon, true);
             createdEmbed.addFields([
                 {
                     name: `Le fait-il à chaques fois ?`,

@@ -21,6 +21,8 @@ ALTER TABLE test.DOCTOR_RANK ADD parent_channel_id varchar(20) NOT NULL;
 
 ALTER TABLE test.DOCTOR_RANK ADD role_id varchar(20) NOT NULL;
 
+ALTER TABLE test.DOCTOR_RANK ADD `position` INT NOT NULL;
+
 
 CREATE TABLE test.DOCTOR (
 	id INT auto_increment NOT NULL,

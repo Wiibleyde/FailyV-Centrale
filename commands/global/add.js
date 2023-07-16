@@ -130,13 +130,27 @@ module.exports = {
         welcomeMessage.react("👋");
 
         // Création de la fiche d'interne
+        let message;
         for (const [_, value] of Object.entries(doctorCardData)) {
             const embed = emb.generate(value.name, null, null, value.color, null, null, null, null, null, null, null, false);
-            await channel.send({ embeds: [embed] });
-            value.elements.forEach(async element => {
-                await channel.send(`- ${element}`);
-            });
+            if (value.position === 0) {
+                message = await channel.send({ embeds: [embed] });
+            } else {
+                await channel.send({ embeds: [embed] });
+            }
+            for (const i in value.elements) {
+                await channel.send(`- ${value.elements[i]}`);
+            }
         }
+        await message.pin();
+        channel.messages.fetch({ limit: 1 }).then(messages => {
+            let lastMessage = messages.first();
+            
+            if (lastMessage.author.bot) {
+                lastMessage.delete();
+            }
+          })
+          .catch(logger.error);
 
         // Confirmation de la création
         const validationEmbed = emb.generate("Succès", null, `La fiche pour ${firstName} ${lastName} a été créé ici : <#${channel.id}>`, "#0ce600", null, null, null, null, null, null, null, false);

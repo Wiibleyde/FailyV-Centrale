@@ -64,7 +64,10 @@ async function editBedsImage(letters, d, imgUrl, interaction) {
             lettersArray4.push(letters[r].letter);
         }
     }
-    if(letters.length < 6) {
+    if(letters.length == 0) {
+        await radioChan.send({ content: bedsImg });
+        gen = false;
+    } else if(letters.length < 6) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         await d.edit({ content: imgUrl, components: [btns1] });
         await interaction.followUp({ embeds: [emb.generate(null, null, `Aperçu de la salle de réveil mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });

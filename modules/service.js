@@ -222,7 +222,10 @@ async function sendBedsImage(letters, radioChan, bedsImg) {
             lettersArray4.push(letters[r].letter);
         }
     }
-    if(letters.length < 6) {
+    if(letters.length == 0) {
+        await radioChan.send({ content: bedsImg });
+        gen = false;
+    } else if(letters.length < 6) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         await radioChan.send({ content: bedsImg, components: [btns1] });
         gen = false;

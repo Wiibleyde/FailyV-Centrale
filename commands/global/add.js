@@ -125,7 +125,18 @@ module.exports = {
         await doctorSql.addDoctor(firstName, lastName, phone, grade, tag.id, arrivalDate, channel.id);
 
         // Message de bienvenue
-        const welcomeEmbed = emb.generate(":new: Bienvenue", null, `${doctorRankData[grade].name} ${firstName} ${lastName} qui nous rejoint :wave:`, "#367db4", null, null, null, null, null, null, null, true);
+        const welcomeEmbed = emb.generate(
+            null,
+            null,
+            `:new: Bienvenue à ${firstName} ${lastName} nous rejoint en tant que <@&${doctorRankData[grade].role_id}> :wave:`,
+            interaction.guild.roles.cache.get(doctorRankData[grade].role_id).hexColor, null, null,
+            "Annonce",
+            `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`,
+            null,
+            `${interaction.guild.members.cache.get(interaction.user.id).nickname}`,
+            null,
+            true
+        );
         const welcomeMessage = await interaction.client.channels.cache.get(process.env.IRIS_ANNOUNCEMENT_CHANNEL_ID).send({ content: `<@&${process.env.IRIS_LSMS_ROLE}>`, embeds: [welcomeEmbed] });
         welcomeMessage.react("👋");
 

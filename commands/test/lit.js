@@ -80,10 +80,17 @@ module.exports = {
                     patientSurveilance.push(lits[i].surveillance);
                 }
                 if(!patient.includes(interaction.options.getString('patient').toLowerCase())) {
-                    patient.push(interaction.options.getString('patient').toLowerCase());
-                    patientLetter.push(interaction.options.getString('lettre'));
-                    patientSurveilance.push(surveillance);
-                    genLits(interaction, interaction.options.getString('patient').toLowerCase(), interaction.options.getString('lettre'), surveillance, patient, patientLetter, patientSurveilance);
+                    if(patientLetter.indexOf(interaction.options.getString('lettre')) == '-1') {
+                        patient.push(interaction.options.getString('patient').toLowerCase());
+                        patientLetter.push(interaction.options.getString('lettre'));
+                        patientSurveilance.push(surveillance);
+                        genLits(interaction, interaction.options.getString('patient').toLowerCase(), interaction.options.getString('lettre'), surveillance, patient, patientLetter, patientSurveilance);
+                    } else {
+                        await interaction.followUp({ embeds: [emb.generate(null, null, `Désolé il y a déjà un patient dans ce lit, veuillez en essayer un autre !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });
+                        // Supprime la réponse après 5s
+                        await wait(5000);
+                        await interaction.deleteReply();
+                    }
                 } else {
                     let patientIndex = patient.indexOf(interaction.options.getString('patient').toLowerCase());
                     if(patientLetter[patientIndex] != interaction.options.getString('lettre') || patientSurveilance[patientIndex] != surveillance) {

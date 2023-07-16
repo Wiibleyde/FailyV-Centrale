@@ -2,6 +2,10 @@
 const logger = require('./../modules/logger');
 //Récup du créateur d'embed
 const emb = require('./../modules/embeds');
+//Récup du systeme de logs RP
+const logRP = require('./../modules/logsRP');
+//Fonction pour attendre
+const wait = require('node:timers/promises').setTimeout;
 
 const serviceID = process.env.IRIS_SERVICE_ROLE_ID;
 const dispatchID = process.env.IRIS_DISPATCH_ROLE_ID;
@@ -14,9 +18,9 @@ module.exports = {
         
         //Confirmation à Discord du succès de l'opération
         await interaction.deferReply({ ephemeral: true });
-        setTimeout(() => {
+        /*setTimeout(() => {
             interaction.message.delete();
-        }, 1000);
+        }, 1000);*/
         let respContent = '';
         for(i=0;i<interaction.values.length;i++) {
             const user = interaction.guild.members.cache.get(interaction.values[i]);
@@ -32,16 +36,23 @@ module.exports = {
                 if(user.roles.cache.has(dispatchID)) {
                     let dispatchRole = interaction.guild.roles.cache.find(role => role.id === dispatchID);
                     user.roles.remove(dispatchRole);
+                    logRP.fdd(interaction.guild, user.nickname, interaction.guild.members.cache.get(interaction.user.id).nickname);
                 }
                 if(user.roles.cache.has(offID)) {
                     let offRole = interaction.guild.roles.cache.find(role => role.id === offID);
                     user.roles.remove(offRole);
                 }
                 user.roles.remove(switchRole);
-            } else {
-                user.roles.add(switchRole);
+                logRP.fds(interaction.guild, user.nickname, interaction.guild.members.cache.get(interaction.user.id).nickname);
+                try {
+                    await user.send({ embeds: [emb.generate(`Bonjour, ${user.nickname}`, null, `Vous n'avez pas pris votre fin de service.\nMerci de penser à la prendre à l'avenir !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, `Cordialement, ${interaction.guild.members.cache.get(interaction.user.id).nickname}`, null, true)] });
+                } catch(err) {
+                }
             }
         }
-        interaction.followUp({ embeds: [emb.generate(null, null, respContent + ` a/ont correctement été retiré(e)(s) du service !`, `#0DE600`, null, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });
+        interaction.followUp({ embeds: [emb.generate(null, null, respContent + ` a/ont correctement été retiré(e)(s) du service !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });
+        // Supprime la réponse après 5s
+        await wait(5000);
+        await interaction.deleteReply();
     }
 }

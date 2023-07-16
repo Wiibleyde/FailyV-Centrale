@@ -4,10 +4,22 @@ const logger = require('./../modules/logger');
 const mysql = require('./../modules/sql');
 
 module.exports = {
+    //Fonction qui créé la base table
+    createdoctorRolesTable: () => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query("CREATE TABLE IF NOT EXISTS `doctorRoles` (`discordUserId` varchar(255) NOT NULL,`rolesId` TEXT)")
+            resolve();
+        });
+    },
     //Fonction qui ajoute une liste de rôles dans la DB
     addRoles: (discordUserId, rolesId) => {
+        logger.debug(discordUserId + " " + rolesId)
         return new Promise((resolve, reject) => {
-            mysql.sql().query("INSERT INTO `doctorRoles`(`discordUserId`, `rolesId`) VALUES ('" + discordUserId + "', '" + rolesId + "')", (reqErr, result, fields) => {
+            mysql.sql().query({
+                sql: "INSERT INTO `doctorRoles`(`discordUserId`, `rolesId`) VALUES (?, ?)",
+                timeout: 40000,
+                values: [discordUserId, rolesId]
+            }, (reqErr, result, fields) => {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
@@ -19,7 +31,11 @@ module.exports = {
     //Fonction qui récupère une liste de rôles dans la DB
     getRoles: (discordUserId) => {
         return new Promise((resolve, reject) => {
-            mysql.sql().query("SELECT `rolesId` FROM `doctorRoles` WHERE `discordUserId`='" + discordUserId + "'", (reqErr, result, fields) => {
+            mysql.sql().query({
+                    sql: "SELECT `rolesId` FROM `doctorRoles` WHERE `discordUserId`=?",
+                    timeout: 40000,
+                    values: [discordUserId]
+                }, (reqErr, result, fields) => {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
@@ -31,7 +47,11 @@ module.exports = {
     //Fonction qui supprime une liste de rôles dans la DB
     deleteRoles: (discordUserId) => {
         return new Promise((resolve, reject) => {
-            mysql.sql().query("DELETE FROM `doctorRoles` WHERE `discordUserId`='" + discordUserId + "'", (reqErr, result, fields) => {
+            mysql.sql().query({
+                    sql: "DELETE FROM `doctorRoles` WHERE `discordUserId`=?",
+                    timeout: 40000,
+                    values: [discordUserId]
+                }, (reqErr, result, fields) => {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);

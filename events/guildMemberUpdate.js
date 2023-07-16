@@ -10,8 +10,8 @@ const dispatchRoleId = process.env.IRIS_DISPATCH_ROLE_ID;
 
 module.exports = {
     name: 'guildMemberUpdate',
+    once: false,
     async execute(oldMember, newMember) {
-        //logger.debug(oldMember);
         if (newMember.roles.cache.has(serviceRoleId) || oldMember.roles.cache.has(serviceRoleId) || newMember.roles.cache.has(dispatchRoleId) || oldMember.roles.cache.has(dispatchRoleId)) {
 
             let countPDS;
@@ -35,6 +35,11 @@ module.exports = {
                 newMember.client.user.setPresence({ activities: [{ name: `🚑 ` + countPDS + ` | 🎙️ ` + dispatch, type: ActivityType.Watching }], status: 'online' });
             }
     
+        }
+        if(oldMember.user.id == process.env.IRIS_DISCORD_ID) {
+            if(newMember.nickname != 'Chantrale') {
+                newMember.setNickname('Chantrale');
+            }
         }
     }
 };

@@ -7,7 +7,7 @@ module.exports = {
     genBedsBtns: (buttons) => {
         const btns = new ActionRowBuilder();
         for(i=0;i<buttons.length;i++) {
-            btns.addComponents(new ButtonBuilder().setLabel(buttons[i].toUpperCase()).setCustomId(buttons[i]).setStyle(ButtonStyle.Primary));
+            btns.addComponents(new ButtonBuilder().setLabel(buttons[i].toUpperCase()).setCustomId(buttons[i]).setStyle(ButtonStyle.Danger));
         }
         return btns;
     }

@@ -131,6 +131,7 @@ async function genLits(interaction, newPatient, newPatientLetter, newPatientSurv
                 // Supprime la réponse après 5s
                 await wait(5000);
                 await interaction.deleteReply();
+                service.setGen(false);
             }
         });
     });
@@ -151,6 +152,7 @@ async function changePatientBed(interaction, newPatient, newPatientLetter, newPa
                 // Supprime la réponse après 5s
                 await wait(5000);
                 await interaction.deleteReply();
+                service.setGen(false);
             }
         });
     });
@@ -178,24 +180,20 @@ async function editBedsImage(letters, d, imgUrl) {
     } else if(letters.length < 6) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         await d.edit({ content: imgUrl, components: [btns1] });
-        service.setGen(false);
     } else if(letters.length < 11) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
         await d.edit({ content: imgUrl, components: [btns1, btns2] });
-        service.setGen(false);
     } else if(letters.length < 16) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
         const btns3 = btnCreator.genBedsBtns(lettersArray3);
         await d.edit({ content: imgUrl, components: [btns1, btns2, btns3] });
-        service.setGen(false);
     } else if(letters.length < 21) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
         const btns3 = btnCreator.genBedsBtns(lettersArray3);
         const btns4 = btnCreator.genBedsBtns(lettersArray4);
         await d.edit({ content: imgUrl, components: [btns1, btns2, btns3, btns4] });
-        service.setGen(false);
     }
 }

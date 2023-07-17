@@ -71,29 +71,29 @@ async function editBedsImage(letters, d, imgUrl, interaction) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         await d.edit({ content: imgUrl, components: [btns1] });
         await interaction.followUp({ embeds: [emb.generate(null, null, `Aperçu de la salle de réveil mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });
-        service.setGen(false);
         // Supprime la réponse après 5s
         await wait(5000);
         await interaction.deleteReply();
+        service.setGen(false);
     } else if(letters.length < 11) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
         await d.edit({ content: imgUrl, components: [btns1, btns2] });
         await interaction.followUp({ embeds: [emb.generate(null, null, `Aperçu de la salle de réveil mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });
-        service.setGen(false);
         // Supprime la réponse après 5s
         await wait(5000);
         await interaction.deleteReply();
+        service.setGen(false);
     } else if(letters.length < 16) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
         const btns3 = btnCreator.genBedsBtns(lettersArray3);
         await d.edit({ content: imgUrl, components: [btns1, btns2, btns3] });
         await interaction.followUp({ embeds: [emb.generate(null, null, `Aperçu de la salle de réveil mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });
-        service.setGen(false);
         // Supprime la réponse après 5s
         await wait(5000);
         await interaction.deleteReply();
+        service.setGen(false);
     } else if(letters.length < 21) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
@@ -101,9 +101,9 @@ async function editBedsImage(letters, d, imgUrl, interaction) {
         const btns4 = btnCreator.genBedsBtns(lettersArray4);
         await d.edit({ content: imgUrl, components: [btns1, btns2, btns3, btns4] });
         await interaction.followUp({ embeds: [emb.generate(null, null, `Aperçu de la salle de réveil mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });
-        service.setGen(false);
         // Supprime la réponse après 5s
         await wait(5000);
         await interaction.deleteReply();
+        service.setGen(false);
     }
 }

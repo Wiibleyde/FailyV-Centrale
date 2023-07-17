@@ -74,6 +74,7 @@ module.exports = {
             const errEmb = emb.generate(`Oups! Une erreur s'est produite :(`, null, `Il semblerait qu'une erreur se soit produite lors de l'interaction avec le menu de séléction, si le problème persiste n'hésitez pas à faire une demande de débug via le </debug:${process.env.IRIS_DEBUG_COMMAND_ID}> avec le plus de détails possible ! (Merci d'avance <:green_heart:1112687922651594762>)`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true);
             //Appel du fichier spécifique pour chaques interactions
             if(cID == 'serviceKickSingleSelect') { const serviceKickSingleSelect = require('./../selectMenus/serviceKickSingleSelect'); serviceKickSingleSelect.execute(interaction, errEmb); }
+            if(cID == 'centraleResetRadioSelect') { const centraleResetRadioSelect = require('./../selectMenus/centraleResetRadioSelect'); centraleResetRadioSelect.execute(interaction, errEmb); }
         }
 
     },

@@ -1,4 +1,4 @@
-//Récupération des fonctions pour créer une commande et un modal
+//Récupération des fonctions pour créer une commande
 const { SlashCommandBuilder } = require('discord.js');
 //Récup du logger
 const logger = require('../../modules/logger');

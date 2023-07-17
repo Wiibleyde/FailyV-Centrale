@@ -29,16 +29,20 @@ module.exports = {
             await docteur.roles.remove(process.env.IRIS_VACANCES_ROLE_ID)
             //Réassigne les rôles de l'utilisateur dans le DB
             try {
+                //Récupération des rôles de l'utilisateur
                 let roles = await doctorRoles.getRoles(docteurId)
                 roles.forEach(async role => {
+                    //Parse les rôles
                     let rolesParsed = JSON.parse(role.rolesId)
                     rolesParsed.forEach(async roleParsed => {
+                        //Récupère les rôles de la guild
                         let roleInSet = interaction.guild.roles.cache.get(roleParsed);
                         await docteur.roles.add(roleInSet);
                     })
                 })
                 //Supprime les rôles de la DB
                 doctorRoles.deleteRoles(docteurId);
+                //Envoi d'un embed de confirmation
                 interaction.followUp({ embeds: [emb.generate(`Gestion des vacanciers`, null, `Les accès de <@${docteur.id}> ont bien été remis`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
                 return;
             } catch (error) {
@@ -50,9 +54,9 @@ module.exports = {
             // Pour chaque rôle de la guild
             roles.forEach(async role => {
                 //Si le role.id == guild id 
-                if(role.id != process.env.IRIS_PRIVATE_GUILD_ID) {
+                if (role.id != process.env.IRIS_PRIVATE_GUILD_ID) {
                     docteurRolesArray.push(role.id);
-                } 
+                }
             });
             // Convertir le tableau en liste JSON
             let docteurRolesJSON = JSON.stringify(docteurRolesArray);
@@ -64,19 +68,8 @@ module.exports = {
             const vacancesRole = interaction.guild.roles.cache.get(process.env.IRIS_VACANCES_ROLE_ID);
             //Ajouter le rôle de vacances au docteur
             await docteur.roles.add(vacancesRole);
+            //Envoi d'un embed de confirmation
             interaction.followUp({ embeds: [emb.generate(`Gestion des vacanciers`, null, `Les accès de <@${docteur.id}> on bien été retiré`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
         }
     }
 }
-
-// function userRolesContainsRoleId(rolesArray, idToCheck) {
-//     return new Promise((resolve, reject) => {
-//         rolesArray.forEach(role => {
-//             logger.debug(role.id + " " + idToCheck)
-//             if (role.id == idToCheck) {
-//                 resolve(true);
-//             }
-//         })
-//         resolve(false);
-//     })
-// }

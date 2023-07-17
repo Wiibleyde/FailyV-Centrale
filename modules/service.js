@@ -253,7 +253,7 @@ module.exports = {
                     ]);
                 }
             }
-            if(radio[0] == 'Event' && radio[1] == 'none') {
+            if(radio[0] == 'évènementielle' && radio[1] == 'none') {
                 //Reset des radios en DB
                 await sql.updatedRadioDisplay('event', '0');
                 const bcmsFreq = await sql.isRadioDisplayed('bcms');

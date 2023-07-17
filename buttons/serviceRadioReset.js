@@ -7,7 +7,7 @@ module.exports = {
         const options = new StringSelectMenuBuilder().setCustomId('centraleResetRadioSelect').setPlaceholder('Choisissez la/les radio(s) à réinitialiser').setMinValues(1).setMaxValues(2);
         //Ajout des opérations possibles
         options.addOptions(new StringSelectMenuOptionBuilder().setLabel(`BCMS`).setValue(`BCMS`).setEmoji('1124910870695256106'));
-        options.addOptions(new StringSelectMenuOptionBuilder().setLabel(`Event`).setValue(`Event`).setEmoji('1121278617960329257'));
+        options.addOptions(new StringSelectMenuOptionBuilder().setLabel(`Event`).setValue(`évènementielle`).setEmoji('1121278617960329257'));
         const allOptions = new ActionRowBuilder().addComponents(options);
         try {
             //Confirmation à Discord du succès de l'opération

@@ -13,10 +13,10 @@ const btnCreator = require('./btnCreator');
 
 //Boutons de regen radios
 const radioBtns = new ActionRowBuilder().addComponents(
-    new ButtonBuilder().setLabel('LSMS').setCustomId('serviceRegenLSMS').setStyle(ButtonStyle.Danger).setEmoji('1124910934922625104').setDisabled(false),
-    new ButtonBuilder().setLabel('FDO').setCustomId('serviceRegenFDO').setStyle(ButtonStyle.Primary).setEmoji('1124920279559327824').setDisabled(false),
-    new ButtonBuilder().setLabel('BCMS').setCustomId('serviceRegenBCMS').setStyle(ButtonStyle.Success).setEmoji('1124910870695256106').setDisabled(false),
-    new ButtonBuilder().setLabel('Event').setCustomId('serviceRegenEvent').setStyle(ButtonStyle.Secondary).setEmoji('1121278617960329257').setDisabled(false),
+    new ButtonBuilder().setLabel('LSMS').setCustomId('regenLSMS').setStyle(ButtonStyle.Danger).setEmoji('1124910934922625104').setDisabled(false),
+    new ButtonBuilder().setLabel('FDO').setCustomId('regenFDO').setStyle(ButtonStyle.Primary).setEmoji('1124920279559327824').setDisabled(false),
+    new ButtonBuilder().setLabel('BCMS').setCustomId('regenBCMS').setStyle(ButtonStyle.Success).setEmoji('1124910870695256106').setDisabled(false),
+    new ButtonBuilder().setLabel('Event').setCustomId('regenEvent').setStyle(ButtonStyle.Secondary).setEmoji('1121278617960329257').setDisabled(false),
     new ButtonBuilder().setCustomId('serviceRadioReset').setStyle(ButtonStyle.Secondary).setEmoji('⚠️')
 );
 //Boutons de gestion du service
@@ -253,7 +253,7 @@ module.exports = {
                     ]);
                 }
             }
-            if(radio[0] == 'Event' && radio[1] == 'none') {
+            if(radio[0] == 'évènementielle' && radio[1] == 'none') {
                 //Reset des radios en DB
                 await sql.updatedRadioDisplay('event', '0');
                 const bcmsFreq = await sql.isRadioDisplayed('bcms');
@@ -272,12 +272,12 @@ module.exports = {
                     ]);
                 }
             }
-            if(radio[0] == 'BCMS' && radio[1] == 'Event') {
+            if(radio[0] == 'BCMS' && radio[1] == 'évènementielle') {
                 //Reset des radios en DB
                 await sql.updatedRadioDisplay('bcms', '0');
                 await sql.updatedRadioDisplay('event', '0');
             }
-            if(radio[0] == 'Event' && radio[1] == 'BCMS') {
+            if(radio[0] == 'évènementielle' && radio[1] == 'BCMS') {
                 //Reset des radios en DB
                 await sql.updatedRadioDisplay('bcms', '0');
                 await sql.updatedRadioDisplay('event', '0');

@@ -177,8 +177,7 @@ async function editBedsImage(letters, d, imgUrl) {
         }
     }
     if(letters.length == 0) {
-        await radioChan.send({ content: bedsImg });
-        gen = false;
+        await d.edit({ content: imgUrl, components: [] });
     } else if(letters.length < 6) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         await d.edit({ content: imgUrl, components: [btns1] });

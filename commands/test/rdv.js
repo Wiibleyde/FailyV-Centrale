@@ -15,6 +15,10 @@ const rendezVousChannelsChoices = [
         name: 'chirurgie',
         value: process.env.IRIS_SURGERY_CHANNEL_ID,
     },
+    {
+        name: 'general',
+        value: process.env.IRIS_GENERAL_CHANNEL_ID,
+    },
 ];
 
 //Création de constantes pour le choix de rendez-vous
@@ -26,6 +30,10 @@ const rdvPsy = {
     name: 'Psychologie',
     value: 'psychologie',
 };
+const rdvGen = {
+    name: 'Général',
+    value: 'general',
+}
 
 module.exports = {
     //Création de la commande
@@ -37,7 +45,7 @@ module.exports = {
             option.setName('type')
                 .setDescription('Type de rendez-vous')
                 .setRequired(true)
-                .addChoices(rdvChir, rdvPsy)
+                .addChoices(rdvChir, rdvPsy, rdvGen)
         ),
     async execute(interaction) {
         //Si le type est psy
@@ -55,6 +63,13 @@ module.exports = {
             const description = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('description').setLabel('Description du rendez-vous').setStyle(TextInputStyle.Paragraph).setPlaceholder("Ex: Nathan Prale a besoin d\'une consultation pour parler à la suite de prises d'otage").setRequired(true));
             rendezVousChirModal.addComponents(nomPrenom, numero, description);
             await interaction.showModal(rendezVousChirModal);
+        } else if(interaction.options.getString('type') === 'general') {
+            const rendezVousGenModal = new ModalBuilder().setCustomId('rendezVousGenModal').setTitle('Ajout d\'un rendez-vous');
+            const nomPrenom = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('nomPrenom').setLabel('Nom et prénom de la personne concernée').setStyle(TextInputStyle.Short).setPlaceholder('Ex: Nathan Prale').setRequired(true));
+            const numero = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('numero').setLabel('Numéro de téléphone de la personne concernée').setStyle(TextInputStyle.Short).setPlaceholder('Ex: 555-XXXX').setRequired(true));
+            const description = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('description').setLabel('Description du rendez-vous').setStyle(TextInputStyle.Paragraph).setPlaceholder("Ex: Nathan Prale a besoin d\'une consultation pour parler à la suite de prises d'otage").setRequired(true));
+            rendezVousGenModal.addComponents(nomPrenom, numero, description);
+            await interaction.showModal(rendezVousGenModal);
         }
     },
 }

@@ -43,6 +43,7 @@ module.exports = {
             if(cID == 'debugModal') { const debugModal = require('./../modals/debugModal'); debugModal.execute(interaction, errEmb); }
             if(cID == 'rendezVousPsyModal') { const rendezVousPsyModal = require('../modals/rendezVousPsyModal'); rendezVousPsyModal.execute(interaction, errEmb); }
             if(cID == 'rendezVousChirModal') { const rendezVousChirModal = require('../modals/rendezVousChirModal'); rendezVousChirModal.execute(interaction, errEmb); }
+            if(cID == 'rendezVousGenModal') { const rendezVousGenModal = require('../modals/rendezVousGenModal'); rendezVousGenModal.execute(interaction, errEmb); }
         }
         //Lorsqu'il s'agit d'un bouton
         if(interaction.isButton()) {

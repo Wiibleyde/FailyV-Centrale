@@ -128,10 +128,11 @@ async function genLits(interaction, newPatient, newPatientLetter, newPatientSurv
                 let letters = await beds.getLetters();
                 editBedsImage(letters, d, imgUrl);
                 await interaction.followUp({ embeds: [emb.generate(null, null, `Aperçu de la salle de réveil mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });
+                await wait(1000);
+                service.setGen(false);
                 // Supprime la réponse après 5s
                 await wait(5000);
                 await interaction.deleteReply();
-                service.setGen(false);
             }
         });
     });
@@ -149,10 +150,11 @@ async function changePatientBed(interaction, newPatient, newPatientLetter, newPa
                 let letters = await beds.getLetters();
                 editBedsImage(letters, d, imgUrl);
                 await interaction.followUp({ embeds: [emb.generate(null, null, `Aperçu de la salle de réveil mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });
+                await wait(1000);
+                service.setGen(false);
                 // Supprime la réponse après 5s
                 await wait(5000);
                 await interaction.deleteReply();
-                service.setGen(false);
             }
         });
     });

@@ -11,7 +11,7 @@ module.exports = {
     //Création de la commande
     data: new SlashCommandBuilder()
         .setName('vacances')
-        .setDescription('Mettre un docteur en vacances')
+        .setDescription('Mettre un docteur en vacances ou retirer les accès')
         .addUserOption(option => option.setName('docteur').setDescription('Mentionnez le docteur à mettre en vacances').setRequired(true)),
     async execute(interaction) {
         //Affichage du message "Iris réfléchis..."
@@ -39,7 +39,7 @@ module.exports = {
                 })
                 //Supprime les rôles de la DB
                 doctorRoles.deleteRoles(docteurId);
-                interaction.followUp({ embeds: [emb.generate(`Gestion des vacanciers`, null, `<@${docteur.id}> à bien été retiré(e) des vacances !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
+                interaction.followUp({ embeds: [emb.generate(`Gestion des vacanciers`, null, `Les accès de <@${docteur.id}> ont bien été remis`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
                 return;
             } catch (error) {
                 logger.error(error);
@@ -64,7 +64,7 @@ module.exports = {
             const vacancesRole = interaction.guild.roles.cache.get(process.env.IRIS_VACANCES_ROLE_ID);
             //Ajouter le rôle de vacances au docteur
             await docteur.roles.add(vacancesRole);
-            interaction.followUp({ embeds: [emb.generate(`Gestion des vacanciers`, null, `<@${docteur.id}> à bien été mis(e) en vacances !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
+            interaction.followUp({ embeds: [emb.generate(`Gestion des vacanciers`, null, `Les accès de <@${docteur.id}> on bien été retiré`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
         }
     }
 }

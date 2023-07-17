@@ -56,7 +56,7 @@ module.exports = {
 
         // Check si l'utilisateur est chef de service ou plus
         if (!hasAuthorization(Rank.DepartementManager, interaction.member.roles.cache)) {
-            const embed = emb.generate("Erreur", null, `Vous n'avez pas le grade necéssaire ${interaction.user} pour utiliser cette commande. Il faut être chef de service ou plus.`, "#FF0000", null, null, null, null, null, null, null, false);
+            const embed = emb.generate("Erreur", null, `Vous n'avez pas le grade necéssaire ${interaction.user} pour utiliser cette commande. Il faut être chef de service ou plus.`, "#FF0000", process.env.LSMS_LOGO_V2, null, null, null, null, null, null, false);
             await interaction.editReply({ embeds: [embed], ephemeral: true });
             // Supprime la réponse après 5s
             await wait(5000);
@@ -68,7 +68,7 @@ module.exports = {
 
         // Check si le tag discord pour le docteur n'est pas le bot
         if (tag.id === process.env.IRIS_DISCORD_ID) {
-            const embed = emb.generate("Erreur", null, `Vous ne pouvez pas utilisé le tag ${tag} pour ajouter un nouveau docteur`, "#FF0000", null, null, null, null, null, null, null, false);
+            const embed = emb.generate("Erreur", null, `Vous ne pouvez pas utilisé le tag ${tag} pour ajouter un nouveau docteur`, "#FF0000", process.env.LSMS_LOGO_V2, null, null, null, null, null, null, false);
             await interaction.editReply({ embeds: [embed], ephemeral: true });
             // Supprime la réponse après 5s
             await wait(5000);
@@ -81,7 +81,7 @@ module.exports = {
 
         // Check si le numéro de téléphone est bien sous le bon format
         if (!regExp.test(phone)) {
-            const embed = emb.generate("Erreur", null, `Le numéro de téléphone doit être sous le forme de : 555-XXXX`, "#FF0000", null, null, null, null, null, null, null, false);
+            const embed = emb.generate("Erreur", null, `Le numéro de téléphone doit être sous le forme de : 555-XXXX`, "#FF0000", process.env.LSMS_LOGO_V2, null, null, null, null, null, null, false);
             await interaction.editReply({ embeds: [embed], ephemeral: true });
             // Supprime la réponse après 5s
             await wait(5000);
@@ -96,7 +96,7 @@ module.exports = {
 
         // Check si une fiche n'existe pas déjà pour le docteur
         if (existChannelID !== "-1") {
-            const embed = emb.generate("Erreur", null, `Il y a déjà un docteur du nom de ${firstName} ${lastName} sa fiche se trouve ici : <#${existChannelID}>`, "#FF0000", null, null, null, null, null, null, null, false);
+            const embed = emb.generate("Erreur", null, `Il y a déjà un docteur du nom de ${firstName} ${lastName} sa fiche se trouve ici : <#${existChannelID}>`, "#FF0000", process.env.LSMS_LOGO_V2, null, null, null, null, null, null, false);
             await interaction.editReply({ embeds: [embed], ephemeral: true });
             // Supprime la réponse après 5s
             await wait(5000);
@@ -133,7 +133,8 @@ module.exports = {
             null,
             null,
             `:new: Bienvenue à ${firstName} ${lastName} nous rejoint en tant que <@&${doctorRankData[grade].role_id}> :wave:`,
-            interaction.guild.roles.cache.get(doctorRankData[grade].role_id).hexColor, null, null,
+            interaction.guild.roles.cache.get(doctorRankData[grade].role_id).hexColor,
+            process.env.LSMS_LOGO_V2, null,
             "Annonce",
             `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`,
             null,
@@ -168,7 +169,7 @@ module.exports = {
             .catch(logger.error);
 
         // Confirmation de la création
-        const validationEmbed = emb.generate("Succès", null, `La fiche pour ${firstName} ${lastName} a été créé ici : <#${channel.id}>`, "#0ce600", null, null, null, null, null, null, null, false);
+        const validationEmbed = emb.generate("Succès", null, `La fiche pour ${firstName} ${lastName} a été créé ici : <#${channel.id}>`, "#0CE600", process.env.LSMS_LOGO_V2, null, null, null, null, null, null, false);
         await interaction.editReply({ embeds: [validationEmbed], ephemeral: true });
         // Supprime la réponse après 5s
         await wait(5000);

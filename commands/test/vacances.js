@@ -35,7 +35,7 @@ module.exports = {
                     let roleInSet = interaction.guild.roles.cache.get(role.roleId);
                     await docteur.roles.add(roleInSet);
                 })
-                interaction.followUp({ embeds: [emb.generate(`Gestion des vacanciers`, null, `<@${docteur.id}> à bien été retiré(e) des vacances !`, `#0DE600`, null, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
+                interaction.followUp({ embeds: [emb.generate(`Gestion des vacanciers`, null, `<@${docteur.id}> à bien été retiré(e) des vacances !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
                 return;
             } catch (error) {
                 logger.error(error);

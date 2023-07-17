@@ -41,8 +41,10 @@ module.exports = {
             //Création de variables de base
             var titleBCMS = '<:bcms:1128889752284844124> Radio BCMS';
             var titleEvent = '🏆 Radio Event';
-            var freqBCMS = '0.0';
-            var freqEvent = '0.0';
+            var freqBCMS = await sql.getRadio('bcms');
+            freqBCMS = freqBCMS[0].radiofreq;
+            var freqEvent = await sql.getRadio('event');
+            freqEvent = freqEvent[0].radiofreq;
             var freqToRegen;
             //Check de si les radios optionnelles doivent être affichées
             var genBCMS = await sql.isRadioDisplayed('bcms');

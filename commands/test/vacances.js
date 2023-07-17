@@ -22,19 +22,23 @@ module.exports = {
         //Récupération de l'ID du docteur
         const docteurId = docteur.id;
         //Récupération des rôles de l'utilisateur
-        const roles = interaction.guild.roles.cache;
+        const roles = docteur.roles.cache;
         //Check si le docteur est déjà en vacances
         if (docteur.roles.cache.has(process.env.IRIS_VACANCES_ROLE_ID)) {
             //Remove le rôle
             await docteur.roles.remove(process.env.IRIS_VACANCES_ROLE_ID)
             //Réassigne les rôles de l'utilisateur dans le DB
             try {
-                let roles = doctorRoles.getRoles(docteurId)
-                roles = JSON.parse(roles);
+                let roles = await doctorRoles.getRoles(docteurId)
                 roles.forEach(async role => {
-                    let roleInSet = interaction.guild.roles.cache.get(role.roleId);
-                    await docteur.roles.add(roleInSet);
+                    let rolesParsed = JSON.parse(role.rolesId)
+                    rolesParsed.forEach(async roleParsed => {
+                        let roleInSet = interaction.guild.roles.cache.get(roleParsed);
+                        await docteur.roles.add(roleInSet);
+                    })
                 })
+                //Supprime les rôles de la DB
+                doctorRoles.deleteRoles(docteurId);
                 interaction.followUp({ embeds: [emb.generate(`Gestion des vacanciers`, null, `<@${docteur.id}> à bien été retiré(e) des vacances !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
                 return;
             } catch (error) {
@@ -45,7 +49,10 @@ module.exports = {
             let docteurRolesArray = [];
             // Pour chaque rôle de la guild
             roles.forEach(async role => {
-                docteurRolesArray.push(role.id);
+                //Si le role.id == guild id 
+                if(role.id != process.env.IRIS_PRIVATE_GUILD_ID) {
+                    docteurRolesArray.push(role.id);
+                } 
             });
             // Convertir le tableau en liste JSON
             let docteurRolesJSON = JSON.stringify(docteurRolesArray);

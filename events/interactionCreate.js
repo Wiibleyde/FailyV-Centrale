@@ -52,6 +52,7 @@ module.exports = {
             const errEmb = emb.generate(`Oups! Une erreur s'est produite :(`, null, `Il semblerait qu'une erreur se soit produite lors de l'interaction avec le bouton, si le problème persiste n'hésitez pas à faire une demande de débug via le </debug:${process.env.IRIS_DEBUG_COMMAND_ID}> avec le plus de détails possible ! (Merci d'avance <:green_heart:1112687922651594762>)`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true);
             //Appel du fichier spécifique pour chaques interactions
             if(cID == 'checkDebug') { const checkDebug = require('./../buttons/checkDebug'); checkDebug.execute(interaction, errEmb); }
+            if(cID == 'checkDebug6h') { const checkDebug6h = require('./../buttons/checkDebug'); checkDebug6h.execute(interaction, errEmb); }
             if(cID == 'denyDebug') { const denyDebug = require('./../buttons/denyDebug'); denyDebug.execute(interaction, errEmb); }
             if(cID == 'regenLSMS') { const serviceRegen = require('./../buttons/serviceRegen'); serviceRegen.execute(interaction, errEmb); }
             if(cID == 'regenFDO') { const serviceRegen = require('./../buttons/serviceRegen'); serviceRegen.execute(interaction, errEmb); }

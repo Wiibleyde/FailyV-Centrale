@@ -28,13 +28,13 @@ module.exports = {
         });
     },
     // Recupération de l'ID de la fiche du docteur
-    getDoctorChannelID: (firstName, lastName, discord_id) => {
+    getDoctorChannelID: (phoneNumber) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
                 sql: `SELECT d.channel_id
                     FROM DOCTOR d
-                    WHERE d.first_name = ? AND d.last_name = ? AND d.discord_id = ? AND d.departure_date IS NULL;`,
-                values: [firstName, lastName, discord_id]
+                    WHERE d.phone_number = ? AND d.departure_date IS NULL;`,
+                values: [phoneNumber]
             }, (reqErr, result, fields) => {
                 if(reqErr) {
                     logger.error(reqErr);
@@ -45,6 +45,64 @@ module.exports = {
                 } else {
                     resolve("-1");
                 }
+            });
+        });
+    },
+    // Récupération de l'ensemble des docteurs par grade
+    getAllDoctor: () => {
+        return new Promise((resolve, reject) => {
+            let returnResult = {};
+            mysql.sql().query({
+                sql: `SELECT dr.id, dr.name, dr.role_id
+                    FROM DOCTOR_RANK dr
+                    ORDER BY \`position\`;`
+            }, (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                result.forEach(element => {
+                    returnResult[element.id] = {
+                        name: element.name,
+                        role_id: element.role_id,
+                        workforce: []
+                    }
+                });
+            });
+            mysql.sql().query({
+                sql: `SELECT d.first_name, d.last_name, d.phone_number, d.rank_id, DATE_FORMAT(d.arrival_date, '%d/%m/%x') arrival_date
+                    FROM DOCTOR d
+                    ORDER BY d.arrival_date;`
+            }, (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                result.forEach(element => {
+                    returnResult[element.rank_id].workforce.push({
+                        first_name: element.first_name,
+                        last_name: element.last_name,
+                        phone_number: element.phone_number,
+                        arrival_date: element.arrival_date
+                    });
+                });
+                resolve(returnResult);
+            });
+        });
+    },
+    // Recupération de l'ID de la fiche du docteur
+    getNbDoctor: () => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                sql: `SELECT count(*) nb_doctor
+                    FROM DOCTOR d
+                    WHERE d.departure_date IS NULL;`
+            }, (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result[0].nb_doctor);
             });
         });
     }

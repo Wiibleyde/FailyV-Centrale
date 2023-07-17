@@ -12,7 +12,7 @@ module.exports = {
         const userid = interaction.message.embeds[0].author.name.split('@')[1].split('>')[0];
         let fixTime;
         if(interaction.customId == 'checkDebug') {
-            fixTime = 'dans **peut de temps**';
+            fixTime = 'dans **peu de temps**';
         } else {
             fixTime = 'au prochain **reboot de 06h00**';
         }

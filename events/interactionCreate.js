@@ -51,10 +51,10 @@ module.exports = {
             //Appel du fichier spécifique pour chaques interactions
             if(cID == 'checkDebug') { const checkDebug = require('./../buttons/checkDebug'); checkDebug.execute(interaction, errEmb); }
             if(cID == 'denyDebug') { const denyDebug = require('./../buttons/denyDebug'); denyDebug.execute(interaction, errEmb); }
-            if(cID == 'serviceRegenLSMS') { const serviceRegen = require('./../buttons/serviceRegen'); serviceRegen.execute(interaction, errEmb); }
-            if(cID == 'serviceRegenFDO') { const serviceRegen = require('./../buttons/serviceRegen'); serviceRegen.execute(interaction, errEmb); }
-            if(cID == 'serviceRegenBCMS') { const serviceRegen = require('./../buttons/serviceRegen'); serviceRegen.execute(interaction, errEmb); }
-            if(cID == 'serviceRegenEvent') { const serviceRegen = require('./../buttons/serviceRegen'); serviceRegen.execute(interaction, errEmb); }
+            if(cID == 'regenLSMS') { const serviceRegen = require('./../buttons/serviceRegen'); serviceRegen.execute(interaction, errEmb); }
+            if(cID == 'regenFDO') { const serviceRegen = require('./../buttons/serviceRegen'); serviceRegen.execute(interaction, errEmb); }
+            if(cID == 'regenBCMS') { const serviceRegen = require('./../buttons/serviceRegen'); serviceRegen.execute(interaction, errEmb); }
+            if(cID == 'regenEvent') { const serviceRegen = require('./../buttons/serviceRegen'); serviceRegen.execute(interaction, errEmb); }
             if(cID == 'serviceManage') { const serviceManage = require('./../buttons/serviceManage'); serviceManage.execute(interaction, errEmb); }
             if(cID == 'serviceRadioReset') { const serviceRadioReset = require('./../buttons/serviceRadioReset'); serviceRadioReset.execute(interaction, errEmb); }
             if(cID == 'serviceSwitch') { const serviceSwitch = require('./../buttons/serviceSwitch'); serviceSwitch.execute(interaction, errEmb); }

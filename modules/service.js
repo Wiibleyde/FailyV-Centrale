@@ -203,6 +203,89 @@ module.exports = {
             }
         }
     },
+    resetSpecificRadio: async (client, interaction, radio) => {
+        //Récupération du serveur Discord LSMS
+        const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
+        //Récupération du channel des radios
+        const radioChan = guild.channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID);
+        //Refresh de tous les messages du channel et check si message bien présent
+        const messages = await radioChan.messages.fetch();
+        const msg = await getRadioMessages(messages, client);
+        var freqLSMS = await sql.getRadio('lsms');
+        freqLSMS = freqLSMS[0].radiofreq;
+        var freqFDO = await sql.getRadio('fdo');
+        freqFDO = freqFDO[0].radiofreq;
+        var freqBCMS = await sql.getRadio('bcms');
+        freqBCMS = freqBCMS[0].radiofreq;
+        var freqEvent = await sql.getRadio('event');
+        freqEvent = freqEvent[0].radiofreq;
+        if(msg != false) {
+            //Reset de l'embed
+            const newRadioEmb = emb.generate(null, null, null, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
+            newRadioEmb.addFields([
+                {
+                    name: `💉 Radio LSMS`,
+                    value: freqLSMS,
+                    inline: true
+                },
+                {
+                    name: `👮 Radio FDO`,
+                    value: freqFDO,
+                    inline: true
+                }
+            ]);
+            if(radio[0] == 'BCMS' && radio[1] == 'none') {
+                //Reset des radios en DB
+                await sql.updatedRadioDisplay('bcms', '0');
+                const eventFreq = await sql.isRadioDisplayed('event');
+                if(eventFreq[0].displayed == '1') {
+                    newRadioEmb.addFields([
+                        {
+                            name: `\u200b`,
+                            value: `\u200b`,
+                            inline: true
+                        },
+                        {
+                            name: `🏆 Radio Event`,
+                            value: freqEvent,
+                            inline: true
+                        }
+                    ]);
+                }
+            }
+            if(radio[0] == 'Event' && radio[1] == 'none') {
+                //Reset des radios en DB
+                await sql.updatedRadioDisplay('event', '0');
+                const bcmsFreq = await sql.isRadioDisplayed('bcms');
+                if(bcmsFreq[0].displayed == '1') {
+                    newRadioEmb.addFields([
+                        {
+                            name: `\u200b`,
+                            value: `\u200b`,
+                            inline: true
+                        },
+                        {
+                            name: `<:bcms:1128889752284844124> Radio BCMS`,
+                            value: freqBCMS,
+                            inline: true
+                        }
+                    ]);
+                }
+            }
+            if(radio[0] == 'BCMS' && radio[1] == 'Event') {
+                //Reset des radios en DB
+                await sql.updatedRadioDisplay('bcms', '0');
+                await sql.updatedRadioDisplay('event', '0');
+            }
+            if(radio[0] == 'Event' && radio[1] == 'BCMS') {
+                //Reset des radios en DB
+                await sql.updatedRadioDisplay('bcms', '0');
+                await sql.updatedRadioDisplay('event', '0');
+            }
+            //Envois du message
+            await msg.edit({ embeds: [newRadioEmb], components: [radioBtns] });
+        }
+    }
 
 }
 

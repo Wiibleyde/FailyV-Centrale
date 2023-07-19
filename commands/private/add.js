@@ -77,22 +77,34 @@ module.exports = {
         }
 
         const phone = interaction.options.getString("telephone");
-        const regExp = new RegExp("^555-[0-9]{4}$");
+        //Regex des numéros de téléphone
+        const regExpFull = new RegExp("^555-[0-9]{4}$");
+        const regExpMidFull = new RegExp("^555[0-9]{4}$");
+        const regExp = new RegExp("^[0-9]{4}$");
 
         // Check si le numéro de téléphone est bien sous le bon format
-        if (!regExp.test(phone)) {
-            const embed = emb.generate("Erreur", null, `Le numéro de téléphone doit être sous le forme de : 555-XXXX`, "#FF0000", process.env.LSMS_LOGO_V2, null, null, null, null, null, null, false);
-            await interaction.editReply({ embeds: [embed], ephemeral: true });
-            // Supprime la réponse après 5s
-            await wait(5000);
-            await interaction.deleteReply();
+        if (!regExpFull.test(phone) && !regExpMidFull.test(phone) && !regExp.test(phone)) {
+            try {
+                await interaction.reply({ content: `Le numéro de téléphone ${phone} n'est pas valide. Veuillez entrer un numéro de téléphone valide (555-5420 ou 5555420 ou 5420).`, ephemeral: true });
+            } catch (e) {
+                logger.error(e);
+            }
             return;
+        }
+        let phoneNumber = "";
+        if (regExpFull.test(phone)) {
+            phoneNumber = phone;
+        } else if (regExpMidFull.test(phone)) {
+            phoneNumber = phone.substring(3);
+            phoneNumber = `555-${phoneNumber}`;
+        } else if (regExp.test(phone)) {
+            phoneNumber = `555-${phone}`;
         }
 
         const firstName = interaction.options.getString("prenom");
         const lastName = interaction.options.getString("nom");
 
-        const existChannelID = await doctorSql.getDoctorChannelID(phone);
+        const existChannelID = await doctorSql.getDoctorChannelID(phoneNumber);
 
         // Check si une fiche n'existe pas déjà pour le docteur
         if (existChannelID !== "-1") {
@@ -124,7 +136,7 @@ module.exports = {
         });
 
         // Ajout des information du docteur en base de donnée
-        await doctorSql.addDoctor(firstName, lastName, phone, grade, tag.id, arrivalDate, channel.id);
+        await doctorSql.addDoctor(firstName, lastName, phoneNumber, grade, tag.id, arrivalDate, channel.id);
 
         workforce.generateWorkforce(interaction.guild);
 

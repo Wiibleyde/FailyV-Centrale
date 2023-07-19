@@ -117,7 +117,7 @@ module.exports = {
                 }
             ]);
         }
-        const radioChan = interaction.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID);
+        const radioChan = interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID);
         const messageToEdit = await getRadioMessages(await radioChan.messages.fetch(), interaction.client);
         //Édition du message
         await messageToEdit.edit({ embeds: [embed], components: [radioBtns] });

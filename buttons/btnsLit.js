@@ -1,17 +1,17 @@
 //Récup du logger
-const logger = require('./../modules/logger');
+const logger = require('../modules/logger');
 //Récup du créateur d'embed
-const emb = require('./../modules/embeds');
+const emb = require('../modules/embeds');
 //Récup des reqêtes SQL des lits pour retirer le patient
-const beds = require('./../sql/lit');
+const beds = require('../sql/lit');
 //Fonction pour régénérer l'image des lits
-const img = require('./../modules/writeBed');
+const img = require('../modules/writeBed');
 //Récup du service
-const service = require('./../modules/service');
+const service = require('../modules/service');
 //Fonction pour attendre
 const wait = require('node:timers/promises').setTimeout;
 //Récup des réactions
-const btnCreator = require('./../modules/btnCreator');
+const btnCreator = require('../modules/btnCreator');
 
 
 module.exports = {

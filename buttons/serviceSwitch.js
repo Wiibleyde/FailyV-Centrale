@@ -1,9 +1,9 @@
 //Récup du logger
-const logger = require('./../modules/logger');
+const logger = require('../modules/logger');
 //Récup du créateur d'embed
-const emb = require('./../modules/embeds');
+const emb = require('../modules/embeds');
 //Récup du systeme de logs RP
-const logRP = require('./../modules/logsRP');
+const logRP = require('../modules/logsRP');
 //Fonction pour attendre
 const wait = require('node:timers/promises').setTimeout;
 

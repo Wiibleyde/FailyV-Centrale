@@ -1,9 +1,9 @@
 //Discord init
 const { ActivityType } = require('discord.js');
 //Récup du logger
-const logger = require('./../modules/logger');
+const logger = require('../modules/logger');
 //Récup du créateur d'embed
-const emb = require('./../modules/embeds');
+const emb = require('../modules/embeds');
 
 const serviceRoleId = process.env.IRIS_SERVICE_ROLE_ID;
 const dispatchRoleId = process.env.IRIS_DISPATCH_ROLE_ID;

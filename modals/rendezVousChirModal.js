@@ -7,7 +7,7 @@ const emb = require('../modules/embeds');
 //Fonction pour attendre
 const wait = require('node:timers/promises').setTimeout;
 //Récup du formateur de noms
-const format = require('./../modules/formatName');
+const format = require('../modules/formatName');
 
 module.exports = {
     //Création de la commande

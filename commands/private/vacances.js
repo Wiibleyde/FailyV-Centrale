@@ -1,11 +1,11 @@
 //Récupération des fonctions pour créer une commande
 const { SlashCommandBuilder } = require('discord.js');
 //Récup du logger
-const logger = require('../../modules/logger');
+const logger = require('.../modules/logger');
 //Récup du SQL pour les rôles
-const doctorRoles = require('../../sql/doctorRoles');
+const doctorRoles = require('.../sql/doctorRoles');
 //Récup du créateur d'embed
-const emb = require('../../modules/embeds');
+const emb = require('.../modules/embeds');
 
 module.exports = {
     //Création de la commande
@@ -43,7 +43,7 @@ module.exports = {
                 //Supprime les rôles de la DB
                 doctorRoles.deleteRoles(docteurId);
                 //Envoi d'un embed de confirmation
-                interaction.followUp({ embeds: [emb.generate(`Gestion des vacanciers`, null, `Les accès de <@${docteur.id}> ont bien été remis`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
+                interaction.followUp({ embeds: [emb.generate(`Gestion des vacanciers`, null, `Les accès de <@${docteur.id}> on bien été restitué`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
                 return;
             } catch (error) {
                 logger.error(error);

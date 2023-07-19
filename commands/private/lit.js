@@ -1,19 +1,19 @@
 //Récupération des fonctions pour créer une commande
 const { SlashCommandBuilder } = require('discord.js');
 //Récup du logger
-const logger = require('./../../modules/logger');
+const logger = require('.../modules/logger');
 //Récup des reqêtes SQL pour les lits
-const beds = require('./../../sql/lit');
+const beds = require('.../sql/lit');
 //Fonction pour attendre
 const wait = require('node:timers/promises').setTimeout;
 //Fonction pour régénérer l'image des lits
-const img = require('./../../modules/writeBed');
+const img = require('.../modules/writeBed');
 //Récup du créateur d'embed
-const emb = require('./../../modules/embeds');
+const emb = require('.../modules/embeds');
 //Récup du service
-const service = require('./../../modules/service');
+const service = require('.../modules/service');
 //Récup des réactions
-const btnCreator = require('./../../modules/btnCreator');
+const btnCreator = require('.../modules/btnCreator');
 
 module.exports = {
     //Création de la commande

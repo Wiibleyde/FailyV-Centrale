@@ -42,12 +42,13 @@ module.exports = {
 
                 //Séparation du prénom et nom pour retour à la ligne
                 patientName = patient[i].split(' ');
-                let firstname = format.name(patientName[0]);
+                let firstname = format.name(patientName.shift());
                 if(patientName[0] == 'ua' || patientName[0] == 'ur' || patientName[0] == 'dcd') {
                     firstname = patientName[0].toUpperCase();
                 }
                 let lastname = null;
                 if(patientName[1] != null) {
+                    patientName = patientName.join(' ');
                     lastname = format.name(patientName[1]);
                 }
 

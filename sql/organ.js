@@ -1,7 +1,7 @@
 //Récup du logger
-const logger = require('../modules/logger');
+const logger = require('./../modules/logger');
 //Récup de la connection SQL
-const mysql = require('../modules/sql');
+const mysql = require('./../modules/sql');
 
 module.exports = {
     //Fonction qui récupère la liste des organes

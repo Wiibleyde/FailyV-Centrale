@@ -1,5 +1,5 @@
 //Récup du logger
-const logger = require('../modules/logger');
+const logger = require('./../modules/logger');
 module.exports = {
     name: 'messageCreate',
     once: false,

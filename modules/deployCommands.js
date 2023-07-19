@@ -11,7 +11,7 @@ const publicCommands = [];
 const privateCommands = [];
 const debugCommands = [];
 //Récup du chemin des fichiers de commandes
-const foldersPath = path.join(__dirname, '../commands');
+const foldersPath = path.join(__dirname, './.././commands');
 const commandsFolders = fs.readdirSync(foldersPath);
 
 //Stockage des commandes dans les différentes arrays

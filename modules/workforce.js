@@ -3,7 +3,7 @@ const logger = require("./logger");
 //Récup du créateur d'embed
 const emb = require('./embeds');
 
-const doctorSql = require('../sql/doctor');
+const doctorSql = require('./../sql/doctor');
 
 module.exports = {
     generateWorkforce: async (guild) => {

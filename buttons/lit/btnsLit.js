@@ -3,7 +3,7 @@ const logger = require('../../modules/logger');
 //Récup du créateur d'embed
 const emb = require('../../modules/embeds');
 //Récup des reqêtes SQL des lits pour retirer le patient
-const beds = require('../../sql/lit');
+const beds = require('../../sql/lit/lit');
 //Fonction pour régénérer l'image des lits
 const img = require('../../modules/writeBed');
 //Récup du service

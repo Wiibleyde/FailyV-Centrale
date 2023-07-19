@@ -1,46 +1,16 @@
 //Récup du logger
-const logger = require('./../modules/logger');
+const logger = require('../../modules/logger');
 //Récup de la connection SQL
-const mysql = require('./../modules/sql');
+const mysql = require('../../modules/sql');
 
 module.exports = {
-    //Fonction de récupération des patient
-    get: () => {
+    //Fonction de récupération d'une radio en DB
+    getRadio: (radToGet) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "SELECT * FROM `lit`",
-                    timeout: 40000
-                }, (reqErr, result, fields) => {
-                if(reqErr) {
-                    logger.error(reqErr);
-                    reject(reqErr);
-                }
-                resolve(result);
-            });
-        });
-    },
-    //Fonction de récupération des lits utilisés
-    getLetters: () => {
-        return new Promise((resolve, reject) => {
-            mysql.sql().query({
-                    sql: "SELECT `letter` FROM `lit` ORDER BY `letter` ASC",
-                    timeout: 40000
-                }, (reqErr, result, fields) => {
-                if(reqErr) {
-                    logger.error(reqErr);
-                    reject(reqErr);
-                }
-                resolve(result);
-            });
-        });
-    },
-    //Fonction d'ajout d'un patient
-    add: (patient, letter, surveillance) => {
-        return new Promise((resolve, reject) => {
-            mysql.sql().query({
-                    sql: "INSERT INTO `lit` (`patient`, `letter`, `surveillance`) VALUES (?, ?, ?)",
+                    sql: "SELECT `radiofreq` FROM `radio` WHERE `radioid`=?",
                     timeout: 40000,
-                    values: [patient, letter, surveillance]
+                    values: [radToGet]
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
                     logger.error(reqErr);
@@ -50,13 +20,13 @@ module.exports = {
             });
         });
     },
-    //Fonction d'update d'un patient
-    update: (patient, letter, surveillance) => {
+    //Fonction de récupération du status d'une radio en DB
+    isRadioDisplayed: (radToGet) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "UPDATE `lit` SET `letter`=?, `surveillance`=? WHERE `patient`=?",
+                    sql: "SELECT `displayed` FROM `radio` WHERE `radioid`=?",
                     timeout: 40000,
-                    values: [letter, surveillance, patient]
+                    values: [radToGet]
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
                     logger.error(reqErr);
@@ -66,13 +36,29 @@ module.exports = {
             });
         });
     },
-    //Fonction d'update d'un patient
-    remove: (letter) => {
+    //Fonction d'update d'une radio en DB
+    setRadio: (radToSet, radio) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "DELETE FROM `lit` WHERE `letter`=?",
+                    sql: "UPDATE `radio` SET `radiofreq`=? WHERE `radioid`=?",
                     timeout: 40000,
-                    values: [letter]
+                    values: [radio, radToSet]
+                }, (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
+    //Fonction d'update de l'affichage d'une radio en DB
+    updatedRadioDisplay: (radToUp, radio) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "UPDATE `radio` SET `displayed`=? WHERE `radioid`=?",
+                    timeout: 40000,
+                    values: [radio, radToUp]
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
                     logger.error(reqErr);

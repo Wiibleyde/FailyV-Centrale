@@ -3,7 +3,7 @@ const { SlashCommandBuilder } = require('discord.js');
 //Récup du logger
 const logger = require('../../modules/logger');
 //Récup du SQL pour les rôles
-const doctorRoles = require('../../sql/doctorRoles');
+const doctorRoles = require('../../sql/doctorManagement/doctorRoles');
 //Récup du créateur d'embed
 const emb = require('../../modules/embeds');
 

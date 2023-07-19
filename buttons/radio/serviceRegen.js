@@ -2,8 +2,6 @@
 const logger = require('./../modules/logger');
 //Récup du créateur d'embed
 const emb = require('./../modules/embeds');
-//Récup des requêtes SQL
-const sql = require('./../sql/radios');
 //Fonction pour attendre
 const wait = require('node:timers/promises').setTimeout;
 //Récup du modificateur de radio

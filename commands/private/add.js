@@ -9,9 +9,9 @@ const emb = require('../../modules/embeds');
 //Récup du générateur d'effectif
 const workforce = require('../../modules/workforce');
 //Récup des requêtes SQL
-const doctorCardSql = require('../../sql/doctorCard');
-const doctorRankSql = require('../../sql/doctorRank');
-const doctorSql = require('../../sql/doctor');
+const doctorCardSql = require('../../sql/doctorManagement/doctorCard');
+const doctorRankSql = require('../../sql/doctorManagement/doctorRank');
+const doctorSql = require('../../sql/doctorManagement/doctor');
 
 const wait = require('node:timers/promises').setTimeout;
 

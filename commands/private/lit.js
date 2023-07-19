@@ -3,7 +3,7 @@ const { SlashCommandBuilder } = require('discord.js');
 //Récup du logger
 const logger = require('../../modules/logger');
 //Récup des reqêtes SQL pour les lits
-const beds = require('../../sql/lit');
+const beds = require('../../sql/lit/lit');
 //Fonction pour attendre
 const wait = require('node:timers/promises').setTimeout;
 //Fonction pour régénérer l'image des lits

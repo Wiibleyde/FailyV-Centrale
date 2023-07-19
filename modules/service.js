@@ -5,9 +5,9 @@ const logger = require('./logger');
 //Récup du créateur d'embed
 const emb = require('./embeds');
 //Récup des requêtes SQL
-const sql = require('./../sql/radios');
+const sql = require('./../sql/radio/radios');
 //Récup des reqêtes SQL pour les lits
-const beds = require('./../sql/lit');
+const beds = require('./../sql/lit/lit');
 //Récup des réactions
 const btnCreator = require('./btnCreator');
 

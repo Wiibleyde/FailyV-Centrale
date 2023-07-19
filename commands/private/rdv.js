@@ -1,27 +1,15 @@
 //Récupération des fonctions pour créer une commande et un modal
 const { SlashCommandBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require('discord.js');
 //Récup du logger
-const logger = require('../../modules/logger');
+const logger = require('./../../modules/logger');
 //Récup du créateur d'embed
-const emb = require('../../modules/embeds');
-
-//Création d'un tableau de choix pour les channels d'envois des rendez-vous
-const rendezVousChannelsChoices = [
-    {
-        name: 'psychologie',
-        value: process.env.IRIS_PSYCHO_CHANNEL_ID,
-    },
-    {
-        name: 'chirurgie',
-        value: process.env.IRIS_SURGERY_CHANNEL_ID,
-    },
-    {
-        name: 'general',
-        value: process.env.IRIS_GENERAL_CHANNEL_ID,
-    },
-];
+const emb = require('./../../modules/embeds');
 
 //Création de constantes pour le choix de rendez-vous
+const rdvGen = {
+    name: 'Général',
+    value: 'general',
+}
 const rdvChir = {
     name: 'Chirurgie',
     value: 'chirurgie',
@@ -30,10 +18,6 @@ const rdvPsy = {
     name: 'Psychologie',
     value: 'psychologie',
 };
-const rdvGen = {
-    name: 'Général',
-    value: 'general',
-}
 
 module.exports = {
     //Création de la commande
@@ -45,7 +29,7 @@ module.exports = {
             option.setName('type')
                 .setDescription('Type de rendez-vous')
                 .setRequired(true)
-                .addChoices(rdvChir, rdvPsy, rdvGen)
+                .addChoices(rdvGen, rdvChir, rdvPsy)
         ),
     async execute(interaction) {
         //Si le type est psy

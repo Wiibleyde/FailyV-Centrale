@@ -33,19 +33,36 @@ module.exports = {
         //Get user guild pseudo
         const pseudo = interaction.member.displayName;
         //Create embed
-        const rendezVousEmb = emb.generate(null, null, `**Nom et prénom:** ${interaction.components[0].components[0].value}\n**Numéro de téléphone:** ${phoneNumber}\n**Description:** ${interaction.components[2].components[0].value}`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Rendez-vous chirugie`, `https://cdn.discordapp.com/attachments/1083724872045297734/1124914370217005127/LSMS.png`, null, pseudo, null, false);
+        const rendezVousEmb = emb.generate(null, null, null, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, pseudo, null, false);
+        rendezVousEmb.addFields(
+            {
+                name: `**Patient**`,
+                value: `${interaction.components[0].components[0].value}`,
+                inline: true
+            },
+            {
+                name: `**Téléphone**`,
+                value: `${phoneNumber}`,
+                inline: true
+            },
+            {
+                name: `**Note**`,
+                value: `${interaction.components[2].components[0].value}`,
+                inline: false
+            }
+        );
         //Get channel by looking at env var
         const channelToSend = interaction.guild.channels.cache.get(process.env.IRIS_SURGERY_CHANNEL_ID);
         //Ajout des boutons sous l'embed pour : Dire que le rendez vous est fini, que la personne a été contactée, que le rendez-vous a été pris/que la date a été fixée, que le rendez-vous a été annulé
         const rendezVousActionRow = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('rendezVousFini').setLabel("Rendez-vous fini").setStyle(ButtonStyle.Success).setEmoji("✅"),
-            // new ButtonBuilder().setCustomId('rendezVousContacte').setLabel("Personne contactée").setStyle(ButtonStyle.Secondary).setEmoji("📞"),
-            // new ButtonBuilder().setCustomId('rendezVousPris').setLabel("Rendez-vous pris").setStyle(ButtonStyle.Primary).setEmoji("📆"),
-            new ButtonBuilder().setCustomId('rendezVousAnnule').setLabel("Rendez-vous annulé").setStyle(ButtonStyle.Danger).setEmoji("❌")
+            new ButtonBuilder().setCustomId('rendezVousFini').setLabel("Rendez-vous fini").setStyle(ButtonStyle.Success).setEmoji("✅").setDisabled(false),
+            new ButtonBuilder().setCustomId('rendezVousContacte').setLabel("Personne contactée").setStyle(ButtonStyle.Secondary).setEmoji("📞").setDisabled(true),
+            new ButtonBuilder().setCustomId('rendezVousPris').setLabel("Rendez-vous pris").setStyle(ButtonStyle.Primary).setEmoji("📆").setDisabled(true),
+            new ButtonBuilder().setCustomId('rendezVousAnnule').setLabel("Rendez-vous annulé").setStyle(ButtonStyle.Danger).setEmoji("❌").setDisabled(false)
         );
         //Send embed with buttons
         channelToSend.send({ embeds: [rendezVousEmb], components: [rendezVousActionRow] });
         //Send confirmation message
-        await interaction.reply({ content: `Le rendez-vous a bien été ajouté à l'agenda.`, ephemeral: true });
+        await interaction.reply({ embeds: [emb.generate(null, null, `Le rendez-vous de chirurgie a bien été ajouté à l'agenda !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
     }
 }

@@ -1,15 +1,15 @@
 //Récup des activités Discord
 const { ActivityType } = require('discord.js');
 //Récup du logger
-const logger = require('./../././modules/logger');
+const logger = require('./../modules/logger');
 
 //Déployement des commandes
-require('./../././modules/deployCommands');
+require('./../modules/deployCommands');
 //Déployement des commandes
-const service = require('./../././modules/service');
+const service = require('./../modules/service');
 
 //Récup du service de kick
-const userservice = require('./../././modules/kickservice');
+const userservice = require('./../modules/kickservice');
 
 //System pour le kick auto de 6h
 const CronJob = require('cron').CronJob;

@@ -1,9 +1,9 @@
 //Récupération des fonctions pour créer des boutons
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 //Récup du logger
-const logger = require('./../modules/logger');
+const logger = require('./logger');
 //Récup du créateur d'embed
-const emb = require('./../modules/embeds');
+const emb = require('./embeds');
 //Récup des requêtes SQL
 const sql = require('./../sql/radios');
 //Récup des reqêtes SQL pour les lits

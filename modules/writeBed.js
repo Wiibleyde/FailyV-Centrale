@@ -47,6 +47,9 @@ module.exports = {
                         }
                     }
                 }
+                if(patientName[0] == 'ua' || patientName[0] == 'ur' || patientName[0] == 'dcd') {
+                    firstname = patientName[0].toUpperCase();
+                }
                 let lastname = null;
                 if(patientName[1] != null) {
                     lastname = patientName[1].charAt(0).toUpperCase() + patientName[1].slice(1);

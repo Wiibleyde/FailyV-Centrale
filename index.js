@@ -59,7 +59,7 @@ client.login(process.env.IRIS_DISCORD_TOKEN);
 //Arrêt lors d'une commande console
 readcmd.on('line', async (input) => {
     if(input.toLowerCase() == 'quit') {
-        logger.send(client, `Status`, `Processus arrêté, passage hors-ligne`, `#FF0000`);
+        await logger.send(client, `Status`, `Processus arrêté, passage hors-ligne`, `#FF0000`);
         logger.log(`Au revoir! ${client.user.tag} hors-ligne`);
         await client.destroy();
         process.exit(0);
@@ -68,7 +68,7 @@ readcmd.on('line', async (input) => {
 
 //Arrêt avec forever (utilisé sur le serveur de prod)
 process.on('SIGTERM', async () => {
-    logger.send(client, `Status`, `Processus arrêté, passage hors-ligne`, `#FF0000`);
+    await logger.send(client, `Status`, `Processus arrêté, passage hors-ligne`, `#FF0000`);
     logger.log(`Au revoir! ${client.user.tag} hors-ligne`);
     await client.destroy();
     process.exit(0);

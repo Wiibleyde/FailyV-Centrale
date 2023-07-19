@@ -4,6 +4,9 @@ const Jimp = require('jimp');
 const logger = require('./logger');
 //Récup du créateur d'embed
 const emb = require('./embeds');
+//Récup du formateur de noms
+const format = require('./formatName');
+
 
 module.exports = {
     write: async (patient, letter, surveillance, client) => {
@@ -39,40 +42,13 @@ module.exports = {
 
                 //Séparation du prénom et nom pour retour à la ligne
                 patientName = patient[i].split(' ');
-                let firstname = patientName[0].charAt(0).toUpperCase() + patientName[0].slice(1);
-                if(firstname.includes('-')) {
-                    for(j=0;j<firstname.length;j++) {
-                        if(firstname.charAt(j).includes('-')) {
-                            firstname = firstname.substring(0, j+1) + patientName[0].charAt(j+1).toUpperCase() + patientName[0].slice(j+2);
-                        }
-                    }
-                }
+                let firstname = format.name(patientName[0]);
                 if(patientName[0] == 'ua' || patientName[0] == 'ur' || patientName[0] == 'dcd') {
                     firstname = patientName[0].toUpperCase();
                 }
                 let lastname = null;
                 if(patientName[1] != null) {
-                    lastname = patientName[1].charAt(0).toUpperCase() + patientName[1].slice(1);
-                    if(patientName.length > 2) {
-                        if(lastname.includes('-')) {
-                            for(j=0;j<lastname.length;j++) {
-                                if(lastname.charAt(j).includes('-')) {
-                                    lastname = lastname.substring(0, j+1) + patientName[1].charAt(j+1).toUpperCase() + patientName[1].slice(j+2);
-                                }
-                            }
-                        }
-                        for(j=2;j<patientName.length;j++) {
-                            lastname = lastname + ' ' + patientName[j].charAt(0).toUpperCase() + patientName[j].slice(1);
-                        }
-                    } else {
-                        if(lastname.includes('-')) {
-                            for(j=0;j<lastname.length;j++) {
-                                if(lastname.charAt(j).includes('-')) {
-                                    lastname = lastname.substring(0, j+1) + patientName[1].charAt(j+1).toUpperCase() + patientName[1].slice(j+2);
-                                }
-                            }
-                        }
-                    }
+                    lastname = format.name(patientName[1]);
                 }
 
                 if(letter[i] == 'q' || letter[i] == 'r') {

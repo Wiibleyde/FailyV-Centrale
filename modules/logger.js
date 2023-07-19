@@ -1,3 +1,6 @@
+//Récup du créateur d'embed
+const emb = require('./embeds');
+
 //Récupération de la date au démarrage
 const logDate = new Date();
 var logMonth = (logDate.getUTCMonth() + 1);
@@ -16,19 +19,23 @@ const logger = log4js.getLogger();
 logger.level = 'all';
 
 module.exports = {
-    log: function(log) {
+    log: (log) => {
         logger.log(log);
     },
-    debug: function(debug) {
+    debug: (debug) => {
         logger.debug(debug);
     },
-    warn: function(warn) {
+    warn: (warn) => {
         logger.warn(warn);
     },
-    error: function(error) {
+    error: (error) => {
         logger.error(error);
     },
-    getStartDate: function() {
+    getStartDate: () => {
         return logDate;
+    },
+    send: (client, category, log, color) => {
+        const embed = emb.generate(null, null, log, color, process.env.LSMS_LOGO_V2, null, category, client.user.avatarURL(), null, null, null, true);
+        client.guilds.cache.get(IRIS_DEBUG_GUILD_ID).channels.cache.get(IRIS_DEBUG_LOGS_CHANNEL_ID).send({ embeds: [embed] })
     }
 }

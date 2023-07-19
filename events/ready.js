@@ -49,6 +49,7 @@ module.exports = {
             logger.log(`Reboot de 06h00 effectué !`);
         });
         job.start();
+        logger.send(client, `Status`, `Démarrage effectué avec succès !`, `#0DE600`);
 
     },
 

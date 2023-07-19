@@ -1,13 +1,13 @@
 //Récup des fonctions pour créer des boutons
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 //Récup du logger
-const logger = require('./../modules/logger');
+const logger = require('../../modules/logger');
 //Récup du créateur d'embed
-const emb = require('./../modules/embeds');
+const emb = require('../../modules/embeds');
 //Fonction pour attendre
 const wait = require('node:timers/promises').setTimeout;
 //Récup du formateur de noms
-const format = require('./../modules/formatName');
+const format = require('../../modules/formatName');
 
 module.exports = {
     //Création de la commande

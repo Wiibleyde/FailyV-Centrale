@@ -1,5 +1,5 @@
 //Récup du créateur d'embed
-const emb = require('./../modules/embeds');
+const emb = require('./embeds');
 
 module.exports = {
     pds: (guild, nickname, forcer) => {

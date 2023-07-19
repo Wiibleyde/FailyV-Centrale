@@ -7,7 +7,7 @@ const emb = require('../modules/embeds');
 //Fonction pour attendre
 const wait = require('node:timers/promises').setTimeout;
 //Récup du formateur de noms
-const format = require('./formatName');
+const format = require('./../modules/formatName');
 
 module.exports = {
     //Création de la commande
@@ -37,7 +37,7 @@ module.exports = {
         //Get user guild pseudo
         const pseudo = interaction.member.displayName;
         //Format patient name
-        const patient = format.name(interaction.components[0].components[0].value);
+        const patient = format.name(interaction.components[0].components[0].value.toLowerCase());
         //Create embed
         const rendezVousEmb = emb.generate(null, null, null, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, pseudo, null, false);
         rendezVousEmb.addFields(

@@ -2,8 +2,6 @@
 const { SlashCommandBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require('discord.js');
 //Récup du logger
 const logger = require('../../modules/logger');
-//Récup du créateur d'embed
-const emb = require('../../modules/embeds');
 
 //Création de constantes pour le choix de rendez-vous
 const rdvGen = {

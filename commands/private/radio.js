@@ -1,11 +1,11 @@
 //Récupération des fonctions pour créer une commande
 const { SlashCommandBuilder } = require('discord.js');
 //Récup du logger
-const logger = require('./../modules/logger');
+const logger = require('../../modules/logger');
 //Récup du créateur d'embed
-const emb = require('./../modules/embeds');
+const emb = require('../../modules/embeds');
 //Récup du modificateur de radio
-const radio = require('./../modules/changeRadio');
+const radio = require('../../modules/changeRadio');
 //Fonction pour attendre
 const wait = require('node:timers/promises').setTimeout;
 

@@ -10,9 +10,9 @@ module.exports = {
                     }
                 }
                 if(name.includes(' ')) {
-                    for(j=2;j<nameToFormat.length;j++) {
+                    for(j=0;j<name.length;j++) {
                         if(name.charAt(j).includes(' ')) {
-                            name = name + ' ' + nameToFormat[j].charAt(0).toUpperCase() + nameToFormat[j].slice(1);
+                            name = name.substring(0, j+1) + nameToFormat.charAt(j+1).toUpperCase() + nameToFormat.slice(j+2);
                         }
                     }
                 }

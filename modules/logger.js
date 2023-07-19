@@ -36,6 +36,6 @@ module.exports = {
     },
     send: (client, category, log, color) => {
         const embed = emb.generate(null, null, log, color, process.env.LSMS_LOGO_V2, null, category, client.user.avatarURL(), null, null, null, true);
-        client.guilds.cache.get(IRIS_DEBUG_GUILD_ID).channels.cache.get(IRIS_DEBUG_LOGS_CHANNEL_ID).send({ embeds: [embed] })
+        client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_DEBUG_LOGS_CHANNEL_ID).send({ embeds: [embed] })
     }
 }

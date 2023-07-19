@@ -35,7 +35,7 @@ module.exports = {
         setInterval(async () => {
             //Récupération de l'image des lits
             let bedsImg;
-            client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_BEDS_CHANNEL_ID).messages.fetch({ limit: 1 }).then(messages => {
+            client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(process.env.IRIS_BEDS_CHANNEL_ID).messages.fetch({ limit: 1 }).then(messages => {
                 messages.first().attachments.map(bedImg => bedsImg = bedImg.attachment);
             });
             //Récupération du serveur Discord LSMS

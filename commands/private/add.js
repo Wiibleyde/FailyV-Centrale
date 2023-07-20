@@ -56,7 +56,7 @@ module.exports = {
 
         // Check si l'utilisateur est chef de service ou plus
         if (!hasAuthorization(Rank.DepartementManager, interaction.member.roles.cache)) {
-            const embed = emb.generate("Erreur", null, `Vous n'avez pas le grade necéssaire ${interaction.user} pour utiliser cette commande. Il faut être chef de service ou plus.`, "#FF0000", process.env.LSMS_LOGO_V2, null, null, null, null, null, null, false);
+            const embed = emb.generate("Désolé :(", null, `Vous n'avez pas les permissions suffisantes pour utiliser cette commande. Il faut être <@&${process.env.IRIS_DEPARTEMENT_MANAGER_ROLE}> ou plus pour pouvoir vous en servir !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
             await interaction.editReply({ embeds: [embed], ephemeral: true });
             // Supprime la réponse après 5s
             await wait(5000);

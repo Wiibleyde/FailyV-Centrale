@@ -36,10 +36,10 @@ module.exports = {
             const vehicules = await vehicles.get();
             if (interaction.options.getString(`action`) === `add`) {
                 const vehiculeAddModal = new ModalBuilder().setCustomId(`vehiculeAddModal`).setTitle(`Ajouter un véhicule`);
-                const nom = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId(`nom`).setLabel(`Nom du véhicule`).setStyle(TextInputStyle.Short).setPlaceholder(`Ex: Lulucoptère`).setRequired(true));
-                const plaque = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId(`plaque`).setLabel(`Plaque d'immatriculation`).setStyle(TextInputStyle.Short).setPlaceholder(`Ex: LSMS 874`).setRequired(true));
-                const ct = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId(`ct`).setLabel(`Date du contrôle technique`).setStyle(TextInputStyle.Short).setPlaceholder("Ex: 01/07/2023").setRequired(true));
-                const type = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId(`type`).setLabel(`Type du véhicule`).setStyle(TextInputStyle.Short).setPlaceholder("Ex: polmav").setRequired(true));
+                const nom = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId(`nom`).setLabel(`Nom du véhicule`).setStyle(TextInputStyle.Short).setPlaceholder(`Ex: SUV 1`).setRequired(true));
+                const plaque = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId(`plaque`).setLabel(`Plaque d'immatriculation`).setStyle(TextInputStyle.Short).setPlaceholder(`Ex: LSMS 830`).setRequired(true));
+                const ct = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId(`ct`).setLabel(`Date du contrôle technique`).setStyle(TextInputStyle.Short).setPlaceholder("Ex: JJ/MM/AAAA").setRequired(true));
+                const type = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId(`type`).setLabel(`Type du véhicule`).setStyle(TextInputStyle.Short).setPlaceholder("Ex: fbi2").setRequired(true));
                 vehiculeAddModal.addComponents(nom, plaque, ct, type);
                 await interaction.showModal(vehiculeAddModal);
             } else if(interaction.options.getString(`action`) === `remove`) {

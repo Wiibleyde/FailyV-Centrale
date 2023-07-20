@@ -360,18 +360,11 @@ function getCentraleMessages(messages, client) {
                         existMsg = msg;
                     }
                 }
-                if(msg.embeds[0].url != null) {
-                    if(msg.embeds[0].url.includes('/lit.png')) {
-                        found++;
-                        existMsg = msg;
-                    }
-                }
             }
-            if(msg.content != '') {
-                if(msg.content.includes('/lit.png')) {
-                    found++;
-                    existMsg = msg;
-                }
+            if(msg.content.includes('/lit.png')) {
+                logger.debug(msg);
+                found++;
+                existMsg = msg;
             }
         });
         if(found == 1) {

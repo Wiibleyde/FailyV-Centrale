@@ -60,7 +60,7 @@ module.exports = {
             const memoryData = process.memoryUsage();
 
             //Création de l'embed
-            const pingEmbed = emb.generate(null,null,`🏓 **Pong !**\n- **Ping :** ${interaction.client.ws.ping} ms (${status})\n- **Latence :** ${Date.now() - interaction.createdTimestamp}ms\n- **Mémoire :** ${formatM(memoryData.heapUsed)}\n- **En ligne depuis :** <t:${(new Date() / 1000 - interaction.client.uptime / 1000).toFixed()}:R>`,`Gold`,null,null,null,null,null,interaction.client.user.username,interaction.client.user.avatarURL(),true);
+            const pingEmbed = emb.generate(null,null,`🏓 **Pong !**\n- **Ping :** ${interaction.client.ws.ping} ms (${status})\n- **Latence :** ${interaction.createdTimestamp - Date.now()}ms\n- **Mémoire :** ${formatM(memoryData.heapUsed)}\n- **En ligne depuis :** <t:${(new Date() / 1000 - interaction.client.uptime / 1000).toFixed()}:R>`,`Gold`,null,null,null,null,null,interaction.client.user.username,interaction.client.user.avatarURL(),true);
 
             //Envoi de l'embed
             return interaction.reply({ embeds: [pingEmbed], ephemeral: true });

@@ -127,8 +127,6 @@ async function genLits(interaction, newPatient, newPatientLetter, newPatientSurv
     interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID).messages.fetch().then(messages => {
         messages.map(async d => {
             if(d.embeds[0].url != null) {
-                let letters = await beds.getLetters();
-                logger.debug('Letters getted !');
                 editBedsImage(letters, d, imgUrl);
                 await interaction.followUp({ embeds: [emb.generate(null, null, `Aperçu de la salle de réveil mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });
                 service.setGen(false);
@@ -149,7 +147,6 @@ async function changePatientBed(interaction, newPatient, newPatientLetter, newPa
     interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID).messages.fetch().then(messages => {
         messages.map(async d => {
             if(d.embeds[0].url != null) {
-                let letters = await beds.getLetters();
                 editBedsImage(letters, d, imgUrl);
                 await interaction.followUp({ embeds: [emb.generate(null, null, `Aperçu de la salle de réveil mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });
                 service.setGen(false);
@@ -162,6 +159,8 @@ async function changePatientBed(interaction, newPatient, newPatientLetter, newPa
 }
 
 async function editBedsImage(letters, d, imgUrl) {
+    let letters = await beds.getLetters();
+    logger.debug('Letters getted !');
     let lettersArray1 = [];
     let lettersArray2 = [];
     let lettersArray3 = [];

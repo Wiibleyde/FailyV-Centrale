@@ -2,6 +2,8 @@
 const logger = require('../../modules/logger');
 //Récup des requêtes SQL
 const sql = require('../../sql/objectsManagement/vehicule');
+//Récup du créateur d'embed
+const emb = require('../../modules/embeds');
 
 module.exports = {
     execute: async function(interaction, errEmb) {

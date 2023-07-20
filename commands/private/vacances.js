@@ -49,21 +49,30 @@ module.exports = {
                 logger.error(error);
             }
         } else {
-            // Ajout des rôles de docteur dans un tableau
+            //Ajout des rôles de docteur dans un tableau
             let docteurRolesArray = [];
-            // Pour chaque rôle de la guild
+            //Parse json to array process.env.IRIS_VACANCES_EXCLUDE_ROLES_ID
+            let excludeRoles = JSON.parse(process.env.IRIS_VACANCES_EXCLUDE_ROLES_ID);
+            //Pour chaque rôle de la guild
             roles.forEach(async role => {
                 //Si le role.id == guild id 
                 if (role.id != process.env.IRIS_PRIVATE_GUILD_ID) {
-                    docteurRolesArray.push(role.id);
+                    //Si le role.id est dans excludeRoles (rôles à exclure) ne pas l'ajouter au tableau
+                    if (!excludeRoles.includes(parseInt(role.id))) {
+                        //Ajouter le rôle au tableau
+                        docteurRolesArray.push(role.id);
+                    }
                 }
             });
-            // Convertir le tableau en liste JSON
+            //Convertir le tableau en liste JSON
             let docteurRolesJSON = JSON.stringify(docteurRolesArray);
             //Ajouter les rôles dans la DB
             doctorRoles.addRoles(docteurId, docteurRolesJSON);
-            //Retirer les rôles au docteur
-            await docteur.roles.remove(docteur.roles.cache);
+            //Retirer les rôles valide au docteur 
+            docteurRolesArray.forEach(async role => {
+                //Récupère le rôle
+                await docteur.roles.remove(role);
+            });
             //Ajouter le rôle de vacances : in env : IRIS_VACANCES_ROLE_ID=
             const vacancesRole = interaction.guild.roles.cache.get(process.env.IRIS_VACANCES_ROLE_ID);
             //Ajouter le rôle de vacances au docteur

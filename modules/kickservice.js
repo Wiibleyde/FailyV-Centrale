@@ -4,7 +4,7 @@ const logRP = require('./logsRP');
 const emb = require('./embeds');
 
 module.exports = {
-    kick: (guild, forcer) => {
+    kick: (guild, forcer, isGlobal) => {
         const serviceRole = guild.roles.cache.get(process.env.IRIS_SERVICE_ROLE_ID);
         const dispatchRole = guild.roles.cache.get(process.env.IRIS_DISPATCH_ROLE_ID);
         const offole = guild.roles.cache.get(process.env.IRIS_OFF_ROLE_ID);
@@ -18,15 +18,17 @@ module.exports = {
             }
             d.roles.remove(dispatchRole);
             d.roles.remove(offole);
-            try {
-                let footerText = `Cordialement, `;
-                if(forcer.id == process.env.IRIS_DISCORD_ID) {
-                    footerText = footerText + `votre secrétaire ${forcer.nickname}`;
-                } else {
-                    footerText = footerText + forcer.nickname;
+            if(!isGlobal) {
+                try {
+                    let footerText = `Cordialement, `;
+                    if(forcer.id == process.env.IRIS_DISCORD_ID) {
+                        footerText = footerText + `votre secrétaire ${forcer.nickname}`;
+                    } else {
+                        footerText = footerText + forcer.nickname;
+                    }
+                    await user.send({ embeds: [emb.generate(`Bonjour, ${d.nickname}`, null, `Vous n'avez pas pris votre fin de service.\nMerci de penser à la prendre à l'avenir !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, footerText, null, true)] });
+                } catch(err) {
                 }
-                await user.send({ embeds: [emb.generate(`Bonjour, ${d.nickname}`, null, `Vous n'avez pas pris votre fin de service.\nMerci de penser à la prendre à l'avenir !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, footerText, null, true)] });
-            } catch(err) {
             }
         });
     }

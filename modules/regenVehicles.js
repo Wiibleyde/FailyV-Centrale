@@ -64,9 +64,9 @@ module.exports = {
                     const numInCat = getInCat.length;
                     await channel.send({ embeds: [emb.generate(null, null, `**${typeName}** - ${numInCat}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
                 }
-                const pre = "```ansi";
-                const post = "```";
-                const newMsg = await channel.send({ content: pre + `[2;37m[0m${name} (${type}) \u200b- [2;34m[0m${plate}[2;37m[0m \u200b- CT fait le: [2;33m[0m${formatedDate}` + post, components: [vehiclesBtns] });
+                const pre = "```ansi\n";
+                const post = "\n```";
+                const newMsg = await channel.send({ content: pre + `[2;37m${name} (${type}) \u200b- [0m[2;34m[0m[2;34m${plate}[0m[2;34m[0m[2;37m \u200b- CT fait le: [0m[2;34m[0m[2;37m[2;33m${formatedDate}[0m[2;37m[0m[2;34m[0m` + post, components: [vehiclesBtns] });
                 sqlVeh.updateMessageID(newMsg.id, plate);
             }
             resolve('Ok!');

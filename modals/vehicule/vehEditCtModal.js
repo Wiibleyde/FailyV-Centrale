@@ -23,9 +23,10 @@ module.exports = {
         if(vehicleData[0] == null) {
             return await interaction.reply({ embeds: [emb.generate(null, null, `**<:eyes_sus:1131588112749961266> Hummm**\nTu as touché à la plaque n'est ce pas ?\n\nFait attention celle que tu as mise n'existe pas dans le registre !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
         }
-        const vehiclesBtns = new ActionRowBuilder();
-        await sql.updateCT(date, plate);
+        const sqlDate = new Date(`${date} UTC+0:00`).toISOString().slice(0, 19).replace('T', ' ');
+        await sql.updateCT(sqlDate, plate);
 
+        const vehiclesBtns = new ActionRowBuilder();
         if(vehicleData[0].state == '0') {
             vehiclesBtns.addComponents(
                 new ButtonBuilder().setCustomId('vehAvailable').setStyle(ButtonStyle.Success).setEmoji("896393106700775544").setDisabled(true),

@@ -32,25 +32,33 @@ module.exports = {
     async execute(interaction) {
         //Si le type est psy
         if (interaction.options.getString('type') === 'psychologie') {
+            //Création du modal
             const rendezVousPsyModal = new ModalBuilder().setCustomId('rendezVousPsyModal').setTitle('Ajout d\'un rendez-vous');
             const nomPrenom = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('nomPrenom').setLabel('Nom et prénom de la personne concernée').setStyle(TextInputStyle.Short).setPlaceholder('Ex: Nathan Prale').setRequired(true));
-            const numero = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('numero').setLabel('Numéro de téléphone de la personne concernée').setStyle(TextInputStyle.Short).setPlaceholder('Ex: 555-XXXX').setRequired(true));
+            const numero = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('numero').setLabel('Numéro de téléphone de la personne concernée').setStyle(TextInputStyle.Short).setPlaceholder('Ex: 555-XXXX ou 555XXXX ou XXXX').setRequired(true));
             const description = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('description').setLabel('Description du rendez-vous').setStyle(TextInputStyle.Paragraph).setPlaceholder("Ex: Nathan Prale a besoin d\'une consultation pour parler à la suite de prises d'otage").setRequired(true));
             rendezVousPsyModal.addComponents(nomPrenom, numero, description);
+            //Envoi du modal
             await interaction.showModal(rendezVousPsyModal);
+        //Si le type est chir
         } else if(interaction.options.getString('type') === 'chirurgie') {
+            //Création du modal
             const rendezVousChirModal = new ModalBuilder().setCustomId('rendezVousChirModal').setTitle('Ajout d\'un rendez-vous');
             const nomPrenom = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('nomPrenom').setLabel('Nom et prénom de la personne concernée').setStyle(TextInputStyle.Short).setPlaceholder('Ex: Nathan Prale').setRequired(true));
-            const numero = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('numero').setLabel('Numéro de téléphone de la personne concernée').setStyle(TextInputStyle.Short).setPlaceholder('Ex: 555-XXXX').setRequired(true));
+            const numero = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('numero').setLabel('Numéro de téléphone de la personne concernée').setStyle(TextInputStyle.Short).setPlaceholder('Ex: 555-XXXX ou 555XXXX ou XXXX').setRequired(true));
             const description = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('description').setLabel('Description du rendez-vous').setStyle(TextInputStyle.Paragraph).setPlaceholder("Ex: Nathan Prale a besoin d\'une consultation pour parler à la suite de prises d'otage").setRequired(true));
             rendezVousChirModal.addComponents(nomPrenom, numero, description);
+            //Envoi du modal
             await interaction.showModal(rendezVousChirModal);
+        //Si le type est général
         } else if(interaction.options.getString('type') === 'general') {
+            //Création du modal
             const rendezVousGenModal = new ModalBuilder().setCustomId('rendezVousGenModal').setTitle('Ajout d\'un rendez-vous');
             const nomPrenom = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('nomPrenom').setLabel('Nom et prénom de la personne concernée').setStyle(TextInputStyle.Short).setPlaceholder('Ex: Nathan Prale').setRequired(true));
-            const numero = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('numero').setLabel('Numéro de téléphone de la personne concernée').setStyle(TextInputStyle.Short).setPlaceholder('Ex: 555-XXXX').setRequired(true));
+            const numero = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('numero').setLabel('Numéro de téléphone de la personne concernée').setStyle(TextInputStyle.Short).setPlaceholder('Ex: 555-XXXX ou 555XXXX ou XXXX').setRequired(true));
             const description = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('description').setLabel('Description du rendez-vous').setStyle(TextInputStyle.Paragraph).setPlaceholder("Ex: Nathan Prale a besoin d\'une consultation pour parler à la suite de prises d'otage").setRequired(true));
             rendezVousGenModal.addComponents(nomPrenom, numero, description);
+            //Envoi du modal
             await interaction.showModal(rendezVousGenModal);
         }
     },

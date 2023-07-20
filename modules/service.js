@@ -362,7 +362,6 @@ function getCentraleMessages(messages, client) {
                 }
             }
             if(msg.content.includes('/lit.png')) {
-                logger.debug(msg);
                 found++;
                 existMsg = msg;
             }

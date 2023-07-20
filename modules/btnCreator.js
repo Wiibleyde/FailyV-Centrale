@@ -5,10 +5,13 @@ const logger = require('./logger');
 
 module.exports = {
     genBedsBtns: (buttons) => {
+        logger.debug('Starting beds buttons creation');
         const btns = new ActionRowBuilder();
         for(i=0;i<buttons.length;i++) {
+            logger.debug(`Created "${buttons[i].toUpperCase()}" button`);
             btns.addComponents(new ButtonBuilder().setLabel(buttons[i].toUpperCase()).setCustomId(buttons[i]).setStyle(ButtonStyle.Danger));
         }
+        logger.debug(`End of creation`);
         return btns;
     }
 }

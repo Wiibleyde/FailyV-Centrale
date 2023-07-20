@@ -19,7 +19,7 @@ module.exports = {
         }
         const vehicleData = await sql.getByPlate(plate);
         if(vehicleData[0] == null) {
-            return await interaction.reply({ embeds: [emb.generate(null, null, `<:eyes_sus:1131588112749961266> Hummm\n\nTu as touché à la plaque n'est ce pas ?\nFait attention celle que tu as mise n'existe pas dans le registre !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
+            return await interaction.reply({ embeds: [emb.generate(null, null, `**<:eyes_sus:1131588112749961266> Hummm**\nTu as touché à la plaque n'est ce pas ?\n\nFait attention celle que tu as mise n'existe pas dans le registre !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
         }
         const vehiclesBtns = new ActionRowBuilder();
         await sql.updateCT(date, plate);

@@ -44,6 +44,8 @@ module.exports = {
             if(cID == 'rendezVousPsyModal') { const rendezVousPsyModal = require('./../modals/rdv/rendezVousPsyModal'); rendezVousPsyModal.execute(interaction, errEmb); }
             if(cID == 'rendezVousChirModal') { const rendezVousChirModal = require('./../modals/rdv/rendezVousChirModal'); rendezVousChirModal.execute(interaction, errEmb); }
             if(cID == 'rendezVousGenModal') { const rendezVousGenModal = require('./../modals/rdv/rendezVousGenModal'); rendezVousGenModal.execute(interaction, errEmb); }
+            if(cID == 'vehiculeAddModal') { const vehiculeAddModal = require('./../modals/vehicule/vehiculeAddModal'); vehiculeAddModal.execute(interaction, errEmb); }
+            if(cID == 'vehiculeEditModal') { const vehiculeEditModal = require('./../modals/vehicule/vehiculeEditModal'); vehiculeEditModal.execute(interaction, errEmb); }
         }
         //Lorsqu'il s'agit d'un bouton
         if(interaction.isButton()) {
@@ -69,6 +71,8 @@ module.exports = {
             if(cID == 'rendezVousContacte') { const rendezVousContacte = require('./../buttons/rdv/rendezVousContacte'); rendezVousContacte.execute(interaction, errEmb); }
             if(cID == 'rendezVousFini') { const rendezVousFini = require('./../buttons/rdv/rendezVousFini'); rendezVousFini.execute(interaction, errEmb); }
             if(cID == 'a' || cID == 'b' || cID == 'c' || cID == 'd' || cID == 'e' || cID == 'f' || cID == 'g' || cID == 'h' || cID == 'i' || cID == 'j' || cID == 'k' || cID == 'l' || cID == 'm' || cID == 'n' || cID == 'o' || cID == 'p' || cID == 'q' || cID == 'r') { const btnsLit = require('./../buttons/lit/btnsLit'); btnsLit.execute(interaction, errEmb); }
+            if(cID == 'vehAvailable' || cID == 'vehNeedRepair' || cID == 'vehUnavailable') { const vehStateUpdate = require('./../buttons/vehicule/vehStateUpdate'); vehStateUpdate.execute(interaction, errEmb); }
+            if(cID == 'vehEditCt') { const vehEditCt = require('./../buttons/vehicule/vehEditCt'); vehEditCt.execute(interaction, errEmb); }
         }
         //Lorsqu'il s'agit d'un Select Menu
         if(interaction.isChannelSelectMenu() || interaction.isStringSelectMenu()) {
@@ -79,6 +83,7 @@ module.exports = {
             //Appel du fichier spécifique pour chaques interactions
             if(cID == 'serviceKickSingleSelect') { const serviceKickSingleSelect = require('../selectMenus/kick/serviceKickSingleSelect'); serviceKickSingleSelect.execute(interaction, errEmb); }
             if(cID == 'centraleResetRadioSelect') { const centraleResetRadioSelect = require('../selectMenus/radio/centraleResetRadioSelect'); centraleResetRadioSelect.execute(interaction, errEmb); }
+            if(cID == 'vehiculeRemoveSelect') { const vehiculeRemoveSelect = require('../selectMenus/vehicule/vehiculeRemoveSelect'); vehiculeRemoveSelect.execute(interaction, errEmb); }
         }
 
     },

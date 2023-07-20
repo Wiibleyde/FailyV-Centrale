@@ -24,7 +24,7 @@ module.exports = {
     change: async (interaction, radioToChange, radioFreq) => {
         var pingMsg = `<@&${serviceID}> changement de fréquence radio `;
         //Recréation de l'embed pour édition du message
-        const embed = emb.generate(null, null, null, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
+        const embed = emb.generate(null, null, null, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
         //Récupération de la radio LSMS si non régénérée
         var freqLSMS = await sql.getRadio('lsms');
         freqLSMS = freqLSMS[0].radiofreq;

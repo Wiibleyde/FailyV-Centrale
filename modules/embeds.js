@@ -34,7 +34,7 @@ module.exports = {
         if(err == null) { return emb; } else {
             errEmb.setTitle('Une erreur est survenue lors de la génération de l\'embed')
             .setFields({ name: 'Raison:', value: err })
-            .setColor('#ff0000');
+            .setColor('#FF0000');
             return errEmb;
         };
     },

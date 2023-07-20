@@ -21,7 +21,7 @@ module.exports = {
 
         // Récupération du nombre de docteur et affiche de l'enbed de l'effectif
         const nbDoctor = await doctorSql.getNbDoctor();
-        const embed = emb.generate(`Effectif du LSMS - ${nbDoctor}`, null, null, "#ff0000", null, null, null, null, null, null, null, false);
+        const embed = emb.generate(`Effectif du LSMS - ${nbDoctor}`, null, null, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false);
         await channel.send({ embeds: [embed] });
 
         // Affichage de l'effectif par grade

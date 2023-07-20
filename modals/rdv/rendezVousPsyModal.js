@@ -8,6 +8,9 @@ const emb = require('../../modules/embeds');
 const wait = require('node:timers/promises').setTimeout;
 //Récup du formateur de noms
 const format = require('../../modules/formatName');
+//Récup du module sql
+const rdv = require('../../sql/rdvManagment/rdv');
+
 module.exports = {
     //Création de la commande
     execute: async function(interaction, errEmb) {
@@ -65,6 +68,8 @@ module.exports = {
             new ButtonBuilder().setCustomId('rendezVousPris').setLabel("Rendez-vous pris").setStyle(ButtonStyle.Primary).setEmoji("📆").setDisabled(true),
             new ButtonBuilder().setCustomId('rendezVousAnnule').setLabel("Rendez-vous annulé").setStyle(ButtonStyle.Danger).setEmoji("896393106633687040").setDisabled(false)
         );
+        //Save RDV in DB
+        await rdv.registerRDV(pseudo, phoneNumber, "Psychologie", interaction.components[2].components[0].value);
         //Send embed with buttons
         channelToSend.send({ embeds: [rendezVousEmb], components: [rendezVousActionRow] });
         //Send confirmation message

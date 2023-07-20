@@ -8,6 +8,8 @@ const emb = require('../../modules/embeds');
 const wait = require('node:timers/promises').setTimeout;
 //Récup des requêtes SQL
 const sql = require('../../sql/objectsManagement/vehicule');
+//Récup du régénérateur de véhicules
+const regenVeh = require('../../modules/regenVehicles');
 
 module.exports = {
     //Création de la commande
@@ -20,8 +22,6 @@ module.exports = {
             const vehicules = await sql.getByPlate(interaction.values[i]);
             if(vehicules[0] != null) {
                 await sql.delete(vehicules[0].plate);
-                const msgToDelete = await interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(process.env.IRIS_VEHICLES_CHANNEL_ID).messages.fetch(vehicules[0].messageID);
-                await msgToDelete.delete();
                 if(i == 0) {
                     respContent = respContent + `**${vehicules[0].plate}**`
                 } else if(i != interaction.values.length - 1) {
@@ -35,6 +35,10 @@ module.exports = {
         }
         //Send confirmation message
         if(!isVehNull) {
+            const allVehicles = sql.get();
+            //Récupération du channel des véhicules
+            const vehChan = interaction.guild.channels.cache.get(process.env.IRIS_VEHICLES_CHANNEL_ID);
+            await regenVeh.all(vehChan, allVehicles);
             await interaction.reply({ embeds: [emb.generate(null, null, `${respContent} a/ont bien été retiré(s) de la liste !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
             // Supprime la réponse après 5s
             await wait(5000);

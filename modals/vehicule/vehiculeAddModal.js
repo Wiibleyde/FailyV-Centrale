@@ -8,6 +8,8 @@ const emb = require('../../modules/embeds');
 const wait = require('node:timers/promises').setTimeout;
 //Récup des requêtes SQL
 const sql = require('../../sql/objectsManagement/vehicule');
+//Récup du régénérateur de véhicules
+const regenVeh = require('../../modules/regenVehicles');
 
 module.exports = {
     //Création de la commande
@@ -45,9 +47,17 @@ module.exports = {
             new ButtonBuilder().setCustomId('vehEditCt').setStyle(ButtonStyle.Secondary).setEmoji("📆").setDisabled(false)
         );
         const sqlDate = new Date(`${date} UTC+0:00`).toISOString().slice(0, 19).replace('T', ' ');
+        let catOrder;
+        if(category == 'ambulance') { catOrder = '0'; }
+        else if(category == 'romero') { catOrder = '1'; }
+        else if(category == 'firetruk') { catOrder = '2'; }
+        else if(category == 'fbi2') { catOrder = '3'; }
+        else if(category == 'polmav') { catOrder = '4'; }
+        else { catOrder = '5'; }
+        await sql.set(interaction.components[0].components[0].value, plate, sqlDate, category, catOrder);
+        const allVehicles = sql.get();
         //Send embed with buttons
-        const msg = await channelToSend.send({ content: `**${interaction.components[0].components[0].value} (${category}) \u200b- ${plate} \u200b- CT fait le: ${interaction.components[2].components[0].value}**`, components: [vehiclesBtns] });
-        await sql.set(interaction.components[0].components[0].value, plate, sqlDate, category, msg.id);
+        await regenVeh.all(channelToSend, allVehicles);
         //Send confirmation message
         await interaction.reply({ embeds: [emb.generate(null, null, `Le véhicule immatriculé **${plate}** a bien été ajouté à la liste !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
         // Supprime la réponse après 5s

@@ -10,6 +10,8 @@ const vehicles = require('../../sql/objectsManagement/vehicule');
 const wait = require('node:timers/promises').setTimeout;
 //Récup des autorisations
 const { Rank, hasAuthorization } = require('../../modules/rankAuthorization');
+//Récup du régénérateur de véhicules
+const regenVeh = require('../../modules/regenVehicles');
 
 module.exports = {
     //Création de la commande
@@ -25,6 +27,10 @@ module.exports = {
                     value: `add`
                 },
                 {
+                    name: `Régénérer`,
+                    value: `regen`
+                },
+                {
                     name: `Supprimer`,
                     value: `remove`
                 }
@@ -32,9 +38,9 @@ module.exports = {
             .setRequired(true)
         ),
     async execute(interaction) {
-        if(hasAuthorization(Rank.DepartementManager, interaction.member.roles.cache)) {
-            const vehicules = await vehicles.get();
-            if (interaction.options.getString(`action`) === `add`) {
+        const vehicules = await vehicles.get();
+        if (interaction.options.getString(`action`) === `add`) {
+            if(hasAuthorization(Rank.DepartementManager, interaction.member.roles.cache)) {
                 const vehiculeAddModal = new ModalBuilder().setCustomId(`vehiculeAddModal`).setTitle(`Ajouter un véhicule`);
                 const nom = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId(`nom`).setLabel(`Nom du véhicule`).setStyle(TextInputStyle.Short).setPlaceholder(`Ex: SUV 1`).setRequired(true));
                 const plaque = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId(`plaque`).setLabel(`Plaque d'immatriculation`).setStyle(TextInputStyle.Short).setPlaceholder(`Ex: LSMS 830`).setRequired(true));
@@ -42,7 +48,22 @@ module.exports = {
                 const type = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId(`type`).setLabel(`Type du véhicule`).setStyle(TextInputStyle.Short).setPlaceholder("Ex: fbi2").setRequired(true));
                 vehiculeAddModal.addComponents(nom, plaque, ct, type);
                 await interaction.showModal(vehiculeAddModal);
-            } else if(interaction.options.getString(`action`) === `remove`) {
+            } else {
+                await interaction.reply({ embeds: [emb.generate(`Désolé :(`, null, `Vous n'avez pas les permissions suffisantes pour utiliser cette commande. Il faut être <@&${process.env.IRIS_DEPARTEMENT_MANAGER_ROLE}> ou plus pour pouvoir vous en servir !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
+                await wait(5000);
+                await interaction.deleteReply();
+            }
+        } else if(interaction.options.getString(`action`) === `regen`) {
+            //Affichage du message "Iris réfléchis..."
+            await interaction.deferReply({ ephemeral: true });
+            const allVeh = await vehicles.get();
+            const channelToSend = interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(process.env.IRIS_VEHICLES_CHANNEL_ID);
+            await regenVeh.all(channelToSend, allVeh);
+            await interaction.followUp({ embeds: [emb.generate(null, null, `La liste des véhicules a bien été régénérée !`, "#0DE600", process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
+            await wait(5000);
+            await interaction.deleteReply();
+        } else if(interaction.options.getString(`action`) === `remove`) {
+            if(hasAuthorization(Rank.DepartementManager, interaction.member.roles.cache)) {
                 const vehiculeRemoveSelect = new StringSelectMenuBuilder().setCustomId(`vehiculeRemoveSelect`).setPlaceholder(`Choisissez le(s) véhicule(s) à supprimer`).setMinValues(1);
                 //Ajout des opérations possibles
                 if(vehicules[0] == null) {
@@ -59,11 +80,11 @@ module.exports = {
                     const allOptions = new ActionRowBuilder().addComponents(vehiculeRemoveSelect);
                     await interaction.followUp({ components: [allOptions], ephemeral: true });
                 }
+            } else {
+                await interaction.reply({ embeds: [emb.generate(`Désolé :(`, null, `Vous n'avez pas les permissions suffisantes pour utiliser cette commande. Il faut être <@&${process.env.IRIS_DEPARTEMENT_MANAGER_ROLE}> ou plus pour pouvoir vous en servir !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
+                await wait(5000);
+                await interaction.deleteReply();
             }
-        } else {
-            await interaction.reply({ embeds: [emb.generate(`Désolé :(`, null, `Vous n'avez pas les permissions suffisantes pour utiliser cette commande. Il faut être <@&${process.env.IRIS_DEPARTEMENT_MANAGER_ROLE}> ou plus pour pouvoir vous en servir !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
-            await wait(5000);
-            await interaction.deleteReply();
         }
     },
 };

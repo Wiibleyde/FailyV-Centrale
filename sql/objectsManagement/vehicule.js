@@ -35,10 +35,25 @@ module.exports = {
             });
         });
     },
+    getByCategory: (type) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "SELECT * FROM `vehicule` WHERE `type_order`=?",
+                    timeout: 40000,
+                    values: [type]
+                }, (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
     get: () => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "SELECT * FROM `vehicule`",
+                    sql: "SELECT * FROM `vehicule` ORDER BY type_order, name ASC",
                     timeout: 40000
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
@@ -49,12 +64,12 @@ module.exports = {
             });
         });
     },
-    set: (name, plate, ct, type, msgId) => {
+    set: (name, plate, ct, type, type_order) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "INSERT INTO `vehicule` SET `name`=?, `plate`=?, `ct`=?, `type`=?, `messageID`=?",
+                    sql: "INSERT INTO `vehicule` SET `name`=?, `plate`=?, `ct`=?, `type`=?, `type_order`=?",
                     timeout: 40000,
-                    values: [name, plate, ct, type, msgId]
+                    values: [name, plate, ct, type, type_order]
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
                     logger.error(reqErr);
@@ -86,6 +101,21 @@ module.exports = {
                     sql: "UPDATE `vehicule` SET `state`=? WHERE `plate`=?",
                     timeout: 40000,
                     values: [state, plate]
+                }, (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
+    updateMessageID: (messageID, plate) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "UPDATE `vehicule` SET `messageID`=? WHERE `plate`=?",
+                    timeout: 40000,
+                    values: [messageID, plate]
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
                     logger.error(reqErr);

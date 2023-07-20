@@ -144,9 +144,11 @@ async function changePatientBed(interaction, newPatient, newPatientLetter, newPa
     const imgMsg = await img.write(patientList, patientLetters, patientSurveillance, interaction.client);
     let imgUrl;
     imgMsg.attachments.map(bedImg => imgUrl = bedImg.attachment);
+    logger.debug('Fetching messages');
     interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID).messages.fetch().then(messages => {
         messages.map(async d => {
             if(d.embeds[0].url != null) {
+                logger.debug('Message fetched !');
                 editBedsImage(d, imgUrl);
                 await interaction.followUp({ embeds: [emb.generate(null, null, `Aperçu de la salle de réveil mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });
                 service.setGen(false);

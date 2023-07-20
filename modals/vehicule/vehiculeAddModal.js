@@ -38,7 +38,7 @@ module.exports = {
             return await interaction.reply({ embeds: [emb.generate(null, null, `Désolé :(\nIl semblerait qu'il existe déjà un véhicule avec cette plaque d'immatriculation d'enregistré`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
         }
         //Get channel by looking at env var
-        const channelToSend = interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(process.env.IRIS_VEHICLES_CHANNEL_ID);
+        const channelToSend = await interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(process.env.IRIS_VEHICLES_CHANNEL_ID);
         //Ajout des boutons sous l'embed pour gérer le véhicule
         const vehiclesBtns = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setCustomId('vehAvailable').setStyle(ButtonStyle.Success).setEmoji("896393106700775544").setDisabled(true),

@@ -57,7 +57,7 @@ module.exports = {
             //Affichage du message "Iris réfléchis..."
             await interaction.deferReply({ ephemeral: true });
             const allVeh = await vehicles.get();
-            const channelToSend = interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(process.env.IRIS_VEHICLES_CHANNEL_ID);
+            const channelToSend = await interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(process.env.IRIS_VEHICLES_CHANNEL_ID);
             await regenVeh.all(channelToSend, allVeh);
             await interaction.followUp({ embeds: [emb.generate(null, null, `La liste des véhicules a bien été régénérée !`, "#0DE600", process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
             await wait(5000);

@@ -37,7 +37,7 @@ module.exports = {
         if(!isVehNull) {
             const allVehicles = sql.get();
             //Récupération du channel des véhicules
-            const vehChan = interaction.guild.channels.cache.get(process.env.IRIS_VEHICLES_CHANNEL_ID);
+            const vehChan = await interaction.guild.channels.cache.get(process.env.IRIS_VEHICLES_CHANNEL_ID);
             await regenVeh.all(vehChan, allVehicles);
             await interaction.reply({ embeds: [emb.generate(null, null, `${respContent} a/ont bien été retiré(s) de la liste !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
             // Supprime la réponse après 5s

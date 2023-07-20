@@ -19,7 +19,7 @@ module.exports = {
     //Création de la commande
     data: new SlashCommandBuilder()
         .setName('add')
-        .setDescription("Ajout d'un membre LSMS. Limite : Chef de service +")
+        .setDescription("[Direction] Ajouter un membre à l'effectif")
         .addStringOption(option =>
             option.setName("prenom")
                 .setDescription("Prénom de la personne")

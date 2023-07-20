@@ -13,7 +13,7 @@ module.exports = {
     //Création de la commande
     data: new SlashCommandBuilder()
         .setName('regenerate_workforce')
-        .setDescription("Regénération de l'effectif. Limite : Chef de service +"),
+        .setDescription("[Direction] Regénération de l'effectif"),
     async execute(interaction) {
         //Affichage du message "Iris réfléchis..."
         await interaction.deferReply({ ephemeral: true });

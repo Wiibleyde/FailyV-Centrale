@@ -4,6 +4,8 @@ const { ActivityType } = require('discord.js');
 const logger = require('./../modules/logger');
 //Récup du créateur d'embed
 const emb = require('./../modules/embeds');
+//Récup des requêtes SQL de debug
+const debugSQL = require('./../sql/debugMode/debugMode');
 
 const serviceRoleId = process.env.IRIS_SERVICE_ROLE_ID;
 const dispatchRoleId = process.env.IRIS_DISPATCH_ROLE_ID;
@@ -32,7 +34,15 @@ module.exports = {
 
             //Affichage de l'activitée du bot
             if(countPDS != null && dispatch != null) {
-                newMember.client.user.setPresence({ activities: [{ name: `🚑 ` + countPDS + ` | 🎙️ ` + dispatch, type: ActivityType.Watching }], status: 'online' });
+                let isDebugMode = false;
+                const newDebugState = await debugSQL.getDebugState();
+                if(newDebugState[0].state == '1') {
+                    isDebugMode = true;
+                }
+                let state;
+                let debugText = '';
+                if(isDebugMode) { state = 'dnd'; debugText = ' | DEBUG MODE' } else { state = 'online'; }
+                newMember.client.user.setPresence({ activities: [{ name: `🚑 ` + countPDS + ` | 🎙️ ` + dispatch + debugText, type: ActivityType.Watching }], status: state });
             }
     
         }

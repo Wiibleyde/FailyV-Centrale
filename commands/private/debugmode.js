@@ -32,12 +32,18 @@ module.exports = {
             } else {
                 let numInRole = 0;
                 debugRole.members.map(m => numInRole++);
-                if(numInRole <= 1) {
-                    debugSQL.setDebugState('0');
+                if(!interaction.guild.members.cache.get(interaction.user.id).roles.cache.has(roleID[0].roleID)) {
+                    interaction.guild.members.cache.get(interaction.user.id).roles.add(debugRole);
+                    text = 'Mode debug activé !';
+                    color = '#0DE600';
+                } else {
+                    if(numInRole <= 1) {
+                        debugSQL.setDebugState('0');
+                    }
+                    interaction.guild.members.cache.get(interaction.user.id).roles.remove(debugRole);
+                    text = 'Mode debug désactivé !';
+                    color = '#FF0000';
                 }
-                interaction.guild.members.cache.get(interaction.user.id).roles.remove(debugRole);
-                text = 'Mode debug désactivé !';
-                color = '#FF0000';
             }
             interaction.followUp({ embeds: [emb.generate(null, null, text, color, process.env.LSMS_LOGO_V2, null, `DEBUG MODE`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true })
         } else {

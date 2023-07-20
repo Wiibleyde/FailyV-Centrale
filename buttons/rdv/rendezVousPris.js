@@ -1,7 +1,7 @@
 //Récup du logger
-const logger = require('./../modules/logger');
+const logger = require('../../modules/logger');
 //Récup du créateur d'embed
-const emb = require('./../modules/embeds');
+const emb = require('../../modules/embeds');
 
 module.exports = {
     execute: async function(interaction, errEmb) {

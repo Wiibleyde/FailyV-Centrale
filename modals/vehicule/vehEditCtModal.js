@@ -55,7 +55,9 @@ module.exports = {
         interaction.channel.messages.fetch().then(msg => {
             msg.map(async d => {
                 if(d.id == vehicleData[0].messageID) {
-                    d.edit({ content: `**${vehicleData[0].name} (${vehicleData[0].type}) \u200b- ${plate} \u200b- CT fait le: ${interaction.components[0].components[0].value}**`, components: [vehiclesBtns] });
+                    const pre = "```ansi\n";
+                    const post = "\n```";
+                    d.edit({ content: pre + `[2;37m${vehicleData[0].name} (${vehicleData[0].type}) \u200b- [0m[2;34m[0m[2;34m${plate}[0m[2;34m[0m[2;37m \u200b- CT fait le: [0m[2;34m[0m[2;37m[2;33m${interaction.components[0].components[0].value}[0m[2;37m[0m[2;34m[0m` + post, components: [vehiclesBtns] });
                 }
             });
         });

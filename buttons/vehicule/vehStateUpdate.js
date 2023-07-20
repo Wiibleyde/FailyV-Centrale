@@ -9,7 +9,7 @@ module.exports = {
     execute: async function(interaction, errEmb) {
         //Ajout des boutons sous l'embed pour gérer le véhicule
         const vehiclesBtns = new ActionRowBuilder();
-        const plate = interaction.message.content.split(" \u200b- ")[1];
+        const plate = interaction.message.content.split("[0m[2;34m")[2];
         if(interaction.customId == 'vehAvailable') {
             vehiclesBtns.addComponents(
                 new ButtonBuilder().setCustomId('vehAvailable').setStyle(ButtonStyle.Success).setEmoji("896393106700775544").setDisabled(true),

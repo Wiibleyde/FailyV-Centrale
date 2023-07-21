@@ -57,14 +57,19 @@ module.exports = {
                 name: `**Note**`,
                 value: `${interaction.components[2].components[0].value}`,
                 inline: false
-            }
+            },
+            {
+                name: `**Contacté**`,
+                value: `0 fois`,
+                inline: true
+            },
         );
         //Get channel by looking at env var
         const channelToSend = interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(process.env.IRIS_SURGERY_CHANNEL_ID);
         //Ajout des boutons sous l'embed pour : Dire que le rendez vous est fini, que la personne a été contactée, que le rendez-vous a été pris/que la date a été fixée, que le rendez-vous a été annulé
         const rendezVousActionRow = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setCustomId('rendezVousFini').setLabel("Rendez-vous fini").setStyle(ButtonStyle.Success).setEmoji("896393106700775544").setDisabled(false),
-            new ButtonBuilder().setCustomId('rendezVousContacte').setLabel("Personne contactée").setStyle(ButtonStyle.Secondary).setEmoji("📞").setDisabled(true),
+            new ButtonBuilder().setCustomId('rendezVousContacte').setLabel("Personne contactée").setStyle(ButtonStyle.Secondary).setEmoji("📞").setDisabled(false),
             new ButtonBuilder().setCustomId('rendezVousPris').setLabel("Rendez-vous pris").setStyle(ButtonStyle.Primary).setEmoji("📆").setDisabled(false),
             new ButtonBuilder().setCustomId('rendezVousAnnule').setLabel("Rendez-vous annulé").setStyle(ButtonStyle.Danger).setEmoji("896393106633687040").setDisabled(false)
         );

@@ -2,6 +2,8 @@
 const logger = require('../../modules/logger');
 //Récup du créateur d'embed
 const emb = require('../../modules/embeds');
+//Fonction pour attendre
+const wait = require('node:timers/promises').setTimeout;
 
 module.exports = {
     execute: async function(interaction, errEmb) {
@@ -34,9 +36,9 @@ module.exports = {
         }
         //Modify the embed to add at the end the username of the person who took the appointment
         //Check if the appointment is already taken edit the field
-        if(rendezVousEmb.fields[3] != null) {
+        if(rendezVousEmb.fields[4] != null) {
             //Remove the field
-            newEmbed.spliceFields(3, 1);
+            newEmbed.spliceFields(4, 1);
             //Add the new field
             newEmbed.addFields(
                 {
@@ -58,5 +60,8 @@ module.exports = {
         await message.edit({ embeds: [newEmbed] });
         //Send confirmation message
         await interaction.reply({ content: `Le rendez-vous a bien été pris.`, ephemeral: true });
+        // Supprime la réponse après 5s
+        await wait(5000);
+        await interaction.deleteReply();
     }
 }

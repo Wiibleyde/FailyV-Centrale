@@ -22,21 +22,21 @@ module.exports = {
     log: async (log, client) => {
         logger.log(log);
         if(client != null) {
-            const embed = emb.generate(null, null, log, `#13B154`, process.env.LSMS_LOGO_V2, null, `LOG`, client.user.avatarURL(), null, null, null, true);
+            const embed = emb.generate(null, null, log, `#159879`, process.env.LSMS_LOGO_V2, null, `LOG`, client.user.avatarURL(), null, null, null, true);
             await client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_DEBUG_LOGS_CHANNEL_ID).send({ embeds: [embed] });
         }
     },
     debug: async (debug, client) => {
         logger.debug(debug);
         if(client != null) {
-            const embed = emb.generate(null, null, debug, `#43CCB0`, process.env.LSMS_LOGO_V2, null, `DEBUG`, client.user.avatarURL(), null, null, null, true);
+            const embed = emb.generate(null, null, debug, `#1688CD`, process.env.LSMS_LOGO_V2, null, `DEBUG`, client.user.avatarURL(), null, null, null, true);
             await client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_DEBUG_LOGS_CHANNEL_ID).send({ embeds: [embed] });
         }
     },
     warn: async (warn, client) => {
         logger.warn(warn);
         if(client != null) {
-            const embed = emb.generate(null, null, warn, `Gold`, process.env.LSMS_LOGO_V2, null, `WARN`, client.user.avatarURL(), null, null, null, true);
+            const embed = emb.generate(null, null, warn, `#98C410`, process.env.LSMS_LOGO_V2, null, `WARN`, client.user.avatarURL(), null, null, null, true);
             await client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_DEBUG_LOGS_CHANNEL_ID).send({ embeds: [embed] });
         }
     },

@@ -6,6 +6,8 @@ const logger = require('../../modules/logger');
 const doctorRoles = require('../../sql/doctorManagement/doctorRoles');
 //Récup du créateur d'embed
 const emb = require('../../modules/embeds');
+//Importation du module pour kick du service
+const kickservice = require('../../modules/kickservice');
 
 module.exports = {
     //Création de la commande
@@ -27,7 +29,7 @@ module.exports = {
         //Récupération de l'ID du docteur
         const docteurId = docteur.id;
         //Récupération des rôles de l'utilisateur
-        const roles = docteur.roles.cache;
+        let roles = docteur.roles.cache;            
         //Check si le docteur est déjà en vacances
         if (docteur.roles.cache.has(process.env.IRIS_VACANCES_ROLE_ID)) {
             //Remove le rôle
@@ -54,6 +56,12 @@ module.exports = {
                 logger.error(error);
             }
         } else {
+            if(docteur.roles.cache.has(process.env.IRIS_SERVICE_ROLE_ID)) {
+                //Kick le docteur du service
+                await kickservice.kickSomeone(docteur, interaction.guild, interaction.member, false);
+                //Refresh la liste des rôles
+                roles = docteur.roles.cache;
+            }
             //Ajout des rôles de docteur dans un tableau
             let docteurRolesArray = [];
             //Parse json to array process.env.IRIS_VACANCES_EXCLUDE_ROLES_ID

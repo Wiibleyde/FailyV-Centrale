@@ -14,6 +14,9 @@ const userservice = require('./../modules/kickservice');
 //Récup des requêtes SQL de debug
 const debugSQL = require('./../sql/debugMode/debugMode');
 
+//Récup des requêtes SQL du nom
+const nameSQL = require('./../sql/rename/rename');
+
 //System pour le kick auto de 6h
 const CronJob = require('cron').CronJob;
 
@@ -73,8 +76,12 @@ module.exports = {
             }, 5000);
         }
         const privateClient = guild.members.cache.get(process.env.IRIS_DISCORD_ID);
-        if(privateClient.nickname != 'Chantrale') {
-            privateClient.setNickname('Chantrale');
+        await nameSQL.init();
+        const customName = await nameSQL.getName();
+        if(customName[0].name != null) {
+            if(privateClient.nickname != customName[0].name) {
+                privateClient.setNickname(customName[0].name);
+            }
         }
         service.start(client);
 

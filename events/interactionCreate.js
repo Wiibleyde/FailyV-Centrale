@@ -47,6 +47,7 @@ module.exports = {
             if(cID == 'vehiculeAddModal') { const vehiculeAddModal = require('./../modals/vehicule/vehiculeAddModal'); vehiculeAddModal.execute(interaction, errEmb); }
             if(cID == 'vehiculeEditModal') { const vehiculeEditModal = require('./../modals/vehicule/vehiculeEditModal'); vehiculeEditModal.execute(interaction, errEmb); }
             if(cID == 'vehEditCtModal') { const vehEditCtModal = require('./../modals/vehicule/vehEditCtModal'); vehEditCtModal.execute(interaction, errEmb); }
+            if(cID == 'renameModal') { const renameModal = require('./../modals/rename/renameModal'); renameModal.execute(interaction, errEmb); }
         }
         //Lorsqu'il s'agit d'un bouton
         if(interaction.isButton()) {

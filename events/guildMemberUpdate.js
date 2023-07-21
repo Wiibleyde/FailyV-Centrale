@@ -6,6 +6,8 @@ const logger = require('./../modules/logger');
 const emb = require('./../modules/embeds');
 //Récup des requêtes SQL de debug
 const debugSQL = require('./../sql/debugMode/debugMode');
+//Récup des requêtes SQL du nom
+const nameSQL = require('./../sql/rename/rename');
 
 const serviceRoleId = process.env.IRIS_SERVICE_ROLE_ID;
 const dispatchRoleId = process.env.IRIS_DISPATCH_ROLE_ID;
@@ -47,8 +49,11 @@ module.exports = {
     
         }
         if(oldMember.user.id == process.env.IRIS_DISCORD_ID) {
-            if(newMember.nickname != 'Chantrale') {
-                newMember.setNickname('Chantrale');
+            const customName = await nameSQL.getName();
+            if(customName[0].name != null) {
+                if(newMember.nickname != customName[0].name) {
+                    newMember.setNickname(customName[0].name);
+                }
             }
         }
     }

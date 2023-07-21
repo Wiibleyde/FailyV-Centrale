@@ -144,7 +144,7 @@ module.exports = {
         const welcomeEmbed = emb.generate(
             null,
             null,
-            `:new: Bienvenue à ${firstName} ${lastName} nous rejoint en tant que <@&${doctorRankData[grade].role_id}> :wave:`,
+            `:new: Bienvenue à **${firstName} ${lastName}** nous rejoint en tant que <@&${doctorRankData[grade].role_id}> :wave:`,
             interaction.guild.roles.cache.get(doctorRankData[grade].role_id).hexColor,
             process.env.LSMS_LOGO_V2, null,
             "Annonce",

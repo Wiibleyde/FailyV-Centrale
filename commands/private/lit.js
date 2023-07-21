@@ -130,7 +130,6 @@ async function genLits(guild, radioChannel, msgId, interaction, newPatient, newP
     logger.debug('Image URL getted !');
     logger.debug('Fetching messages');
     const messageToEdit = await radioChannel.messages.fetch(msgId);
-    logger.debug(messageToEdit);
     if(messageToEdit.embeds[0].url != null) {
         logger.debug('Message fetched !');
         editBedsImage(messageToEdit, imgUrl);
@@ -152,7 +151,6 @@ async function changePatientBed(guild, radioChannel, msgId, interaction, newPati
     logger.debug('Image URL getted !');
     logger.debug('Fetching messages');
     const messageToEdit = await radioChannel.messages.fetch(msgId);
-    logger.debug(messageToEdit);
     if(messageToEdit.embeds[0].url != null) {
         logger.debug('Message fetched !');
         editBedsImage(messageToEdit, imgUrl);

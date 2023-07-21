@@ -43,7 +43,7 @@ module.exports = {
             newEmbed.addFields(
                 {
                     name: `**Rendez-vous pris par**`,
-                    value: `${pseudo} le ${day}/${month}/${year} à ${hour}:${minutes}`,
+                    value: `${pseudo} le **${day}/${month}/${year}** à **${hour}:${minutes}**`,
                     inline: false
                 }
             );
@@ -51,7 +51,7 @@ module.exports = {
             newEmbed.addFields(
                 {
                     name: `**Rendez-vous pris par**`,
-                    value: `${pseudo}`,
+                    value: `${pseudo} le **${day}/${month}/${year}** à **${hour}:${minutes}**`,
                     inline: false
                 }
             );
@@ -59,9 +59,6 @@ module.exports = {
         //Modify the message to update the embed
         await message.edit({ embeds: [newEmbed] });
         //Send confirmation message
-        await interaction.reply({ content: `Le rendez-vous a bien été pris.`, ephemeral: true });
-        // Supprime la réponse après 5s
-        await wait(5000);
-        await interaction.deleteReply();
+        await interaction.deferUpdate();
     }
 }

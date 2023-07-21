@@ -60,8 +60,8 @@ module.exports = {
             },
             {
                 name: `**Contacté**`,
-                value: `0 fois`,
-                inline: true
+                value: `**0** fois`,
+                inline: false
             },
         );
         //Get channel by looking at env var

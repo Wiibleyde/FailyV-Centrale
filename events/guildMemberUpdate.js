@@ -54,6 +54,8 @@ module.exports = {
                 if(newMember.nickname != customName[0].name) {
                     newMember.setNickname(customName[0].name);
                 }
+            } else {
+                newMember.setNickname('');
             }
         }
     }

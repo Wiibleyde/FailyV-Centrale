@@ -82,6 +82,8 @@ module.exports = {
             if(privateClient.nickname != customName[0].name) {
                 privateClient.setNickname(customName[0].name);
             }
+        } else {
+            privateClient.setNickname('');
         }
         service.start(client);
 

@@ -19,6 +19,11 @@ module.exports = {
         //Récupération du docteur
         let docteur = interaction.options.getUser('docteur');
         docteur = interaction.guild.members.cache.get(docteur.id);
+        //Si l'utilisateur est le bot ne pas continuer
+        if (docteur.id == process.env.IRIS_DISCORD_ID) {
+            interaction.followUp({ embeds: [emb.generate(`Gestion des vacanciers`, null, `Vous ne pouvez pas mettre en vacances le bot`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
+            return;
+        }
         //Récupération de l'ID du docteur
         const docteurId = docteur.id;
         //Récupération des rôles de l'utilisateur

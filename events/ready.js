@@ -78,7 +78,7 @@ module.exports = {
         const privateClient = guild.members.cache.get(process.env.IRIS_DISCORD_ID);
         await nameSQL.init();
         const customName = await nameSQL.getName();
-        if(customName[0].name != null) {
+        if(customName != null) {
             if(privateClient.nickname != customName[0].name) {
                 privateClient.setNickname(customName[0].name);
             }

@@ -64,7 +64,7 @@ module.exports = {
             await interaction.deferReply({ ephemeral: true });
             const guild = interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
             const radioChannel = guild.channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID);
-            const getMsgId = beds.getMessageId();
+            const getMsgId = await beds.getMessageId();
             const msgId = getMsgId[0].id;
             let surveillance;
             if(interaction.options.getString('surveillance') != null) {

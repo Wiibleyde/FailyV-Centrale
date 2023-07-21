@@ -19,8 +19,8 @@ const logger = log4js.getLogger();
 logger.level = 'all';
 
 module.exports = {
-    log: async (log) => {
-        logger.log(log, client);
+    log: async (log, client) => {
+        logger.log(log);
         if(client != null) {
             const embed = emb.generate(null, null, log, `#13B154`, process.env.LSMS_LOGO_V2, null, `LOG`, client.user.avatarURL(), null, null, null, true);
             await client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_DEBUG_LOGS_CHANNEL_ID).send({ embeds: [embed] });

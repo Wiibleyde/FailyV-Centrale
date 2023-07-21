@@ -29,8 +29,30 @@ module.exports = {
     debug: async (debug, client) => {
         logger.debug(debug);
         if(client != null) {
-            const embed = emb.generate(null, null, debug, `#1688CD`, process.env.LSMS_LOGO_V2, null, `DEBUG`, client.user.avatarURL(), null, null, null, true);
-            await client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_DEBUG_LOGS_CHANNEL_ID).send({ embeds: [embed] });
+            try {
+                const embed = emb.generate(null, null, debug, `#1688CD`, process.env.LSMS_LOGO_V2, null, `DEBUG`, client.user.avatarURL(), null, null, null, true);
+                await client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_DEBUG_LOGS_CHANNEL_ID).send({ embeds: [embed] });
+            } catch (err) {
+                debug = JSON.stringify(debug);
+                if(!debug.includes('https://')) {
+                    try {
+                        const embed = emb.generate(null, null, debug, `#1688CD`, process.env.LSMS_LOGO_V2, null, `DEBUG`, client.user.avatarURL(), null, null, null, true);
+                        await client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_DEBUG_LOGS_CHANNEL_ID).send({ embeds: [embed] });
+                    } catch (err2) {
+                        try {
+                            await client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_DEBUG_LOGS_CHANNEL_ID).send({ content: '**DEBUG:**\n```\n' + debug + '\n```' });
+                        } catch (err3) {
+                            logger.error(err3);
+                        }
+                    }
+                } else {
+                    try {
+                        await client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_DEBUG_LOGS_CHANNEL_ID).send({ content: '**DEBUG:**\n```\n' + debug + '\n```' });
+                    } catch (err2) {
+                        logger.error(err2);
+                    }
+                }
+            }
         }
     },
     warn: async (warn, client) => {

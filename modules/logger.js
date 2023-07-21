@@ -19,23 +19,31 @@ const logger = log4js.getLogger();
 logger.level = 'all';
 
 module.exports = {
-    log: (log) => {
-        logger.log(log);
+    log: async (log) => {
+        logger.log(log, client);
+        if(client != null) {
+            const embed = emb.generate(null, null, log, `#13B154`, process.env.LSMS_LOGO_V2, null, `LOG`, client.user.avatarURL(), null, null, null, true);
+            await client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_DEBUG_LOGS_CHANNEL_ID).send({ embeds: [embed] });
+        }
     },
-    debug: (debug) => {
+    debug: async (debug, client) => {
         logger.debug(debug);
+        if(client != null) {
+            const embed = emb.generate(null, null, log, `#43CCB0`, process.env.LSMS_LOGO_V2, null, `DEBUG`, client.user.avatarURL(), null, null, null, true);
+            await client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_DEBUG_LOGS_CHANNEL_ID).send({ embeds: [embed] });
+        }
     },
-    warn: (warn) => {
+    warn: async (warn, client) => {
         logger.warn(warn);
+        if(client != null) {
+            const embed = emb.generate(null, null, log, `Gold`, process.env.LSMS_LOGO_V2, null, `WARN`, client.user.avatarURL(), null, null, null, true);
+            await client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_DEBUG_LOGS_CHANNEL_ID).send({ embeds: [embed] });
+        }
     },
-    error: (error) => {
+    error: async (error) => {
         logger.error(error);
     },
     getStartDate: () => {
         return logDate;
-    },
-    send: async (client, category, log, color) => {
-        const embed = emb.generate(null, null, log, color, process.env.LSMS_LOGO_V2, null, category, client.user.avatarURL(), null, null, null, true);
-        await client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_DEBUG_LOGS_CHANNEL_ID).send({ embeds: [embed] });
     }
 }

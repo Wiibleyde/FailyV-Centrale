@@ -33,7 +33,7 @@ for(const folder of commandsFolders) {
         if('data' in command && 'execute' in command) {
             client.commands.set(command.data.name, command);
         } else {
-            logger.warn(`La commande ${filePath} n'a pas la partie "data" ou "execute" !`);
+            logger.warn(`La commande ${filePath} n'a pas la partie "data" ou "execute" !`, client);
         }
     }
 }
@@ -59,8 +59,7 @@ client.login(process.env.IRIS_DISCORD_TOKEN);
 //Arrêt lors d'une commande console
 readcmd.on('line', async (input) => {
     if(input.toLowerCase() == 'quit') {
-        await logger.send(client, `Status`, `Processus arrêté, passage hors-ligne`, `#FF0000`);
-        logger.log(`Au revoir! ${client.user.tag} hors-ligne`);
+        await logger.log(`Au revoir! ${client.user.tag} hors-ligne`, client);
         await client.destroy();
         process.exit(0);
     }
@@ -68,8 +67,7 @@ readcmd.on('line', async (input) => {
 
 //Arrêt avec forever (utilisé sur le serveur de prod)
 process.on('SIGTERM', async () => {
-    await logger.send(client, `Status`, `Processus arrêté, passage hors-ligne`, `#FF0000`);
-    logger.log(`Au revoir! ${client.user.tag} hors-ligne`);
+    await logger.log(`Au revoir! ${client.user.tag} hors-ligne`, client);
     await client.destroy();
     process.exit(0);
 });

@@ -4,7 +4,7 @@ const { ActivityType, PermissionsBitField } = require('discord.js');
 const logger = require('./../modules/logger');
 
 //Déployement des commandes
-require('./../modules/deployCommands');
+const deployCommands = require('./../modules/deployCommands');
 //Déployement des commandes
 const service = require('./../modules/service');
 
@@ -23,7 +23,8 @@ module.exports = {
     name: 'ready',
     once: true,
     async execute(client) {
-        await logger.log(`Bot en ligne! Connecté avec le compte ${client.user.tag}`);
+        deployCommands.init(client);
+        await logger.log(`Bot en ligne! Connecté avec le compte ${client.user.tag}`, client);
 
         //Récupération des personnes en service
         const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
@@ -31,7 +32,7 @@ module.exports = {
         var serviceCount = guild.roles.cache.get(process.env.IRIS_SERVICE_ROLE_ID).members.size;
         var dispatchCount = guild.roles.cache.get(process.env.IRIS_DISPATCH_ROLE_ID).members.size;
 
-        await debugSQL.initDB();
+        await debugSQL.initDB(client);
         const debugState = await debugSQL.getDebugState();
         if(debugState[0] == null) {
             const role = await guild.roles.create({
@@ -80,10 +81,9 @@ module.exports = {
         const job = new CronJob('00 00 06 * * *', function() {
             userservice.kick(guild, guild.members.cache.get(process.env.IRIS_DISCORD_ID), false);
             service.resetRadios(client, null);
-            logger.log(`Reboot de 06h00 effectué !`);
+            logger.log(`Reset de 06h00 effectué !`, client);
         });
         job.start();
-        logger.send(client, `Status`, `Démarrage effectué avec succès !`, `#0DE600`);
 
     },
     setDebugMode: (state) => {

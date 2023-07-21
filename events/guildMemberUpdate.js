@@ -48,7 +48,7 @@ module.exports = {
             }
     
         }
-        if(oldMember.user.id == process.env.IRIS_DISCORD_ID) {
+        if(oldMember.user.id == process.env.IRIS_DISCORD_ID && oldMember.guildId == process.env.IRIS_PRIVATE_GUILD_ID) {
             const customName = await nameSQL.getName();
             if(customName[0] != null) {
                 if(newMember.nickname != customName[0].name) {

@@ -59,10 +59,10 @@ module.exports = {
             const allVeh = await vehicles.get();
             await vehicles.init();
             const vehChanId = await vehicles.getChannelId();
-            let vehiculeChannelID = vehChanId[0].id;
-            if(vehiculeChannelID == null) {
+            if(vehChanId[0] == null) {
                 return interaction.followUp({ embeds: [emb.generate(null, null, `Oups :(\n\nAucun salon de gestion des véhicules n'a été trouvé en base de donnée\nVeuillez contacter un des développeurs (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour régler ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
             }
+            let vehiculeChannelID = vehChanId[0].id;
             const channelToSend = await interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(vehiculeChannelID);
             await regenVeh.all(channelToSend, allVeh);
             await interaction.followUp({ embeds: [emb.generate(null, null, `La liste des véhicules a bien été régénérée !`, "#0DE600", process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });

@@ -34,6 +34,36 @@ module.exports = {
             });
         });
     },
+    //Fonction de récupération du message des lits
+    getMessageId: () => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "SELECT `id` FROM `lit_message`",
+                    timeout: 40000
+                }, (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
+    setMessageId: (msgId) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "INSERT INTO `lit_message` SET `id`=?",
+                    timeout: 40000,
+                    values: [msgId]
+                }, (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
     //Fonction d'ajout d'un patient
     add: (patient, letter, surveillance) => {
         return new Promise((resolve, reject) => {

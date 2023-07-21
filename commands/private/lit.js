@@ -62,6 +62,10 @@ module.exports = {
     async execute(interaction) {
         if(!service.isGen()) {
             await interaction.deferReply({ ephemeral: true });
+            const guild = interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
+            const radioChannel = guild.channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID);
+            const getMsgId = beds.getMessageId();
+            const msgId = getMsgId[0].id;
             let surveillance;
             if(interaction.options.getString('surveillance') != null) {
                 surveillance = interaction.options.getString('surveillance');
@@ -84,31 +88,31 @@ module.exports = {
                             patient.push(interaction.options.getString('patient').toLowerCase());
                             patientLetter.push(interaction.options.getString('lettre'));
                             patientSurveilance.push(surveillance);
-                            genLits(interaction, interaction.options.getString('patient').toLowerCase(), interaction.options.getString('lettre'), surveillance, patient, patientLetter, patientSurveilance);
+                            genLits(guild, radioChannel, msgId, interaction, interaction.options.getString('patient').toLowerCase(), interaction.options.getString('lettre'), surveillance, patient, patientLetter, patientSurveilance);
                     } else {
                         let patientIndex = patient.indexOf(interaction.options.getString('patient').toLowerCase());
                         if(patientLetter[patientIndex] != interaction.options.getString('lettre') || patientSurveilance[patientIndex] != surveillance) {
                             patientLetter[patientIndex] = interaction.options.getString('lettre');
                             patientSurveilance[patientIndex] = surveillance;
-                            changePatientBed(interaction, interaction.options.getString('patient').toLowerCase(), interaction.options.getString('lettre'), surveillance, patient, patientLetter, patientSurveilance);
+                            changePatientBed(guild, radioChannel, msgId, interaction, interaction.options.getString('patient').toLowerCase(), interaction.options.getString('lettre'), surveillance, patient, patientLetter, patientSurveilance);
                         } else {
-                            await interaction.followUp({ embeds: [emb.generate(null, null, `Désolé, se patient est déjà placé dans le lit **${patientLetter[patientIndex].toUpperCase()}** !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });
+                            await interaction.followUp({ embeds: [emb.generate(null, null, `Désolé, se patient est déjà placé dans le lit **${patientLetter[patientIndex].toUpperCase()}** !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)], ephemeral: true });
                             // Supprime la réponse après 5s
                             await wait(5000);
                             await interaction.deleteReply();
                         }
                     }
                 } else {
-                    await interaction.followUp({ embeds: [emb.generate(null, null, `Désolé il y a déjà un patient dans se lit, veuillez en essayer un autre !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });
+                    await interaction.followUp({ embeds: [emb.generate(null, null, `Désolé il y a déjà un patient dans se lit, veuillez en essayer un autre !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)], ephemeral: true });
                     // Supprime la réponse après 5s
                     await wait(5000);
                     await interaction.deleteReply();
                 }
             } else {
-                genLits(interaction, interaction.options.getString('patient').toLowerCase(), interaction.options.getString('lettre'), surveillance, [interaction.options.getString('patient').toLowerCase()], [interaction.options.getString('lettre')], [surveillance]);
+                genLits(guild, radioChannel, msgId, interaction, interaction.options.getString('patient').toLowerCase(), interaction.options.getString('lettre'), surveillance, [interaction.options.getString('patient').toLowerCase()], [interaction.options.getString('lettre')], [surveillance]);
             }
         } else {
-            await interaction.reply({ embeds: [emb.generate(null, null, `L'aperçu de la salle de réveil est déjà en cours de mise à jour, veuillez patienter quelques secondes !`, `#FEAC12`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });
+            await interaction.reply({ embeds: [emb.generate(null, null, `L'aperçu de la salle de réveil est déjà en cours de mise à jour, veuillez patienter quelques secondes !`, `#FEAC12`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)], ephemeral: true });
             // Supprime la réponse après 5s
             await wait(5000);
             await interaction.deleteReply();
@@ -116,7 +120,7 @@ module.exports = {
     },
 };
 
-async function genLits(interaction, newPatient, newPatientLetter, newPatientSurveillance, patientList, patientLetters, patientSurveillance) {
+async function genLits(guild, radioChannel, msgId, interaction, newPatient, newPatientLetter, newPatientSurveillance, patientList, patientLetters, patientSurveillance) {
     service.setGen(true);
     await beds.add(newPatient, newPatientLetter, newPatientSurveillance);
     const imgMsg = await img.write(patientList, patientLetters, patientSurveillance, interaction.client);
@@ -125,22 +129,19 @@ async function genLits(interaction, newPatient, newPatientLetter, newPatientSurv
     imgMsg.attachments.map(bedImg => imgUrl = bedImg.attachment);
     logger.debug('Image URL getted !');
     logger.debug('Fetching messages');
-    interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID).messages.fetch().then(messages => {
-        messages.map(async d => {
-            if(d.embeds[0].url != null) {
-                logger.debug('Message fetched !');
-                editBedsImage(d, imgUrl);
-                await interaction.followUp({ embeds: [emb.generate(null, null, `Aperçu de la salle de réveil mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });
-                service.setGen(false);
-                // Supprime la réponse après 5s
-                await wait(5000);
-                await interaction.deleteReply();
-            }
-        });
-    });
+    const messageToEdit = radioChannel.messages.fetch(msgId);
+    if(messageToEdit.embeds[0].url != null) {
+        logger.debug('Message fetched !');
+        editBedsImage(messageToEdit, imgUrl);
+        await interaction.followUp({ embeds: [emb.generate(null, null, `Aperçu de la salle de réveil mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)], ephemeral: true });
+        service.setGen(false);
+        // Supprime la réponse après 5s
+        await wait(5000);
+        await interaction.deleteReply();
+    }
 }
 
-async function changePatientBed(interaction, newPatient, newPatientLetter, newPatientSurveillance, patientList, patientLetters, patientSurveillance) {
+async function changePatientBed(guild, radioChannel, msgId, interaction, newPatient, newPatientLetter, newPatientSurveillance, patientList, patientLetters, patientSurveillance) {
     service.setGen(true);
     await beds.update(newPatient, newPatientLetter, newPatientSurveillance);
     const imgMsg = await img.write(patientList, patientLetters, patientSurveillance, interaction.client);
@@ -149,19 +150,17 @@ async function changePatientBed(interaction, newPatient, newPatientLetter, newPa
     imgMsg.attachments.map(bedImg => imgUrl = bedImg.attachment);
     logger.debug('Image URL getted !');
     logger.debug('Fetching messages');
-    interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID).messages.fetch().then(messages => {
-        messages.map(async d => {
-            if(d.embeds[0].url != null) {
-                logger.debug('Message fetched !');
-                editBedsImage(d, imgUrl);
-                await interaction.followUp({ embeds: [emb.generate(null, null, `Aperçu de la salle de réveil mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });
-                service.setGen(false);
-                // Supprime la réponse après 5s
-                await wait(5000);
-                await interaction.deleteReply();
-            }
-        });
-    });
+    const messageToEdit = radioChannel.messages.fetch(msgId);
+    if(messageToEdit.embeds[0].url != null) {
+        logger.debug('Message fetched !');
+        editBedsImage(messageToEdit, imgUrl);
+        await interaction.followUp({ embeds: [emb.generate(null, null, `Aperçu de la salle de réveil mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)], ephemeral: true });
+        service.setGen(false);
+        // Supprime la réponse après 5s
+        await wait(5000);
+        await interaction.deleteReply();
+    }
+
 }
 
 async function editBedsImage(d, imgUrl) {

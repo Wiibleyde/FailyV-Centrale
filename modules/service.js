@@ -306,29 +306,34 @@ async function sendBedsImage(letters, radioChan, bedsImg) {
         }
     }
     if(letters.length == 0) {
-        await radioChan.send({ content: bedsImg });
+        const bedsMsg = await radioChan.send({ content: bedsImg });
+        beds.setMessageId(bedsMsg.id);
         gen = false;
     } else if(letters.length < 6) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
-        await radioChan.send({ content: bedsImg, components: [btns1] });
+        const bedsMsg = await radioChan.send({ content: bedsImg, components: [btns1] });
+        beds.setMessageId(bedsMsg.id);
         gen = false;
     } else if(letters.length < 11) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
-        await radioChan.send({ content: bedsImg, components: [btns1, btns2] });
+        const bedsMsg = await radioChan.send({ content: bedsImg, components: [btns1, btns2] });
+        beds.setMessageId(bedsMsg.id);
         gen = false;
     } else if(letters.length < 16) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
         const btns3 = btnCreator.genBedsBtns(lettersArray3);
-        await radioChan.send({ content: bedsImg, components: [btns1, btns2, btns3] });
+        const bedsMsg = await radioChan.send({ content: bedsImg, components: [btns1, btns2, btns3] });
+        beds.setMessageId(bedsMsg.id);
         gen = false;
     } else if(letters.length < 21) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
         const btns3 = btnCreator.genBedsBtns(lettersArray3);
         const btns4 = btnCreator.genBedsBtns(lettersArray4);
-        await radioChan.send({ content: bedsImg, components: [btns1, btns2, btns3, btns4] });
+        const bedsMsg = await radioChan.send({ content: bedsImg, components: [btns1, btns2, btns3, btns4] });
+        beds.setMessageId(bedsMsg.id);
         gen = false;
     }
 }

@@ -69,7 +69,7 @@ module.exports = {
         //Ajout des boutons sous l'embed pour : Dire que le rendez vous est fini, que la personne a été contactée, que le rendez-vous a été pris/que la date a été fixée, que le rendez-vous a été annulé
         const rendezVousActionRow = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setCustomId('rendezVousFini').setLabel("Terminer/Supprimer").setStyle(ButtonStyle.Success).setEmoji("896393106700775544").setDisabled(false),
-            new ButtonBuilder().setCustomId('rendezVousContacte').setLabel("Personne contactée").setStyle(ButtonStyle.Primary).setEmoji("827160475757707324").setDisabled(false),
+            new ButtonBuilder().setCustomId('rendezVousContacte').setLabel("Personne contactée").setStyle(ButtonStyle.Primary).setEmoji("📱").setDisabled(false),
             new ButtonBuilder().setCustomId('rendezVousPris').setLabel("Rendez-vous pris").setStyle(ButtonStyle.Danger).setEmoji("📆").setDisabled(false)
         );
         //Save the rendez-vous in DB

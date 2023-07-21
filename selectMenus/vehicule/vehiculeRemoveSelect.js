@@ -15,7 +15,7 @@ module.exports = {
     //Création de la commande
     execute: async function (interaction, errEmb) {
         //Logs de quel option du menu de selection à été utilisée
-        logger.log(`${interaction.user.username}#${interaction.user.discriminator} (${interaction.user}) a utilisé(e) l'option "${interaction.values}" du menu de séléction "${interaction.customId}"`, interaction.client);
+        logger.log(`${interaction.user.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (\\${interaction.user}) a utilisé(e) l'option "${interaction.values}" du menu de séléction "${interaction.customId}"`, interaction.client);
         let respContent = 'Le(s) véhicule(s) immatriculé(s) ';
         let isVehNull = false;
         for(i=0;i<interaction.values.length;i++) {

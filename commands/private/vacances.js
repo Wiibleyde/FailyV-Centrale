@@ -57,13 +57,13 @@ module.exports = {
             //Ajout des rôles de docteur dans un tableau
             let docteurRolesArray = [];
             //Parse json to array process.env.IRIS_VACANCES_EXCLUDE_ROLES_ID
-            let excludeRoles = JSON.parse(process.env.IRIS_VACANCES_EXCLUDE_ROLES_ID);
+            let excludeRoles = process.env.IRIS_VACANCES_EXCLUDE_ROLES_ID.split(',');
             //Pour chaque rôle de la guild
             roles.forEach(async role => {
                 //Si le role.id == guild id 
                 if (role.id != process.env.IRIS_PRIVATE_GUILD_ID) {
                     //Si le role.id est dans excludeRoles (rôles à exclure) ne pas l'ajouter au tableau
-                    if (!excludeRoles.includes(parseInt(role.id))) {
+                    if (!excludeRoles.includes(role.id)) {
                         //Ajouter le rôle au tableau
                         docteurRolesArray.push(role.id);
                     }

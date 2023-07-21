@@ -68,9 +68,9 @@ module.exports = {
         const channelToSend = interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(process.env.IRIS_GENERAL_CHANNEL_ID);
         //Ajout des boutons sous l'embed pour : Dire que le rendez vous est fini, que la personne a été contactée, que le rendez-vous a été pris/que la date a été fixée, que le rendez-vous a été annulé
         const rendezVousActionRow = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('rendezVousFini').setLabel("Terminer/Supprimer").setStyle(ButtonStyle.Primary).setEmoji("896393106700775544").setDisabled(false),
-            new ButtonBuilder().setCustomId('rendezVousContacte').setLabel("Personne contactée").setStyle(ButtonStyle.Danger).setEmoji("📞").setDisabled(false),
-            new ButtonBuilder().setCustomId('rendezVousPris').setLabel("Rendez-vous pris").setStyle(ButtonStyle.Secondary).setEmoji("📆").setDisabled(false)
+            new ButtonBuilder().setCustomId('rendezVousFini').setLabel("Terminer/Supprimer").setStyle(ButtonStyle.Success).setEmoji("896393106700775544").setDisabled(false),
+            new ButtonBuilder().setCustomId('rendezVousContacte').setLabel("Personne contactée").setStyle(ButtonStyle.Primary).setEmoji("827160475757707324").setDisabled(false),
+            new ButtonBuilder().setCustomId('rendezVousPris').setLabel("Rendez-vous pris").setStyle(ButtonStyle.Danger).setEmoji("📆").setDisabled(false)
         );
         //Save RDV in DB
         await rdv.registerRDV(interaction.user.id, phoneNumber, "Généraliste", interaction.components[2].components[0].value);

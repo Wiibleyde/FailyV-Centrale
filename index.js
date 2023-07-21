@@ -33,7 +33,7 @@ for(const folder of commandsFolders) {
         if('data' in command && 'execute' in command) {
             client.commands.set(command.data.name, command);
         } else {
-            logger.warn(`La commande ${filePath} n'a pas la partie "data" ou "execute" !`, client);
+            logger.warn(`La commande ${filePath} n'a pas la partie "data" ou "execute" !`);
         }
     }
 }

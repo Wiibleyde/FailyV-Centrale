@@ -65,7 +65,7 @@ module.exports = {
         const rendezVousActionRow = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setCustomId('rendezVousFini').setLabel("Rendez-vous fini").setStyle(ButtonStyle.Success).setEmoji("896393106700775544").setDisabled(false),
             new ButtonBuilder().setCustomId('rendezVousContacte').setLabel("Personne contactée").setStyle(ButtonStyle.Secondary).setEmoji("📞").setDisabled(true),
-            new ButtonBuilder().setCustomId('rendezVousPris').setLabel("Rendez-vous pris").setStyle(ButtonStyle.Primary).setEmoji("📆").setDisabled(true),
+            new ButtonBuilder().setCustomId('rendezVousPris').setLabel("Rendez-vous pris").setStyle(ButtonStyle.Primary).setEmoji("📆").setDisabled(false),
             new ButtonBuilder().setCustomId('rendezVousAnnule').setLabel("Rendez-vous annulé").setStyle(ButtonStyle.Danger).setEmoji("896393106633687040").setDisabled(false)
         );
         //Save RDV in DB

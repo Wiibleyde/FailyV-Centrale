@@ -39,7 +39,7 @@ module.exports = {
                 await interaction.showModal(renameModal);
             } else {
                 await sql.clearName();
-                interaction.guild.members.cache.get(interaction.client.id).setNickname('');
+                interaction.guild.members.cache.get(interaction.client.user.id).setNickname('');
                 await interaction.reply({ embeds: [emb.generate(null, null, `Mon nom à bien été réinitialisé !`, "#0DE600", process.env.LSMS_LOGO_V2, null, `Gestion ${interaction.client.user.username}`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
                 await wait(5000);
                 await interaction.deleteReply();

@@ -39,6 +39,15 @@ for(const folder of commandsFolders) {
 }
 
 //Init des events Discord
+client.on(Events.MessageCreate, async (message) => {
+    if(message.channelId == process.env.IRIS_SERVICE_CHANNEL_ID || message.channelId == process.env.IRIS_RADIO_CHANNEL_ID) {
+        if(message.author != process.env.IRIS_DISCORD_ID) {
+            logger.log(`${message.member.nickname} - ${message.author.username}#${message.author.discriminator} (\\<@${message.author.id}>)\n\nà envoyé un message dans le salon interdit "#${client.guilds.cache.get(message.guildId).channels.cache.get(message.channelId).name} \\<#${message.channelId}>"\n\nContenu: "${message.content}"`, client);
+            await message.delete();
+        }
+    }
+});
+
 const eventsPath = path.join(__dirname, 'events');
 const eventsFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 

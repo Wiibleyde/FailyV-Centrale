@@ -50,7 +50,7 @@ module.exports = {
         }
         if(oldMember.user.id == process.env.IRIS_DISCORD_ID) {
             const customName = await nameSQL.getName();
-            if(customName != null) {
+            if(customName[0] != null) {
                 if(newMember.nickname != customName[0].name) {
                     newMember.setNickname(customName[0].name);
                 }

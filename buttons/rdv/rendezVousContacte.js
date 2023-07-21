@@ -24,7 +24,7 @@ module.exports = {
         if (minutes < 10) minutes = '0' + minutes;
         //Create new embed
         let color = process.env.LSMS_COLORCODE;
-        if(rendezVousEmb.color == parseInt(color)) {
+        if(rendezVousEmb.color == parseInt(color.split('#')[1], 16)) {
             color = '#5865f2';
         }
         const newEmbed = emb.generate(null, null, null, color, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, rendezVousEmb.footer.text, null, false);

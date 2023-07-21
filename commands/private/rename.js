@@ -28,7 +28,7 @@ module.exports = {
                     name: `Réinitialiser mon nom`,
                     value: `reset`
                 }
-            )
+            ).setRequired(true)
         ),
     async execute(interaction) {
         if(hasAuthorization(Rank.Director, interaction.member.roles.cache)) {

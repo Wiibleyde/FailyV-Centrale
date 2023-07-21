@@ -2,8 +2,8 @@
 const logger = require('../../modules/logger');
 //Récup du créateur d'embed
 const emb = require('../../modules/embeds');
-//Fonction pour attendre
-const wait = require('node:timers/promises').setTimeout;
+//Récup du module sql
+const rdv = require('../../sql/rdvManagment/rdv');
 
 module.exports = {
     execute: async function(interaction, errEmb) {
@@ -25,7 +25,7 @@ module.exports = {
         //Create new embed
         let color = rendezVousEmb.color;
         if(color == parseInt(process.env.LSMS_COLORCODE.split('#')[1], 16)) {
-            color = '#5865f2';
+            color = parseInt('#5865f2'.split('#')[1], 16);
         }
         const newEmbed = emb.generate(null, null, null, color, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, rendezVousEmb.footer.text, null, false);
         for (let i = 0; i < rendezVousEmb.fields.length; i++) {
@@ -56,6 +56,7 @@ module.exports = {
             newEmbed.spliceFields(3, 1);
             newEmbed.addFields(rdvPrisField);
         }
+        await rdv.updateRDVContact(`**${contacte}** fois\nDernière fois contacté : le **${day}/${month}/${year}** à **${hour}:${minutes}**`, color, message.id);
         //Modify the message to update the embed
         await message.edit({ embeds: [newEmbed] });
         //Send confirmation message

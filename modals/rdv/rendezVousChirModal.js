@@ -72,10 +72,10 @@ module.exports = {
             new ButtonBuilder().setCustomId('rendezVousContacte').setLabel("Personne contactée").setStyle(ButtonStyle.Primary).setEmoji("📱").setDisabled(false),
             new ButtonBuilder().setCustomId('rendezVousPris').setLabel("Rendez-vous pris").setStyle(ButtonStyle.Danger).setEmoji("📆").setDisabled(false)
         );
-        //Save the rendez-vous in DB
-        await rdv.registerRDV(patient, phoneNumber, "Chirurgie", interaction.components[2].components[0].value);
         //Send embed with buttons
-        channelToSend.send({ embeds: [rendezVousEmb], components: [rendezVousActionRow] });
+        const rdvMsg = await channelToSend.send({ embeds: [rendezVousEmb], components: [rendezVousActionRow] });
+        //Save RDV in DB
+        await rdv.registerRDV(1, patient, phoneNumber, interaction.components[2].components[0].value, `**0** fois`, pseudo, rdvMsg.id);
         //Send confirmation message
         await interaction.reply({ embeds: [emb.generate(null, null, `Le rendez-vous de chirurgie a bien été ajouté à l'agenda !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });            // Supprime la réponse après 5s
         await wait(5000);

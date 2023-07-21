@@ -31,5 +31,29 @@ module.exports = {
                 }
             }
         });
+    },
+    kickSomeone: async (member, guild, forcer, needDM) => {
+        const serviceRole = guild.roles.cache.get(process.env.IRIS_SERVICE_ROLE_ID);
+        const dispatchRole = guild.roles.cache.get(process.env.IRIS_DISPATCH_ROLE_ID);
+        const offole = guild.roles.cache.get(process.env.IRIS_OFF_ROLE_ID);
+        member.roles.remove(serviceRole);
+        logRP.fds(guild, member.nickname, forcer.nickname);
+        if(member.roles.cache.has(process.env.IRIS_DISPATCH_ROLE_ID)) {
+            logRP.fdd(guild, member.nickname, forcer.nickname);
+        }
+        member.roles.remove(dispatchRole);
+        member.roles.remove(offole);
+        if(needDM) {
+            try {
+                let footerText = `Cordialement, `;
+                if(forcer.id == process.env.IRIS_DISCORD_ID) {
+                    footerText = footerText + `votre secrétaire ${forcer.nickname}`;
+                } else {
+                    footerText = footerText + forcer.nickname;
+                }
+                await user.send({ embeds: [emb.generate(`Bonjour, ${member.nickname}`, null, `Vous n'avez pas pris votre fin de service.\nMerci de penser à la prendre à l'avenir !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, footerText, null, true)] });
+            } catch(err) {
+            }
+        }
     }
 }

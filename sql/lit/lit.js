@@ -52,7 +52,7 @@ module.exports = {
     setMessageId: (msgId) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "INSERT INTO `lit_message` SET `id`=?",
+                    sql: "UPDATE `lit_message` SET `id`=?",
                     timeout: 40000,
                     values: [msgId]
                 }, (reqErr, result, fields) => {

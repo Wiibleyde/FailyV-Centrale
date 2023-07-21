@@ -68,7 +68,6 @@ module.exports = {
             if(cID == 'serviceSwitch') { const serviceSwitch = require('./../buttons/service/serviceSwitch'); serviceSwitch.execute(interaction, errEmb); }
             if(cID == 'serviceDispatch') { const serviceDispatch = require('./../buttons/service/serviceDispatch'); serviceDispatch.execute(interaction, errEmb); }
             if(cID == 'serviceSwitchOff') { const serviceSwitchOff = require('./../buttons/service/serviceSwitchOff'); serviceSwitchOff.execute(interaction, errEmb); }
-            if(cID == 'rendezVousAnnule') { const rendezVousAnnule = require('./../buttons/rdv/rendezVousAnnule'); rendezVousAnnule.execute(interaction, errEmb); }
             if(cID == 'rendezVousPris') { const rendezVousPris = require('./../buttons/rdv/rendezVousPris'); rendezVousPris.execute(interaction, errEmb); }
             if(cID == 'rendezVousContacte') { const rendezVousContacte = require('./../buttons/rdv/rendezVousContacte'); rendezVousContacte.execute(interaction, errEmb); }
             if(cID == 'rendezVousFini') { const rendezVousFini = require('./../buttons/rdv/rendezVousFini'); rendezVousFini.execute(interaction, errEmb); }

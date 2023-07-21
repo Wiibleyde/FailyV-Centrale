@@ -10,6 +10,17 @@ module.exports = {
         const pseudo = interaction.member.displayName;
         //Get the embed
         const rendezVousEmb = interaction.message.embeds[0];
+        //Get now date
+        const now = new Date();
+        let day = now.getDate()
+        if (day < 10) day = '0' + day;
+        let month = now.getMonth() + 1;
+        if (month < 10) month = '0' + month;
+        const year = now.getFullYear();
+        let hour = now.getHours();
+        if (hour < 10) hour = '0' + hour;
+        let minutes = now.getMinutes();
+        if (minutes < 10) minutes = '0' + minutes;
         //Create new embed
         const newEmbed = emb.generate(null, null, null, `#00FF00`, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, rendezVousEmb.footer.text, null, false);
         for (let i = 0; i < rendezVousEmb.fields.length; i++) {
@@ -30,7 +41,7 @@ module.exports = {
             newEmbed.addFields(
                 {
                     name: `**Rendez-vous pris par**`,
-                    value: `${pseudo}`,
+                    value: `${pseudo} le ${day}/${month}/${year} à ${hour}:${minutes}`,
                     inline: false
                 }
             );

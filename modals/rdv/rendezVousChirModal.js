@@ -23,7 +23,7 @@ module.exports = {
             try {
                 await interaction.reply({ content: `Le numéro de téléphone ${interaction.components[1].components[0].value} n'est pas valide. Veuillez entrer un numéro de téléphone valide (555-5420 ou 5555420 ou 5420).`, ephemeral: true });
             } catch (e) {
-                logger.error(e);
+                await logger.error(e);
             }
             return;
         }

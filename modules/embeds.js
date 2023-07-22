@@ -20,14 +20,14 @@ module.exports = {
         if(author != null && authorImg != null && authorLink == null) { emb.setAuthor({ name: author, iconURL: authorImg }); }
         if(author != null && authorImg == null && authorLink != null) { emb.setAuthor({ name: author, url: authorLink }); }
         if(author != null && authorImg != null && authorLink != null) { emb.setAuthor({ name: author, iconURL: authorImg, url: authorLink }); }
-        if(author == null && authorImg != null && authorLink == null) { err = 'Il faut obligatoirement un nom d\'auteur pour mettre une image !'; logger.error(err); }
-        if(author == null && authorImg == null && authorLink != null) { err = 'Il faut obligatoirement un nom d\'auteur pour mettre un lien !'; logger.error(err); }
-        if(author == null && authorImg != null && authorLink != null) { err = 'Il faut obligatoirement un nom d\'auteur pour mettre une image et un lien !'; logger.error(err); }
+        if(author == null && authorImg != null && authorLink == null) { err = 'Il faut obligatoirement un nom d\'auteur pour mettre une image !'; await logger.error(err); }
+        if(author == null && authorImg == null && authorLink != null) { err = 'Il faut obligatoirement un nom d\'auteur pour mettre un lien !'; await logger.error(err); }
+        if(author == null && authorImg != null && authorLink != null) { err = 'Il faut obligatoirement un nom d\'auteur pour mettre une image et un lien !'; await logger.error(err); }
         if(footer != null && footerImg == null) { emb.setFooter({ text: footer }); }
         if(footer != null && footerImg != null) { emb.setFooter({ text: footer, iconURL: footerImg }); }
-        if(footer == null && footerImg != null) { err = 'Il faut obligatoirement un footer text pour mettre une image !'; logger.error(err); }
+        if(footer == null && footerImg != null) { err = 'Il faut obligatoirement un footer text pour mettre une image !'; await logger.error(err); }
         if(timestamp == true) { emb.setTimestamp(); }
-        if(title == null && url == null && desc == null && color == null && thumb == null && img == null && author == null && authorImg == null && authorLink == null && footer == null && footerImg == null && timestamp == null) { err = 'Il faut obligatoirement un titre pour générer un embed !'; logger.error(err); }
+        if(title == null && url == null && desc == null && color == null && thumb == null && img == null && author == null && authorImg == null && authorLink == null && footer == null && footerImg == null && timestamp == null) { err = 'Il faut obligatoirement un titre pour générer un embed !'; await logger.error(err); }
 
         var errEmb = new EmbedBuilder();
 

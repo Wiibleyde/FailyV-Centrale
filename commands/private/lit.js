@@ -124,14 +124,14 @@ async function genLits(guild, radioChannel, msgId, interaction, newPatient, newP
     service.setGen(true);
     await beds.add(newPatient, newPatientLetter, newPatientSurveillance);
     const imgMsg = await img.write(patientList, patientLetters, patientSurveillance, interaction.client);
-    logger.debug('Image written !');
+    await logger.debug('Image written !');
     let imgUrl;
     imgMsg.attachments.map(bedImg => imgUrl = bedImg.attachment);
-    logger.debug('Image URL getted !');
-    logger.debug('Fetching messages');
+    await logger.debug('Image URL getted !');
+    await logger.debug('Fetching messages');
     const messageToEdit = await radioChannel.messages.fetch(msgId);
     if(messageToEdit.embeds[0].url != null) {
-        logger.debug('Message fetched !');
+        await logger.debug('Message fetched !');
         editBedsImage(messageToEdit, imgUrl);
         await interaction.followUp({ embeds: [emb.generate(null, null, `Aperçu de la salle de réveil mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)], ephemeral: true });
         service.setGen(false);
@@ -145,14 +145,14 @@ async function changePatientBed(guild, radioChannel, msgId, interaction, newPati
     service.setGen(true);
     await beds.update(newPatient, newPatientLetter, newPatientSurveillance);
     const imgMsg = await img.write(patientList, patientLetters, patientSurveillance, interaction.client);
-    logger.debug('Image written !');
+    await logger.debug('Image written !');
     let imgUrl;
     imgMsg.attachments.map(bedImg => imgUrl = bedImg.attachment);
-    logger.debug('Image URL getted !');
-    logger.debug('Fetching messages');
+    await logger.debug('Image URL getted !');
+    await logger.debug('Fetching messages');
     const messageToEdit = await radioChannel.messages.fetch(msgId);
     if(messageToEdit.embeds[0].url != null) {
-        logger.debug('Message fetched !');
+        await logger.debug('Message fetched !');
         editBedsImage(messageToEdit, imgUrl);
         await interaction.followUp({ embeds: [emb.generate(null, null, `Aperçu de la salle de réveil mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)], ephemeral: true });
         service.setGen(false);
@@ -165,7 +165,7 @@ async function changePatientBed(guild, radioChannel, msgId, interaction, newPati
 
 async function editBedsImage(d, imgUrl) {
     let letters = await beds.getLetters();
-    logger.debug('Letters getted !');
+    await logger.debug('Letters getted !');
     let lettersArray1 = [];
     let lettersArray2 = [];
     let lettersArray3 = [];

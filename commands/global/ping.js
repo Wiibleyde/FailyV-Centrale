@@ -61,7 +61,7 @@ module.exports = {
             //Envoi de l'embed
             return interaction.reply({ embeds: [pingEmbed], ephemeral: true });
         } catch (error) {
-            logger.error(error);
+            await logger.error(error);
         }
     },
 };

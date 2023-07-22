@@ -13,7 +13,7 @@ module.exports = {
                     values: [type, patient, phone, note, contact, writter, messageID]
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
-                    logger.error(reqErr);
+                    await logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -28,7 +28,7 @@ module.exports = {
                     values: [contact, color, messageID]
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
-                    logger.error(reqErr);
+                    await logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -43,7 +43,7 @@ module.exports = {
                     values: [taker, color, messageID]
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
-                    logger.error(reqErr);
+                    await logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -58,7 +58,7 @@ module.exports = {
                     values: [newMessageID, oldMessageID]
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
-                    logger.error(reqErr);
+                    await logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -73,7 +73,7 @@ module.exports = {
                     values: [messageID]
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
-                    logger.error(reqErr);
+                    await logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -89,7 +89,7 @@ module.exports = {
                     values: [type]
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
-                    logger.error(reqErr);
+                    await logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);

@@ -26,7 +26,7 @@ module.exports = {
                 //Confirmation à Discord du succès de l'opération
                 await interaction.reply({ components: [allOptions], ephemeral: true });
             } catch (err) {
-                logger.error(err)
+                await logger.ogger.ogger.error(err)
                 //Confirmation à Discord du succès de l'opération
                 await interaction.reply({ embeds: [errEmb], ephemeral: true });
             }

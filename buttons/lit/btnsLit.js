@@ -33,13 +33,13 @@ module.exports = {
                 patientSurveilance.push(lits[i].surveillance);
             }
             const imgMsg = await img.write(patient, patientLetter, patientSurveilance, interaction.client);
-            logger.debug('Image written !');
+            await logger.debug('Image written !');
             let imgUrl;
             imgMsg.attachments.map(bedImg => imgUrl = bedImg.attachment);
-            logger.debug('Image URL getted !');
+            await logger.debug('Image URL getted !');
 
             let letters = await beds.getLetters();
-            logger.debug('Letters getted !');
+            await logger.debug('Letters getted !');
             editBedsImage(letters, interaction.message, imgUrl, interaction);
         } else {
             await interaction.reply({ embeds: [emb.generate(null, null, `L'aperçu de la salle de réveil est déjà en cours de mise à jour, veuillez patienter quelques secondes !`, `#FEAC12`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });

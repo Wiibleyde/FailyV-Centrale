@@ -95,7 +95,7 @@ module.exports = {
             try {
                 await interaction.reply({ content: `Le numéro de téléphone ${phone} n'est pas valide. Veuillez entrer un numéro de téléphone valide (555-5420 ou 5555420 ou 5420).`, ephemeral: true });
             } catch (e) {
-                logger.error(e);
+                await logger.error(e);
             }
             return;
         }
@@ -183,7 +183,7 @@ module.exports = {
                     lastMessage.delete();
                 }
             })
-            .catch(logger.error);
+            .catch(await logger.error);
 
         // Confirmation de la création
         const validationEmbed = emb.generate("Succès", null, `La fiche pour ${firstName} ${lastName} a été créé ici : <#${channel.id}>`, "#0CE600", process.env.LSMS_LOGO_V2, null, null, null, null, null, null, false);

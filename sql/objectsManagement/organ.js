@@ -12,7 +12,7 @@ module.exports = {
                     timeout: 40000
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
-                    logger.error(reqErr);
+                    await logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -28,7 +28,7 @@ module.exports = {
                     values: [id]
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
-                    logger.error(reqErr);
+                    await logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -45,7 +45,7 @@ module.exports = {
                     values: [type,side,valid,date]
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
-                    logger.error(reqErr);
+                    await logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);

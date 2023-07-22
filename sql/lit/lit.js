@@ -12,7 +12,7 @@ module.exports = {
                     timeout: 40000
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
-                    logger.error(reqErr);
+                    await logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -27,7 +27,7 @@ module.exports = {
                     timeout: 40000
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
-                    logger.error(reqErr);
+                    await logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -42,7 +42,7 @@ module.exports = {
                     timeout: 40000
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
-                    logger.error(reqErr);
+                    await logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -56,7 +56,7 @@ module.exports = {
                     timeout: 40000
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
-                    logger.error(reqErr);
+                    await logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -71,7 +71,7 @@ module.exports = {
                     values: [msgId]
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
-                    logger.error(reqErr);
+                    await logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -87,7 +87,7 @@ module.exports = {
                     values: [patient, letter, surveillance]
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
-                    logger.error(reqErr);
+                    await logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -103,7 +103,7 @@ module.exports = {
                     values: [letter, surveillance, patient]
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
-                    logger.error(reqErr);
+                    await logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -119,7 +119,7 @@ module.exports = {
                     values: [letter]
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
-                    logger.error(reqErr);
+                    await logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);

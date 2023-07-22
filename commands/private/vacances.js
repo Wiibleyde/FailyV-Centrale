@@ -53,7 +53,7 @@ module.exports = {
                 interaction.followUp({ embeds: [emb.generate(`Gestion des vacanciers`, null, `Les accès de <@${docteur.id}> on bien été restitué`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
                 return;
             } catch (error) {
-                logger.error(error);
+                await logger.error(error);
             }
         } else {
             if(docteur.roles.cache.has(process.env.IRIS_SERVICE_ROLE_ID)) {

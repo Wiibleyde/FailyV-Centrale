@@ -30,7 +30,7 @@ module.exports = {
     once: true,
     async execute(client) {
         deployCommands.init(client);
-        logger.log(`Bot en ligne! Connecté avec le compte ${client.user.tag}`);
+        await logger.log(`Bot en ligne! Connecté avec le compte ${client.user.tag}`);
         await sql.initAllTables(client);
 
         //Récupération des personnes en service
@@ -91,9 +91,9 @@ module.exports = {
 
         const update = new CronJob('00 55 05 * * *', async function() {
             const { exec } = require('node:child_process');
-            exec('git pull && npm i', (err, output) => {
-                if(err) return logger.error(err);
-                logger.debug(output);
+            await exec('git pull && npm i', async (err, output) => {
+                if(err) return await logger.error(err);
+                await logger.debug(output);
             });
             await logger.log(`Redémarrage pour la MAJ du jour !`);
             await client.destroy();
@@ -101,10 +101,10 @@ module.exports = {
         });
         update.start();
 
-        const reset = new CronJob('00 00 06 * * *', function() {
+        const reset = new CronJob('00 00 06 * * *', async function() {
             userservice.kick(guild, guild.members.cache.get(process.env.IRIS_DISCORD_ID), false);
             service.resetRadios(client, null);
-            logger.log(`Reset de 06h00 effectué !`);
+            await logger.log(`Reset de 06h00 effectué !`);
         });
         reset.start();
 

@@ -13,7 +13,7 @@ module.exports = {
                 values: [discordUserId, rolesId]
             }, (reqErr, result, fields) => {
                 if(reqErr) {
-                    logger.error(reqErr);
+                    await logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -29,7 +29,7 @@ module.exports = {
                     values: [discordUserId]
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
-                    logger.error(reqErr);
+                    await logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -45,7 +45,7 @@ module.exports = {
                     values: [discordUserId]
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
-                    logger.error(reqErr);
+                    await logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);

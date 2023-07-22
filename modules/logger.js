@@ -1,6 +1,6 @@
 //Import du créateur de webhook
 const { WebhookClient } = require('discord.js');
-const webhookClient = new WebhookClient({ url: 'https://discord.com/api/webhooks/1132299764214550619/azJbVMKYQVK163oRk1edHsuqtEpk_Kulb8PDJBgTJNvJzf53pBBphNZMjmKmHlcAmiCB' });
+const webhookClient = new WebhookClient({ url: process.env.IRIS_DEBUG_LOGS_WEBHOOK_URL });
 
 //Récup du créateur d'embed
 const emb = require('./embeds');

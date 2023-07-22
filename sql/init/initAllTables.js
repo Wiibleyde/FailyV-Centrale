@@ -19,12 +19,12 @@ module.exports = {
             mysql.sql().query("CREATE TABLE IF NOT EXISTS `radio` (`id` INT(255) NOT NULL PRIMARY KEY AUTO_INCREMENT, `radioid` VARCHAR(255) NOT NULL, `radiofreq` VARCHAR(5) DEFAULT '0.0' NOT NULL, `displayed` BOOLEAN DEFAULT FALSE NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", function (error, results, fields) { if (error) reject(error); });
             mysql.sql().query("CREATE TABLE IF NOT EXISTS `rdv` (`id` INT(255) NOT NULL AUTO_INCREMENT PRIMARY KEY, `type` INT(1) NOT NULL DEFAULT 0, `patient` VARCHAR(255) NOT NULL, `phone` VARCHAR(8) NOT NULL, `note` TEXT NOT NULL, `contact` TEXT NOT NULL, `taker` TEXT DEFAULT NULL, `writter` VARCHAR(255) NOT NULL, `color` INT(255) NOT NULL DEFAULT 10420224, `messageID` TEXT NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", function (error, results, fields) { if (error) reject(error); });
             mysql.sql().query("CREATE TABLE IF NOT EXISTS `vehicule` (`id` INT(255) NOT NULL AUTO_INCREMENT PRIMARY KEY, `name` VARCHAR(255) NOT NULL, `plate` VARCHAR(8) NOT NULL, `ct` TIMESTAMP NOT NULL, `state` INT(1) NOT NULL DEFAULT 0, `type` VARCHAR(255) NOT NULL, `type_order` INT(1) NOT NULL DEFAULT 5, `messageID` TEXT NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", function (error, results, fields) { if (error) reject(error); });
-            const getRadios = mysql.sql.query("SELECT * FROM `radio`", function (error, results, fields) { if (error) reject(error); });
+            const getRadios = mysql.sql().query("SELECT * FROM `radio`", function (error, results, fields) { if (error) reject(error); });
             if(getRadios[0] == null) {
-                mysql.sql.query("INSERT INTO `radio` SET `radioid`='lsms', `displayed`='1'", function (error, results, fields) { if (error) reject(error); });
-                mysql.sql.query("INSERT INTO `radio` SET `radioid`='fdo', `displayed`='1'", function (error, results, fields) { if (error) reject(error); });
-                mysql.sql.query("INSERT INTO `radio` SET `radioid`='bcms'", function (error, results, fields) { if (error) reject(error); });
-                mysql.sql.query("INSERT INTO `radio` SET `radioid`='event'", function (error, results, fields) { if (error) reject(error); });
+                mysql.sql().query("INSERT INTO `radio` SET `radioid`='lsms', `displayed`='1'", function (error, results, fields) { if (error) reject(error); });
+                mysql.sql().query("INSERT INTO `radio` SET `radioid`='fdo', `displayed`='1'", function (error, results, fields) { if (error) reject(error); });
+                mysql.sql().query("INSERT INTO `radio` SET `radioid`='bcms'", function (error, results, fields) { if (error) reject(error); });
+                mysql.sql().query("INSERT INTO `radio` SET `radioid`='event'", function (error, results, fields) { if (error) reject(error); });
             }
             resolve(logger.log(`Base de donnée initialisée/mise à jour !`, client));
         });

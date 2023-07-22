@@ -10,7 +10,7 @@ module.exports = {
             mysql.sql().query({
                 sql: `SELECT *
                     FROM doctor_rank;`
-            }, (reqErr, result, fields) => {
+            }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);

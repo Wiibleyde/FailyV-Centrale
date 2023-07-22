@@ -10,7 +10,7 @@ module.exports = {
             mysql.sql().query({
                     sql: "SELECT * FROM `organe`",
                     timeout: 40000
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -26,7 +26,7 @@ module.exports = {
                     sql: "SELECT * FROM `organe` WHERE `id` = ?",
                     timeout: 40000,
                     values: [id]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -43,7 +43,7 @@ module.exports = {
                     sql: "INSERT INTO `organe` (`type`, `side`, `valid`, `date`) VALUES (?, ?, ?, ?)",
                     timeout: 40000,
                     values: [type,side,valid,date]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);

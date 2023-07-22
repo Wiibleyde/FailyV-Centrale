@@ -18,7 +18,7 @@ module.exports = {
                     arrivalDate,
                     channel_id
                 ]
-            }, (reqErr, result, fields) => {
+            }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -35,7 +35,7 @@ module.exports = {
                     FROM doctor d
                     WHERE d.phone_number = ? AND d.departure_date IS NULL;`,
                 values: [phoneNumber]
-            }, (reqErr, result, fields) => {
+            }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -56,7 +56,7 @@ module.exports = {
                 sql: `SELECT dr.id, dr.name, dr.role_id
                     FROM doctor_rank dr
                     ORDER BY \`position\`;`
-            }, (reqErr, result, fields) => {
+            }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -73,7 +73,7 @@ module.exports = {
                 sql: `SELECT d.first_name, d.last_name, d.phone_number, d.rank_id, DATE_FORMAT(d.arrival_date, '%d/%m/%x') arrival_date
                     FROM doctor d
                     ORDER BY d.arrival_date;`
-            }, (reqErr, result, fields) => {
+            }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -97,7 +97,7 @@ module.exports = {
                 sql: `SELECT count(*) nb_doctor
                     FROM doctor d
                     WHERE d.departure_date IS NULL;`
-            }, (reqErr, result, fields) => {
+            }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);

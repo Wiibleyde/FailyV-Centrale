@@ -10,7 +10,7 @@ module.exports = {
             mysql.sql().query({
                     sql: "SELECT * FROM `lit`",
                     timeout: 40000
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -25,7 +25,7 @@ module.exports = {
             mysql.sql().query({
                     sql: "SELECT `letter` FROM `lit`",
                     timeout: 40000
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -40,7 +40,7 @@ module.exports = {
             mysql.sql().query({
                     sql: "SELECT `id` FROM `lit_message`",
                     timeout: 40000
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -54,7 +54,7 @@ module.exports = {
             mysql.sql().query({
                     sql: "DELETE FROM `lit_message` WHERE 1",
                     timeout: 40000
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -69,7 +69,7 @@ module.exports = {
                     sql: "INSERT INTO `lit_message` SET `id`=?",
                     timeout: 40000,
                     values: [msgId]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -85,7 +85,7 @@ module.exports = {
                     sql: "INSERT INTO `lit` (`patient`, `letter`, `surveillance`) VALUES (?, ?, ?)",
                     timeout: 40000,
                     values: [patient, letter, surveillance]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -101,7 +101,7 @@ module.exports = {
                     sql: "UPDATE `lit` SET `letter`=?, `surveillance`=? WHERE `patient`=?",
                     timeout: 40000,
                     values: [letter, surveillance, patient]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -117,7 +117,7 @@ module.exports = {
                     sql: "DELETE FROM `lit` WHERE `letter`=?",
                     timeout: 40000,
                     values: [letter]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);

@@ -9,7 +9,7 @@ module.exports = {
             mysql.sql().query({
                     sql: "SELECT `id` FROM `channels` WHERE `name`='vehicule'",
                     timeout: 40000
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -24,7 +24,7 @@ module.exports = {
                     sql: "SELECT * FROM `vehicule` WHERE `plate`=?",
                     timeout: 40000,
                     values: [plate]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -39,7 +39,7 @@ module.exports = {
                     sql: "SELECT * FROM `vehicule` WHERE `name`=?",
                     timeout: 40000,
                     values: [name]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -54,7 +54,7 @@ module.exports = {
                     sql: "SELECT * FROM `vehicule` WHERE `type_order`=?",
                     timeout: 40000,
                     values: [type]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -68,7 +68,7 @@ module.exports = {
             mysql.sql().query({
                     sql: "SELECT * FROM `vehicule` ORDER BY type_order, name ASC",
                     timeout: 40000
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -83,7 +83,7 @@ module.exports = {
                     sql: "INSERT INTO `vehicule` SET `name`=?, `plate`=?, `ct`=?, `type`=?, `type_order`=?",
                     timeout: 40000,
                     values: [name, plate, ct, type, type_order]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -98,7 +98,7 @@ module.exports = {
                     sql: "UPDATE `vehicule` SET `ct`=? WHERE `plate`=?",
                     timeout: 40000,
                     values: [ct, plate]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -114,7 +114,7 @@ module.exports = {
                     sql: "UPDATE `vehicule` SET `state`=? WHERE `plate`=?",
                     timeout: 40000,
                     values: [state, plate]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -129,7 +129,7 @@ module.exports = {
                     sql: "UPDATE `vehicule` SET `messageID`=? WHERE `plate`=?",
                     timeout: 40000,
                     values: [messageID, plate]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -144,7 +144,7 @@ module.exports = {
                     sql: "DELETE FROM `vehicule` WHERE `plate`=?",
                     timeout: 40000,
                     values: [plate]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);

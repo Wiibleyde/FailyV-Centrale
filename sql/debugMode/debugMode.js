@@ -9,7 +9,7 @@ module.exports = {
             mysql.sql().query({
                     sql: "SELECT `state` FROM `debug`",
                     timeout: 40000
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -23,7 +23,7 @@ module.exports = {
             mysql.sql().query({
                     sql: "SELECT `roleID` FROM `debug`",
                     timeout: 40000
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -38,7 +38,7 @@ module.exports = {
                     sql: "INSERT INTO `debug` SET `roleID`=?, `state`='0'",
                     timeout: 40000,
                     values: [roleID]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -53,7 +53,7 @@ module.exports = {
                     sql: "UPDATE `debug` SET `state`=?",
                     timeout: 40000,
                     values: [state]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);

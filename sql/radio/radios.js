@@ -11,7 +11,7 @@ module.exports = {
                     sql: "SELECT `radiofreq` FROM `radio` WHERE `radioid`=?",
                     timeout: 40000,
                     values: [radToGet]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -27,7 +27,7 @@ module.exports = {
                     sql: "SELECT `displayed` FROM `radio` WHERE `radioid`=?",
                     timeout: 40000,
                     values: [radToGet]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -43,7 +43,7 @@ module.exports = {
                     sql: "UPDATE `radio` SET `radiofreq`=? WHERE `radioid`=?",
                     timeout: 40000,
                     values: [radio, radToSet]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -59,7 +59,7 @@ module.exports = {
                     sql: "UPDATE `radio` SET `displayed`=? WHERE `radioid`=?",
                     timeout: 40000,
                     values: [radio, radToUp]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);

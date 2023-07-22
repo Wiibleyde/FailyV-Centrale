@@ -11,7 +11,7 @@ module.exports = {
                 sql: "INSERT INTO `doctorRoles`(`discordUserId`, `rolesId`) VALUES (?, ?)",
                 timeout: 40000,
                 values: [discordUserId, rolesId]
-            }, (reqErr, result, fields) => {
+            }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -27,7 +27,7 @@ module.exports = {
                     sql: "SELECT `rolesId` FROM `doctorRoles` WHERE `discordUserId`=?",
                     timeout: 40000,
                     values: [discordUserId]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -43,7 +43,7 @@ module.exports = {
                     sql: "DELETE FROM `doctorRoles` WHERE `discordUserId`=?",
                     timeout: 40000,
                     values: [discordUserId]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);

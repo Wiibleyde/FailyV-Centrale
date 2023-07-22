@@ -7,7 +7,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 module.exports = {
-    init: (client) => {
+    init: async (client) => {
         //Init de arrays pour stocker les commandes en fonction de où elles doivent être envoyés
         const publicCommands = [];
         const privateCommands = [];

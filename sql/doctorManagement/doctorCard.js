@@ -12,7 +12,7 @@ module.exports = {
                 sql: `SELECT *
                     FROM doctor_card_category dcc
                     ORDER BY dcc.\`position\`;`
-            }, (reqErr, result, fields) => {
+            }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -32,7 +32,7 @@ module.exports = {
                      INNER JOIN doctor_card_category dcc
                       ON dc.category = dcc.id
                     ORDER BY dcc.\`position\`, dc.position_in_category;`
-            }, (reqErr, result, fields) => {
+            }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);

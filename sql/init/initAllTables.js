@@ -5,7 +5,7 @@ const mysql = require('../../modules/sql');
 
 module.exports = {
     initAllTables: (client) => {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             mysql.sql().query("CREATE TABLE IF NOT EXISTS `doctor_rank` (`id` varchar(50) NOT NULL, `name` varchar(50) NOT NULL, `parent_channel_id` varchar(20) NOT NULL, `role_id` varchar(20) NOT NULL, `position` INT NOT NULL, CONSTRAINT `rank_pk` PRIMARY KEY (id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", function (error, results, fields) { if (error) reject(error); });
             mysql.sql().query("CREATE TABLE IF NOT EXISTS `doctor` (`id` INT(255) AUTO_INCREMENT NOT NULL, `discord_id` varchar(18) NOT NULL, `first_name` varchar(50) NOT NULL, `last_name` varchar(50) NOT NULL, `phone_number` varchar(8) NOT NULL, `rank_id` varchar(50) NOT NULL, `channel_id` varchar(20) NOT NULL, `arrival_date` DATE NOT NULL, `departure_date` DATE DEFAULT NULL NULL, CONSTRAINT `doctor_pk` PRIMARY KEY (id), CONSTRAINT `doctor_fk` FOREIGN KEY (rank_id) REFERENCES `doctor_rank`(id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", function (error, results, fields) { if (error) reject(error); });
             mysql.sql().query("CREATE TABLE IF NOT EXISTS `doctor_card_category` (`id` varchar(50) NOT NULL, `name` varchar(100) NOT NULL, `position` INT NOT NULL, `color` varchar(7) DEFAULT '#000000' NOT NULL, CONSTRAINT doctor_card_category_pk PRIMARY KEY (id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", function (error, results, fields) { if (error) reject(error); });

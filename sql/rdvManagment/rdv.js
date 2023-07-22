@@ -11,7 +11,7 @@ module.exports = {
                     sql: "INSERT INTO `rdv` SET `type`=?, `patient`=?, `phone`=?, `note`=?, `contact`=?, `writter`=?, `messageID`=?",
                     timeout: 40000,
                     values: [type, patient, phone, note, contact, writter, messageID]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -26,7 +26,7 @@ module.exports = {
                     sql: "UPDATE `rdv` SET `contact`=?, `color`=? WHERE `messageID`=?",
                     timeout: 40000,
                     values: [contact, color, messageID]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -41,7 +41,7 @@ module.exports = {
                     sql: "UPDATE `rdv` SET `taker`=?, `color`=? WHERE `messageID`=?",
                     timeout: 40000,
                     values: [taker, color, messageID]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -56,7 +56,7 @@ module.exports = {
                     sql: "UPDATE `rdv` SET `messageID`=? WHERE `messageID`=?",
                     timeout: 40000,
                     values: [newMessageID, oldMessageID]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -71,7 +71,7 @@ module.exports = {
                     sql: "DELETE FROM `rdv` WHERE `messageID`=?",
                     timeout: 40000,
                     values: [messageID]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);
@@ -87,7 +87,7 @@ module.exports = {
                     sql: "SELECT * FROM `rdv` WHERE `type`=?",
                     timeout: 40000,
                     values: [type]
-                }, (reqErr, result, fields) => {
+                }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     await logger.error(reqErr);
                     reject(reqErr);

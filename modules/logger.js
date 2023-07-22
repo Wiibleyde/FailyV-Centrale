@@ -1,3 +1,7 @@
+//Import du créateur de webhook
+const { WebhookClient } = require('discord.js');
+const webhookClient = new WebhookClient({ url: 'https://discord.com/api/webhooks/1132299764214550619/azJbVMKYQVK163oRk1edHsuqtEpk_Kulb8PDJBgTJNvJzf53pBBphNZMjmKmHlcAmiCB' });
+
 //Récup du créateur d'embed
 const emb = require('./embeds');
 
@@ -19,51 +23,47 @@ const logger = log4js.getLogger();
 logger.level = 'all';
 
 module.exports = {
-    log: (log, client) => {
+    log: (log) => {
         logger.log(log);
-        if(client != null) {
-            const embed = emb.generate(null, null, log, `#159879`, process.env.LSMS_LOGO_V2, null, `LOG`, client.user.avatarURL(), null, null, null, true);
-            client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_DEBUG_LOGS_CHANNEL_ID).send({ embeds: [embed] });
-        }
+        const embed = emb.generate(null, null, log, `#159879`, process.env.LSMS_LOGO_V2, null, `LOG`, null, null, null, null, true);
+        webhookClient.send({ embeds: [embed] });
     },
-    debug: (debug, client) => {
+    debug: (debug) => {
         logger.debug(debug);
-        if(client != null) {
-            try {
-                const embed = emb.generate(null, null, debug, `#1688CD`, process.env.LSMS_LOGO_V2, null, `DEBUG`, client.user.avatarURL(), null, null, null, true);
-                client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_DEBUG_LOGS_CHANNEL_ID).send({ embeds: [embed] });
-            } catch (err) {
-                debug = JSON.stringify(debug);
-                if(!debug.includes('https://')) {
+        try {
+            const embed = emb.generate(null, null, debug, `#1688CD`, process.env.LSMS_LOGO_V2, null, `DEBUG`, null, null, null, null, true);
+            webhookClient.send({ embeds: [embed] });
+        } catch (err) {
+            debug = JSON.stringify(debug);
+            if(!debug.includes('https://')) {
+                try {
+                    const embed = emb.generate(null, null, debug, `#1688CD`, process.env.LSMS_LOGO_V2, null, `DEBUG`, null, null, null, null, true);
+                    webhookClient.send({ embeds: [embed] });
+                } catch (err2) {
                     try {
-                        const embed = emb.generate(null, null, debug, `#1688CD`, process.env.LSMS_LOGO_V2, null, `DEBUG`, client.user.avatarURL(), null, null, null, true);
-                        client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_DEBUG_LOGS_CHANNEL_ID).send({ embeds: [embed] });
-                    } catch (err2) {
-                        try {
-                            client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_DEBUG_LOGS_CHANNEL_ID).send({ content: '**DEBUG:**\n```\n' + debug + '\n```' });
-                        } catch (err3) {
-                            logger.error(err3);
-                        }
+                        webhookClient.send({ content: '**DEBUG:**\n```\n' + debug + '\n```' });
+                    } catch (err3) {
+                        logger.error(err3);
                     }
-                } else {
-                    try {
-                        client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_DEBUG_LOGS_CHANNEL_ID).send({ content: '**DEBUG:**\n```\n' + debug + '\n```' });
-                    } catch (err2) {
-                        logger.error(err2);
-                    }
+                }
+            } else {
+                try {
+                    webhookClient.send({ content: '**DEBUG:**\n```\n' + debug + '\n```' });
+                } catch (err2) {
+                    logger.error(err2);
                 }
             }
         }
     },
-    warn: (warn, client) => {
+    warn: (warn) => {
         logger.warn(warn);
-        if(client != null) {
-            const embed = emb.generate(null, null, warn, `#98C410`, process.env.LSMS_LOGO_V2, null, `WARN`, client.user.avatarURL(), null, null, null, true);
-            client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_DEBUG_LOGS_CHANNEL_ID).send({ embeds: [embed] });
-        }
+        const embed = emb.generate(null, null, warn, `#FFD800`, process.env.LSMS_LOGO_V2, null, `WARN`, null, null, null, null, true);
+        webhookClient.send({ embeds: [embed] });
     },
     error: (error) => {
         logger.error(error);
+        const embed = emb.generate(null, null, error, `#FF0000`, process.env.LSMS_LOGO_V2, null, `ERROR`, null, null, null, null, true);
+        webhookClient.send({ embeds: [embed] });
     },
     getStartDate: () => {
         return logDate;

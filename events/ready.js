@@ -23,6 +23,9 @@ const nameSQL = require('./../sql/rename/rename');
 //System pour le kick auto de 6h
 const CronJob = require('cron').CronJob;
 
+//Fonction pour attendre
+const wait = require('node:timers/promises').setTimeout;
+
 let isDebugMode = false;
 
 module.exports = {
@@ -91,11 +94,13 @@ module.exports = {
 
         const update = new CronJob('00 55 05 * * *', async function() {
             const { exec } = require('node:child_process');
-            await exec('git pull && npm i', async (err, output) => {
+            exec('git pull && npm i', async (err, output) => {
                 if(err) return await logger.error(err);
                 await logger.debug(output);
             });
-            await logger.log(`Redémarrage pour la MAJ du jour !`);
+            await wait(30000);
+            await logger.log(`Redémarrage dans **30s** pour la MAJ du jour !`);
+            await wait(30000);
             await client.destroy();
             process.exit(1);
         });

@@ -4,7 +4,7 @@ const logger = require('./logger');
 
 //Création de l'embed en fonction des arguments fournis
 module.exports = {
-    generate: function(title, url, desc, color, thumb, img, author, authorImg, authorLink, footer, footerImg, timestamp) {
+    generate: async function(title, url, desc, color, thumb, img, author, authorImg, authorLink, footer, footerImg, timestamp) {
 
         var err = null;
 

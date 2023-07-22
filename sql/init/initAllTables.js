@@ -4,7 +4,7 @@ const logger = require('../../modules/logger');
 const mysql = require('../../modules/sql');
 
 module.exports = {
-    initAllTables: () => {
+    initAllTables: (client) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query("CREATE TABLE IF NOT EXISTS `doctor_rank` (`id` varchar(50) NOT NULL, `name` varchar(50) NOT NULL, `parent_channel_id` varchar(20) NOT NULL, `role_id` varchar(20) NOT NULL, `position` INT NOT NULL, CONSTRAINT `rank_pk` PRIMARY KEY (id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
             mysql.sql().query("CREATE TABLE IF NOT EXISTS `doctor` (`id` INT(255) AUTO_INCREMENT NOT NULL, `discord_id` varchar(18) NOT NULL, `first_name` varchar(50) NOT NULL, `last_name` varchar(50) NOT NULL, `phone_number` varchar(8) NOT NULL, `rank_id` varchar(50) NOT NULL, `channel_id` varchar(20) NOT NULL, `arrival_date` DATE NOT NULL, `departure_date` DATE DEFAULT NULL NULL, CONSTRAINT `doctor_pk` PRIMARY KEY (id), CONSTRAINT `doctor_fk` FOREIGN KEY (rank_id) REFERENCES `doctor_rank`(id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
@@ -26,7 +26,7 @@ module.exports = {
                 mysql.sql.query("INSERT INTO `radio` SET `radioid`='bcms'");
                 mysql.sql.query("INSERT INTO `radio` SET `radioid`='event'");
             }
-            resolve('Init done!');
+            resolve(logger.log(`Base de donnée initialisée/mise à jour !`, client));
         });
     }
 }

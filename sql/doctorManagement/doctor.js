@@ -20,7 +20,7 @@ module.exports = {
                 ]
             }, async (reqErr, result, fields) => {
                 if(reqErr) {
-                    await logger.error(reqErr);
+                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -37,7 +37,7 @@ module.exports = {
                 values: [phoneNumber]
             }, async (reqErr, result, fields) => {
                 if(reqErr) {
-                    await logger.error(reqErr);
+                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 if (result.length > 0) {
@@ -58,7 +58,7 @@ module.exports = {
                     ORDER BY \`position\`;`
             }, async (reqErr, result, fields) => {
                 if(reqErr) {
-                    await logger.error(reqErr);
+                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 result.forEach(element => {
@@ -75,7 +75,7 @@ module.exports = {
                     ORDER BY d.arrival_date;`
             }, async (reqErr, result, fields) => {
                 if(reqErr) {
-                    await logger.error(reqErr);
+                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 result.forEach(element => {
@@ -99,7 +99,7 @@ module.exports = {
                     WHERE d.departure_date IS NULL;`
             }, async (reqErr, result, fields) => {
                 if(reqErr) {
-                    await logger.error(reqErr);
+                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result[0].nb_doctor);

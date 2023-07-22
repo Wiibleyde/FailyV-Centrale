@@ -12,7 +12,7 @@ module.exports = {
                     FROM doctor_rank;`
             }, async (reqErr, result, fields) => {
                 if(reqErr) {
-                    await logger.error(reqErr);
+                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 let returnResult = {}

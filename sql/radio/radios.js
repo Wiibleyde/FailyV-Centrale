@@ -13,7 +13,7 @@ module.exports = {
                     values: [radToGet]
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
-                    await logger.error(reqErr);
+                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -29,7 +29,7 @@ module.exports = {
                     values: [radToGet]
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
-                    await logger.error(reqErr);
+                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -45,7 +45,7 @@ module.exports = {
                     values: [radio, radToSet]
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
-                    await logger.error(reqErr);
+                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -61,7 +61,7 @@ module.exports = {
                     values: [radio, radToUp]
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
-                    await logger.error(reqErr);
+                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);

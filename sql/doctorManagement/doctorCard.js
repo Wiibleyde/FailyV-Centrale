@@ -14,7 +14,7 @@ module.exports = {
                     ORDER BY dcc.\`position\`;`
             }, async (reqErr, result, fields) => {
                 if(reqErr) {
-                    await logger.error(reqErr);
+                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 result.forEach(element => {
@@ -34,7 +34,7 @@ module.exports = {
                     ORDER BY dcc.\`position\`, dc.position_in_category;`
             }, async (reqErr, result, fields) => {
                 if(reqErr) {
-                    await logger.error(reqErr);
+                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 result.forEach(element => {

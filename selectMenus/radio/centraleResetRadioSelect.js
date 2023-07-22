@@ -10,7 +10,7 @@ const service = require('../../modules/service');
 module.exports = {
     execute: async function(interaction, errEmb) {
         //Logs de quel option du menu de selection à été utilisée
-        await logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) l'option "${interaction.values}" du menu de séléction "${interaction.customId}"`);
+        logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) l'option "${interaction.values}" du menu de séléction "${interaction.customId}"`);
         
         //Confirmation à Discord du succès de l'opération
         await interaction.deferReply({ ephemeral: true });

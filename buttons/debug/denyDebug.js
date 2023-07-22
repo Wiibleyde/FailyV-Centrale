@@ -35,13 +35,13 @@ module.exports = {
                         await interaction.followUp({ embeds: [emb.generate('⚠️ Attention', null, `L'utilisateur **${interaction.message.embeds[0].author.name}** n'a pas été prévenu du retour car il a ses MP de fermés`, 'Gold', process.env.LSMS_LOGO_V2, null, null, null, null, interaction.guild.members.cache.get(process.env.IRIS_DISCORD_ID).nickname, interaction.client.user.avatarURL(), true)], ephemeral: true });
                         await interaction.message.delete();
                     } catch (err) {
-                        await logger.error(err);
+                        logger.error(err);
                         await interaction.followUp({ embeds: [errEmb], ephemeral: true });
                     }
                 //Lors d'une vraie erreur
                 } else {
                     await interaction.followUp({ embeds: [errEmb], ephemeral: true });
-                    await logger.error(err);
+                    logger.error(err);
                 }
             }
         } else {
@@ -49,7 +49,7 @@ module.exports = {
                 await interaction.followUp({ embeds: [emb.generate('⚠️ Attention', null, `L'utilisateur **${interaction.message.embeds[0].author.name}** n'a pas été prévenu du retour car il n'a pas été trouvé sur un serveur en commun !`, '#FF0000', process.env.LSMS_LOGO_V2, null, null, null, null, interaction.guild.members.cache.get(process.env.IRIS_DISCORD_ID).nickname, interaction.client.user.avatarURL(), true)], ephemeral: true });
                 await interaction.message.delete();
             } catch (err) {
-                await logger.error(err);
+                logger.error(err);
                 await interaction.followUp({ embeds: [errEmb], ephemeral: true });
             }
         }

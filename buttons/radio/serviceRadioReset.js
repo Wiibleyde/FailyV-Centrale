@@ -13,7 +13,7 @@ module.exports = {
             //Confirmation à Discord du succès de l'opération
             await interaction.reply({ components: [allOptions], ephemeral: true });
         } catch (err) {
-            await logger.error(err);
+            logger.error(err);
             //Confirmation à Discord du succès de l'opération
             await interaction.reply({ embeds: [errEmb], ephemeral: true });
         }

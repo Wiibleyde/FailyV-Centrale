@@ -37,7 +37,7 @@ module.exports = {
                 await interaction.deleteReply();
             }
         } catch(err) {
-            await logger.error(err);
+            logger.error(err);
             await interaction.reply({ embeds: [errEmb], ephemeral: true });
         }
     }

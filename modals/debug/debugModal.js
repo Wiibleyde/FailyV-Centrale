@@ -38,7 +38,7 @@ module.exports = {
             responseEmbed = emb.generate('Prise en compte de votre demande de debug', null, '**Nous avons bien enregistré votre demande de debug** \nVous recevrez une réponse sous peu.', '#FFFFFF', 'https://cdn.discordapp.com/attachments/1083724872045297734/1093600460511920138/loading.gif', null, null, null, null, interaction.guild.members.cache.get(process.env.IRIS_DISCORD_ID).nickname, interaction.client.user.avatarURL(), true);
         } catch (err) {
             interaction.channel.send({ content: `${interaction.user}`, embeds: [errEmb] });
-            await logger.error(err);
+            logger.error(err);
         }
 
         //Création d'un bouton pour accepter ou non la demande de debug
@@ -68,13 +68,13 @@ module.exports = {
                 try {
                     await interaction.followUp({ embeds: [emb.generate('Merci !', null, `Votre bug report à bien été prise en compte, n'hésitez pas à ouvrir vos MP avec moi pour être tenu au courant de l'évolution de votre demande !\n(Clique-droit sur le serveur en commun avec moi -> "Paramètres de confidentialité" -> "Messages privés")`, '#3CB34B', process.env.LSMS_LOGO_V2, null, null, null, null, interaction.guild.members.cache.get(process.env.IRIS_DISCORD_ID).nickname, interaction.client.user.avatarURL(), true)], ephemeral: true });
                 } catch (err) {
-                    await logger.error(err);
+                    logger.error(err);
                     await interaction.followUp({ embeds: [errEmb], ephemeral: true });
                 }
             //Lors d'une vraie erreur
             } else {
                 await interaction.followUp({ embeds: [errEmb], ephemeral: true });
-                await logger.error(err);
+                logger.error(err);
             }
         }
     }

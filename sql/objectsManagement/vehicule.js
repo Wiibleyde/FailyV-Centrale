@@ -11,7 +11,7 @@ module.exports = {
                     timeout: 40000
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
-                    await logger.error(reqErr);
+                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -26,7 +26,7 @@ module.exports = {
                     values: [plate]
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
-                    await logger.error(reqErr);
+                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -41,7 +41,7 @@ module.exports = {
                     values: [name]
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
-                    await logger.error(reqErr);
+                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -56,7 +56,7 @@ module.exports = {
                     values: [type]
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
-                    await logger.error(reqErr);
+                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -70,7 +70,7 @@ module.exports = {
                     timeout: 40000
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
-                    await logger.error(reqErr);
+                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -85,7 +85,7 @@ module.exports = {
                     values: [name, plate, ct, type, type_order]
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
-                    await logger.error(reqErr);
+                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -100,7 +100,7 @@ module.exports = {
                     values: [ct, plate]
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
-                    await logger.error(reqErr);
+                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -116,7 +116,7 @@ module.exports = {
                     values: [state, plate]
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
-                    await logger.error(reqErr);
+                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -131,7 +131,7 @@ module.exports = {
                     values: [messageID, plate]
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
-                    await logger.error(reqErr);
+                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);
@@ -146,7 +146,7 @@ module.exports = {
                     values: [plate]
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
-                    await logger.error(reqErr);
+                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);

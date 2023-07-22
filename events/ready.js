@@ -11,6 +11,9 @@ const service = require('./../modules/service');
 //Récup du service de kick
 const userservice = require('./../modules/kickservice');
 
+//Récup des requêtes SQL du nom
+const sql = require('./../sql/init/initAllTables');
+
 //Récup des requêtes SQL de debug
 const debugSQL = require('./../sql/debugMode/debugMode');
 
@@ -27,7 +30,9 @@ module.exports = {
     once: true,
     async execute(client) {
         deployCommands.init(client);
-        await logger.log(`Bot en ligne! Connecté avec le compte ${client.user.tag}`, client);
+        logger.log(`Bot en ligne! Connecté avec le compte ${client.user.tag}`, client);
+        await sql.initAllTables();
+        logger.log(`Base de donnée initialisée !`, client);
 
         //Récupération des personnes en service
         const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
@@ -35,7 +40,6 @@ module.exports = {
         var serviceCount = guild.roles.cache.get(process.env.IRIS_SERVICE_ROLE_ID).members.size;
         var dispatchCount = guild.roles.cache.get(process.env.IRIS_DISPATCH_ROLE_ID).members.size;
 
-        await debugSQL.initDB(client);
         const debugState = await debugSQL.getDebugState();
         if(debugState[0] == null) {
             const role = await guild.roles.create({
@@ -76,7 +80,6 @@ module.exports = {
             }, 5000);
         }
         const privateClient = guild.members.cache.get(process.env.IRIS_DISCORD_ID);
-        await nameSQL.init();
         const customName = await nameSQL.getName();
         if(customName[0] != null) {
             if(privateClient.nickname != customName[0].name) {

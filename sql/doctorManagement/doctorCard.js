@@ -10,7 +10,7 @@ module.exports = {
             let returnResult = {};
             mysql.sql().query({
                 sql: `SELECT *
-                    FROM DOCTOR_CARD_CATEGORY dcc
+                    FROM doctor_card_category dcc
                     ORDER BY dcc.\`position\`;`
             }, (reqErr, result, fields) => {
                 if(reqErr) {
@@ -28,8 +28,8 @@ module.exports = {
             });
             mysql.sql().query({
                 sql: `SELECT dcc.id category_id, dc.item
-                    FROM DOCTOR_CARD dc
-                     INNER JOIN DOCTOR_CARD_CATEGORY dcc
+                    FROM doctor_card dc
+                     INNER JOIN doctor_card_category dcc
                       ON dc.category = dcc.id
                     ORDER BY dcc.\`position\`, dc.position_in_category;`
             }, (reqErr, result, fields) => {

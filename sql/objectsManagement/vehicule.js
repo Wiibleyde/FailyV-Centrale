@@ -4,20 +4,6 @@ const logger = require('../../modules/logger');
 const mysql = require('../../modules/sql');
 
 module.exports = {
-    init: () => {
-        return new Promise((resolve, reject) => {
-            mysql.sql().query({
-                    sql: "CREATE TABLE IF NOT EXISTS `channels` (`name` VARCHAR(255) NOT NULL, `id` TEXT NOT NULL)",
-                    timeout: 40000
-                }, (reqErr, result, fields) => {
-                if(reqErr) {
-                    logger.error(reqErr);
-                    reject(reqErr);
-                }
-                resolve(result);
-            });
-        });
-    },
     getChannelId: () => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({

@@ -12,7 +12,7 @@ module.exports = {
         //Lorsqu'il s'agit d'une commande
         if(interaction.isChatInputCommand()) {
             //Log dès l'utilisation de la commande
-            logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) la commande "/${interaction.commandName}"`, interaction.client);
+            logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) la commande "/${interaction.commandName}"`);
             const command = interaction.client.commands.get(interaction.commandName);
     
             if(!command) { logger.error(`Aucune commande correspondante à ${interaction.commandName} n'a été trouvée !`); return; }
@@ -36,7 +36,7 @@ module.exports = {
         //Lorsqu'il s'agit d'un Modal
         if(interaction.isModalSubmit()) {
             //Log dès l'utilisation du Modal
-            logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) le Modal "${cID}"`, interaction.client);
+            logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) le Modal "${cID}"`);
             //Pré-écriture d'un message d'erreur (pour éviter de l'écrire dans tout les fichers)
             const errEmb = emb.generate(`Oups! Une erreur s'est produite :(`, null, `Il semblerait qu'une erreur se soit produite lors de l'interaction avec la fenêtre pop-up, si le problème persiste n'hésitez pas à faire une demande de débug via le </debug:${process.env.IRIS_DEBUG_COMMAND_ID}> avec le plus de détails possible ! (Merci d'avance <:green_heart:1112687922651594762>)`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true);
             //Appel du fichier spécifique pour chaques interactions
@@ -52,7 +52,7 @@ module.exports = {
         //Lorsqu'il s'agit d'un bouton
         if(interaction.isButton()) {
             //Log dès l'utilisation du bouton
-            logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) le bouton "${cID}"`, interaction.client);
+            logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) le bouton "${cID}"`);
             //Pré-écriture d'un message d'erreur (pour éviter de l'écrire dans tout les fichers)
             const errEmb = emb.generate(`Oups! Une erreur s'est produite :(`, null, `Il semblerait qu'une erreur se soit produite lors de l'interaction avec le bouton, si le problème persiste n'hésitez pas à faire une demande de débug via le </debug:${process.env.IRIS_DEBUG_COMMAND_ID}> avec le plus de détails possible ! (Merci d'avance <:green_heart:1112687922651594762>)`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true);
             //Appel du fichier spécifique pour chaques interactions
@@ -78,7 +78,7 @@ module.exports = {
         //Lorsqu'il s'agit d'un Select Menu
         if(interaction.isChannelSelectMenu() || interaction.isStringSelectMenu()) {
             //Log dès l'utilisation du Select Menu
-            logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) le menu de séléction "${cID}"`, interaction.client);
+            logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) le menu de séléction "${cID}"`);
             //Pré-écriture d'un message d'erreur (pour éviter de l'écrire dans tout les fichers)
             const errEmb = emb.generate(`Oups! Une erreur s'est produite :(`, null, `Il semblerait qu'une erreur se soit produite lors de l'interaction avec le menu de séléction, si le problème persiste n'hésitez pas à faire une demande de débug via le </debug:${process.env.IRIS_DEBUG_COMMAND_ID}> avec le plus de détails possible ! (Merci d'avance <:green_heart:1112687922651594762>)`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true);
             //Appel du fichier spécifique pour chaques interactions

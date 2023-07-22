@@ -26,7 +26,7 @@ module.exports = {
                 mysql.sql().query("INSERT INTO `radio` SET `radioid`='bcms'", function (error, results, fields) { if (error) reject(error); });
                 mysql.sql().query("INSERT INTO `radio` SET `radioid`='event'", function (error, results, fields) { if (error) reject(error); });
             }
-            resolve(logger.log(`Base de donnée initialisée !`, client));
+            resolve(logger.log(`Base de donnée initialisée !`));
         });
     }
 }

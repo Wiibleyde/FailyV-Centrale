@@ -30,7 +30,7 @@ module.exports = {
     once: true,
     async execute(client) {
         deployCommands.init(client);
-        logger.log(`Bot en ligne! Connecté avec le compte ${client.user.tag}`, client);
+        logger.log(`Bot en ligne! Connecté avec le compte ${client.user.tag}`);
         await sql.initAllTables(client);
 
         //Récupération des personnes en service
@@ -90,7 +90,7 @@ module.exports = {
         service.start(client);
 
         const update = new CronJob('00 55 05 * * *', async function() {
-            await logger.log(`Redémarrage pour la MAJ du jour !`, client);
+            await logger.log(`Redémarrage pour la MAJ du jour !`);
             await client.destroy();
             process.exit(1);
         });
@@ -99,7 +99,7 @@ module.exports = {
         const reset = new CronJob('00 00 06 * * *', function() {
             userservice.kick(guild, guild.members.cache.get(process.env.IRIS_DISCORD_ID), false);
             service.resetRadios(client, null);
-            logger.log(`Reset de 06h00 effectué !`, client);
+            logger.log(`Reset de 06h00 effectué !`);
         });
         reset.start();
 

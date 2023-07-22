@@ -27,7 +27,7 @@ module.exports = {
                     if('data' in command && 'execute' in command) {
                         debugCommands.push(command.data.toJSON());
                     } else {
-                        logger.warn(`La commande ${filePath} n'a pas la partie "data" ou "execute" !`, client);
+                        logger.warn(`La commande ${filePath} n'a pas la partie "data" ou "execute" !`);
                     }
                 }
             } else if(folder == 'private') {
@@ -39,7 +39,7 @@ module.exports = {
                     if('data' in command && 'execute' in command) {
                         privateCommands.push(command.data.toJSON());
                     } else {
-                        logger.warn(`La commande ${filePath} n'a pas la partie "data" ou "execute" !`, client);
+                        logger.warn(`La commande ${filePath} n'a pas la partie "data" ou "execute" !`);
                     }
                 }
             } else {
@@ -51,7 +51,7 @@ module.exports = {
                     if('data' in command && 'execute' in command) {
                         publicCommands.push(command.data.toJSON());
                     } else {
-                        logger.warn(`La commande ${filePath} n'a pas la partie "data" ou "execute" !`, client);
+                        logger.warn(`La commande ${filePath} n'a pas la partie "data" ou "execute" !`);
                     }
                 }
             }
@@ -61,16 +61,16 @@ module.exports = {
         
         (async () => {
             try {
-                logger.log(`Rechargement de ${debugCommands.length} commandes slash (/) de dev.`, client);
-                logger.log(`Rechargement de ${privateCommands.length} commandes slash (/) privées.`, client);
-                logger.log(`Rechargement de ${publicCommands.length} commandes slash (/) publiques.`, client);
+                logger.log(`Rechargement de ${debugCommands.length} commandes slash (/) de dev.`);
+                logger.log(`Rechargement de ${privateCommands.length} commandes slash (/) privées.`);
+                logger.log(`Rechargement de ${publicCommands.length} commandes slash (/) publiques.`);
                 //Envois des commandes sur un serveur spécifique
                 const privateData = await rest.put(Routes.applicationGuildCommands(process.env.IRIS_DISCORD_ID, process.env.IRIS_PRIVATE_GUILD_ID), { body: privateCommands });
                 //Envois des commandes sur le serveur de dev
                 const debugData = await rest.put(Routes.applicationGuildCommands(process.env.IRIS_DISCORD_ID, process.env.IRIS_DEBUG_GUILD_ID), { body: debugCommands });
                 //Envois des commandes globalement
                 const publicData = await rest.put(Routes.applicationCommands(process.env.IRIS_DISCORD_ID), { body: publicCommands });
-                logger.log(`Rechargement de ${privateData.length + publicData.length + debugData.length} commandes slash (/) réussies.`, client);
+                logger.log(`Rechargement de ${privateData.length + publicData.length + debugData.length} commandes slash (/) réussies.`);
             } catch (error) {
                 logger.error(error);
             }

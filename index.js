@@ -42,7 +42,7 @@ for(const folder of commandsFolders) {
 client.on(Events.MessageCreate, async (message) => {
     if(message.channelId == process.env.IRIS_SERVICE_CHANNEL_ID || message.channelId == process.env.IRIS_RADIO_CHANNEL_ID) {
         if(message.author != process.env.IRIS_DISCORD_ID) {
-            logger.warn(`${message.member.nickname} - ${message.author.username}#${message.author.discriminator} (<@${message.author.id}>)\n\nà envoyé un message dans le salon interdit "#${client.guilds.cache.get(message.guildId).channels.cache.get(message.channelId).name} <#${message.channelId}>"\n\nContenu: "${message.content}"`, client);
+            logger.warn(`${message.member.nickname} - ${message.author.username}#${message.author.discriminator} (<@${message.author.id}>)\n\nà envoyé un message dans le salon interdit "#${client.guilds.cache.get(message.guildId).channels.cache.get(message.channelId).name} <#${message.channelId}>"\n\nContenu: "${message.content}"`);
             await message.delete();
         }
     }
@@ -68,7 +68,7 @@ client.login(process.env.IRIS_DISCORD_TOKEN);
 //Arrêt lors d'une commande console
 readcmd.on('line', async (input) => {
     if(input.toLowerCase() == 'quit') {
-        await logger.log(`Au revoir! ${client.user.tag} hors-ligne`, client);
+        await logger.log(`Au revoir! ${client.user.tag} hors-ligne`);
         await client.destroy();
         process.exit(0);
     }
@@ -76,7 +76,7 @@ readcmd.on('line', async (input) => {
 
 //Arrêt avec forever (utilisé sur le serveur de prod)
 process.on('SIGTERM', async () => {
-    await logger.log(`Au revoir! ${client.user.tag} hors-ligne`, client);
+    await logger.log(`Au revoir! ${client.user.tag} hors-ligne`);
     await client.destroy();
     process.exit(0);
 });

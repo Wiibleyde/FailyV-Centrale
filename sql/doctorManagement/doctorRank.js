@@ -9,7 +9,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
                 sql: `SELECT *
-                    FROM DOCTOR_RANK;`
+                    FROM doctor_rank;`
             }, (reqErr, result, fields) => {
                 if(reqErr) {
                     logger.error(reqErr);

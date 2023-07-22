@@ -8,7 +8,7 @@ module.exports = {
     addDoctor: (firstName, lastName, phone, grade, discord_id, arrivalDate, channel_id) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                sql: `INSERT INTO DOCTOR SET first_name = ?, last_name = ?, phone_number = ?, rank_id = ?, discord_id = ?, arrival_date = ?, channel_id = ?;`,
+                sql: `INSERT INTO doctor SET first_name = ?, last_name = ?, phone_number = ?, rank_id = ?, discord_id = ?, arrival_date = ?, channel_id = ?;`,
                 values: [
                     firstName,
                     lastName,
@@ -32,7 +32,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
                 sql: `SELECT d.channel_id
-                    FROM DOCTOR d
+                    FROM doctor d
                     WHERE d.phone_number = ? AND d.departure_date IS NULL;`,
                 values: [phoneNumber]
             }, (reqErr, result, fields) => {
@@ -54,7 +54,7 @@ module.exports = {
             let returnResult = {};
             mysql.sql().query({
                 sql: `SELECT dr.id, dr.name, dr.role_id
-                    FROM DOCTOR_RANK dr
+                    FROM doctor_rank dr
                     ORDER BY \`position\`;`
             }, (reqErr, result, fields) => {
                 if(reqErr) {
@@ -71,7 +71,7 @@ module.exports = {
             });
             mysql.sql().query({
                 sql: `SELECT d.first_name, d.last_name, d.phone_number, d.rank_id, DATE_FORMAT(d.arrival_date, '%d/%m/%x') arrival_date
-                    FROM DOCTOR d
+                    FROM doctor d
                     ORDER BY d.arrival_date;`
             }, (reqErr, result, fields) => {
                 if(reqErr) {
@@ -95,7 +95,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
                 sql: `SELECT count(*) nb_doctor
-                    FROM DOCTOR d
+                    FROM doctor d
                     WHERE d.departure_date IS NULL;`
             }, (reqErr, result, fields) => {
                 if(reqErr) {

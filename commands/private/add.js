@@ -64,6 +64,14 @@ module.exports = {
             return;
         }
 
+        const doctorCardData = await doctorCardSql.getDoctorCard();
+        const doctorRankData = await doctorRankSql.getDoctorRank();
+
+        if(doctorRankData[0] == null) {
+            const embed = emb.generate("Désolé :(", null, `Aucun grade n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
+            return await interaction.editReply({ embeds: [embed], ephemeral: true });
+        }
+
         const tag = interaction.options.getUser("tag");
 
         // Check si le tag discord pour le docteur n'est pas le bot
@@ -118,9 +126,6 @@ module.exports = {
 
         const grade = interaction.options.getString("grade") ?? "intern";
         const arrivalDate = new Date();
-
-        const doctorCardData = await doctorCardSql.getDoctorCard();
-        const doctorRankData = await doctorRankSql.getDoctorRank();
 
         // Renomage de l'utilisateur et ajout des rôles LSMS et correspondant au grade du docteur
         const newMember = interaction.guild.members.cache.get(tag.id);

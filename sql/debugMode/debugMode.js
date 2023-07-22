@@ -4,21 +4,6 @@ const logger = require('../../modules/logger');
 const mysql = require('../../modules/sql');
 
 module.exports = {
-    //Fonction de récupération d'une radio en DB
-    initDB: () => {
-        return new Promise((resolve, reject) => {
-            mysql.sql().query({
-                    sql: "CREATE TABLE IF NOT EXISTS `debug` (`roleID` TEXT NOT NULL, `state` INT(1) NOT NULL)",
-                    timeout: 40000
-                }, (reqErr, result, fields) => {
-                if(reqErr) {
-                    logger.error(reqErr);
-                    reject(reqErr);
-                }
-                resolve(result);
-            });
-        });
-    },
     getDebugState: () => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({

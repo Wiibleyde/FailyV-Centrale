@@ -23,7 +23,7 @@ module.exports = {
             } catch(err) {
                 //Lors d'une erreur
                 await logger.error(err);
-                const errEmb = emb.generate(`Oups! Une erreur s'est produite :(`, null, `Il semblerait qu'une erreur se soit produite lors de l'execution de la commande "**</${interaction.commandName}:${interaction.commandId}>**", si le problème persiste n'hésitez pas à faire une demande de débug via le </debug:${process.env.IRIS_DEBUG_COMMAND_ID}> avec le plus de détails possible ! (Merci d'avance <:green_heart:1112687922651594762>)`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true);
+                const errEmb = emb.generate(`Oups! Une erreur s'est produite :(`, null, `Il semblerait qu'une erreur se soit produite lors de l'execution de la commande "**</${interaction.commandName}:${interaction.commandId}>**", si le problème persiste n'hésitez pas à faire une demande de débug via le </debug:${process.env.IRIS_DEBUG_COMMAND_ID}> avec le plus de détails possible ! (Merci d'avance 💙)`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true);
                 if(interaction.replied || interaction.deferred) {
                     await interaction.followUp({ embeds: [errEmb], ephemeral: true });
                 } else {
@@ -38,7 +38,7 @@ module.exports = {
             //Log dès l'utilisation du Modal
             await logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) le Modal "${cID}"`);
             //Pré-écriture d'un message d'erreur (pour éviter de l'écrire dans tout les fichers)
-            const errEmb = emb.generate(`Oups! Une erreur s'est produite :(`, null, `Il semblerait qu'une erreur se soit produite lors de l'interaction avec la fenêtre pop-up, si le problème persiste n'hésitez pas à faire une demande de débug via le </debug:${process.env.IRIS_DEBUG_COMMAND_ID}> avec le plus de détails possible ! (Merci d'avance <:green_heart:1112687922651594762>)`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true);
+            const errEmb = emb.generate(`Oups! Une erreur s'est produite :(`, null, `Il semblerait qu'une erreur se soit produite lors de l'interaction avec la fenêtre pop-up, si le problème persiste n'hésitez pas à faire une demande de débug via le </debug:${process.env.IRIS_DEBUG_COMMAND_ID}> avec le plus de détails possible ! (Merci d'avance 💙)`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true);
             //Appel du fichier spécifique pour chaques interactions
             if(cID == 'debugModal') { const debugModal = require('./../modals/debug/debugModal'); debugModal.execute(interaction, errEmb); }
             if(cID == 'rendezVousPsyModal') { const rendezVousPsyModal = require('./../modals/rdv/rendezVousPsyModal'); rendezVousPsyModal.execute(interaction, errEmb); }
@@ -54,7 +54,7 @@ module.exports = {
             //Log dès l'utilisation du bouton
             await logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) le bouton "${cID}"`);
             //Pré-écriture d'un message d'erreur (pour éviter de l'écrire dans tout les fichers)
-            const errEmb = emb.generate(`Oups! Une erreur s'est produite :(`, null, `Il semblerait qu'une erreur se soit produite lors de l'interaction avec le bouton, si le problème persiste n'hésitez pas à faire une demande de débug via le </debug:${process.env.IRIS_DEBUG_COMMAND_ID}> avec le plus de détails possible ! (Merci d'avance <:green_heart:1112687922651594762>)`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true);
+            const errEmb = emb.generate(`Oups! Une erreur s'est produite :(`, null, `Il semblerait qu'une erreur se soit produite lors de l'interaction avec le bouton, si le problème persiste n'hésitez pas à faire une demande de débug via le </debug:${process.env.IRIS_DEBUG_COMMAND_ID}> avec le plus de détails possible ! (Merci d'avance 💙)`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true);
             //Appel du fichier spécifique pour chaques interactions
             if(cID == 'checkDebug') { const checkDebug = require('./../buttons/debug/checkDebug'); checkDebug.execute(interaction, errEmb); }
             if(cID == 'checkDebug6h') { const checkDebug6h = require('./../buttons/debug/checkDebug'); checkDebug6h.execute(interaction, errEmb); }
@@ -80,7 +80,7 @@ module.exports = {
             //Log dès l'utilisation du Select Menu
             await logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) le menu de séléction "${cID}"`);
             //Pré-écriture d'un message d'erreur (pour éviter de l'écrire dans tout les fichers)
-            const errEmb = emb.generate(`Oups! Une erreur s'est produite :(`, null, `Il semblerait qu'une erreur se soit produite lors de l'interaction avec le menu de séléction, si le problème persiste n'hésitez pas à faire une demande de débug via le </debug:${process.env.IRIS_DEBUG_COMMAND_ID}> avec le plus de détails possible ! (Merci d'avance <:green_heart:1112687922651594762>)`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true);
+            const errEmb = emb.generate(`Oups! Une erreur s'est produite :(`, null, `Il semblerait qu'une erreur se soit produite lors de l'interaction avec le menu de séléction, si le problème persiste n'hésitez pas à faire une demande de débug via le </debug:${process.env.IRIS_DEBUG_COMMAND_ID}> avec le plus de détails possible ! (Merci d'avance 💙)`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true);
             //Appel du fichier spécifique pour chaques interactions
             if(cID == 'serviceKickSingleSelect') { const serviceKickSingleSelect = require('../selectMenus/kick/serviceKickSingleSelect'); serviceKickSingleSelect.execute(interaction, errEmb); }
             if(cID == 'centraleResetRadioSelect') { const centraleResetRadioSelect = require('../selectMenus/radio/centraleResetRadioSelect'); centraleResetRadioSelect.execute(interaction, errEmb); }

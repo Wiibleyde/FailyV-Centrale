@@ -16,6 +16,6 @@ services:
       MARIADB_USER: root
       MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 'yes'
     volumes:
-      - E:/Documents/IrisDB:/var/lib/mysql
+      - /var/iris/iris-db:/var/lib/mysql
     ports:
       - 3306:3306

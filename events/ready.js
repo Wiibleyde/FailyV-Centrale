@@ -90,6 +90,11 @@ module.exports = {
         service.start(client);
 
         const update = new CronJob('00 55 05 * * *', async function() {
+            const { exec } = require('node:child_process');
+            exec('git pull && npm i', (err, output) => {
+                if(err) return logger.error(err);
+                logger.debug(output);
+            });
             await logger.log(`Redémarrage pour la MAJ du jour !`);
             await client.destroy();
             process.exit(1);

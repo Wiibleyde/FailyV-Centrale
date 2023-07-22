@@ -44,6 +44,8 @@ module.exports = {
                 .addChoices(rdvGen, rdvChir, rdvPsy, rdvSee, rdvRegen)
         ),
     async execute(interaction) {
+        //Init db
+        await rdv.init();
         //Si le type est psy
         if (interaction.options.getString('action') === 'psychologie') {
             //Création du modal

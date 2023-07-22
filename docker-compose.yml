@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  irisbot:
+    build: .
+    image: wiibleyde/iris:latest
+    container_name: iris
+    restart: always
+
+  db:
+    image: mariadb:latest
+    container_name: irisdb
+    restart: always
+    environment:
+      MARIADB_DATABASE: test
+      MARIADB_USER: root
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 'yes'
+    volumes:
+      - E:/Documents/IrisDB:/var/lib/mysql
+    ports:
+      - 3306:3306

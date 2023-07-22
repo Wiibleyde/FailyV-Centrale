@@ -1,3 +1,8 @@
 node_modules
 logs
-.env
+.env-exemple
+docker-compose.yml
+Dockerfile
+LICENSE
+README.md
+.gitignore

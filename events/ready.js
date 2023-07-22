@@ -89,12 +89,19 @@ module.exports = {
         }
         service.start(client);
 
-        const job = new CronJob('00 00 06 * * *', function() {
+        const update = new CronJob('00 55 05 * * *', async function() {
+            await logger.log(`Redémarrage pour la MAJ du jour !`, client);
+            await client.destroy();
+            process.exit(1);
+        });
+        update.start();
+
+        const reset = new CronJob('00 00 06 * * *', function() {
             userservice.kick(guild, guild.members.cache.get(process.env.IRIS_DISCORD_ID), false);
             service.resetRadios(client, null);
             logger.log(`Reset de 06h00 effectué !`, client);
         });
-        job.start();
+        reset.start();
 
     },
     setDebugMode: (state) => {

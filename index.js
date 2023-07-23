@@ -16,6 +16,10 @@ const readcmd = readline.createInterface({
 //Récup du logger
 const logger = require('./modules/logger');
 
+//Récup des requêtes SQL du nom
+const sql = require('./../sql/init/initAllTables');
+await sql.initAllTables();
+
 //Discord init
 const { Client, GatewayIntentBits, Collection, Events } = require('discord.js');
 const client = new Client({ intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent ]});

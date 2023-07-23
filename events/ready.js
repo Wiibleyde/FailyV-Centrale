@@ -11,9 +11,6 @@ const service = require('./../modules/service');
 //Récup du service de kick
 const userservice = require('./../modules/kickservice');
 
-//Récup des requêtes SQL du nom
-const sql = require('./../sql/init/initAllTables');
-
 //Récup des requêtes SQL de debug
 const debugSQL = require('./../sql/debugMode/debugMode');
 
@@ -34,7 +31,6 @@ module.exports = {
     async execute(client) {
         deployCommands.init(client);
         logger.log(`Bot en ligne! Connecté avec le compte ${client.user.tag}`);
-        await sql.initAllTables();
 
         //Récupération des personnes en service
         const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);

@@ -4,7 +4,7 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const logger = require('./logger');
 
 module.exports = {
-    genBedsBtns: async (buttons) => {
+    genBedsBtns: (buttons) => {
         logger.debug('Starting beds buttons creation');
         const btns = new ActionRowBuilder();
         for(i=0;i<buttons.length;i++) {

@@ -17,7 +17,7 @@ const readcmd = readline.createInterface({
 const logger = require('./modules/logger');
 
 //Récup des requêtes SQL du nom
-const sql = require('./../sql/init/initAllTables');
+const sql = require('./sql/init/initAllTables');
 await sql.initAllTables();
 
 //Discord init

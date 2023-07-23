@@ -14,17 +14,17 @@ const serviceID = process.env.IRIS_SERVICE_ROLE_ID;
 //Boutons de regen radios
 const radioBtns = new ActionRowBuilder().addComponents(
     new ButtonBuilder().setLabel('LSMS').setCustomId('regenLSMS').setStyle(ButtonStyle.Danger).setEmoji('1124910934922625104').setDisabled(false),
-    new ButtonBuilder().setLabel('FDO').setCustomId('regenFDO').setStyle(ButtonStyle.Primary).setEmoji('1124920279559327824').setDisabled(true),
+    new ButtonBuilder().setLabel('FDO').setCustomId('regenFDO').setStyle(ButtonStyle.Primary).setEmoji('1124920279559327824').setDisabled(false),
     new ButtonBuilder().setLabel('BCMS').setCustomId('regenBCMS').setStyle(ButtonStyle.Success).setEmoji('1124910870695256106').setDisabled(false),
     new ButtonBuilder().setLabel('Event').setCustomId('regenEvent').setStyle(ButtonStyle.Secondary).setEmoji('1121278617960329257').setDisabled(false),
     new ButtonBuilder().setCustomId('serviceRadioReset').setStyle(ButtonStyle.Secondary).setEmoji('⚠️')
 );
 
 module.exports = {
-    change: async (interaction, radioToChange, radioFreq) => {
+    change: async (client, radioToChange, radioFreq, needToPing) => {
         var pingMsg = `<@&${serviceID}> changement de fréquence radio `;
         //Recréation de l'embed pour édition du message
-        const embed = emb.generate(null, null, null, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
+        const embed = emb.generate(null, null, null, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
         //Récupération de la radio LSMS si non régénérée
         var freqLSMS = await sql.getRadio('lsms');
         freqLSMS = freqLSMS[0].radiofreq;
@@ -117,14 +117,16 @@ module.exports = {
                 }
             ]);
         }
-        const radioChan = interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID);
-        const messageToEdit = await getRadioMessages(await radioChan.messages.fetch(), interaction.client);
+        const radioChan = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID);
+        const messageToEdit = await getRadioMessages(await radioChan.messages.fetch(), client);
         //Édition du message
         await messageToEdit.edit({ embeds: [embed], components: [radioBtns] });
-        const pingMessage = await radioChan.send({ content: pingMsg });
-        // Supprime la réponse après 2min
-        await wait(120000);
-        await pingMessage.delete();
+        if(needToPing) {
+            const pingMessage = await radioChan.send({ content: pingMsg });
+            // Supprime la réponse après 2min
+            await wait(120000);
+            await pingMessage.delete();
+        }
     }
 }
 

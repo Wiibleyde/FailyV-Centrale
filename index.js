@@ -52,6 +52,49 @@ client.on(Events.MessageCreate, async (message) => {
     }
 });
 
+client.on(Events.ClientReady, (client) => {
+    //Récupération du module WebSocket
+    const WebSocket = require("ws");
+    //Récupération du module de création de JsonWebToken
+    const jwt = require('jsonwebtoken');
+    //Connection au serveur de radio communes
+    const ws = new WebSocket(`ws://${process.env.RADIO_SERVER_URL}`);
+    //Module de mise à jour des radios
+    const radio = require('./modules/changeRadio');
+    //Requêtes SQL de radios
+    const sqlRadio = require('./sql/radio/radios');
+    
+    ws.onmessage = async (wsData) => {
+        try {
+            const data = jwt.verify(wsData.data, process.env.RADIO_SERVER_JWT_SECRET);
+            if (data.type === "refresh" || data.type === "auto_refresh") {
+                let needPing = true;
+                if(data.type === "auto_refresh") { needPing = false; }
+                // On radio refresh
+                if(data.radioName == 'lsms-lspd') {
+                    radio.change(client, 'regenFDO', data.radioFreq, needPing);
+                }
+                if(data.radioName == 'lsms-bcms') {
+                    if(needPing) {
+                        radio.change(client, 'regenBCMS', data.radioFreq, true);
+                    }
+                }
+            } else if (data.type === "radio_info") {
+                // On connection and specific radio asking
+                if(data.radioName == 'lsms-lspd') {
+                    radio.change(client, 'regenFDO', data.radioFreq, false);
+                }
+                if(data.radioName == 'lsms-bcms') {
+                    const isBCMSDisplayed = await sqlRadio.isRadioDisplayed('bcms');
+                    if(isBCMSDisplayed[0].displayed == '1') {
+                        radio.change(client, 'regenBCMS', data.radioFreq, false);
+                    }
+                }
+            }
+        } catch {}
+    }
+});
+
 const eventsPath = path.join(__dirname, 'events');
 const eventsFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
@@ -67,7 +110,6 @@ for(const file of eventsFiles) {
 
 //Mise en ligne du bot sur Discord
 client.login(process.env.IRIS_DISCORD_TOKEN);
-
 
 //Arrêt lors d'une commande console
 readcmd.on('line', async (input) => {

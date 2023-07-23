@@ -97,4 +97,7 @@ Pour retrouver un rendez-vous supprimé par erreur (sans passer par le bouton "T
 
 ## Gestion des docteurs 
 
-...SoonTM...
+### Ajouter un docteur
+
+Pour ajouter un docteur, il suffit de faire la commande `/add` et de renseigner le nom, prénom, telephone, et le tag sur l'intranet du docteur. Cela va alors ajouter le docteur dans la liste des docteurs, lui donner les permissions pour voir les channels du LSMS et fais une annonce dans le channel #annonces.
+NB: On peut aussi ajouter un docteur en faisant la commande `/add` et en précisant le grade du docteur dans un argument optionnel.

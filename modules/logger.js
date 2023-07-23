@@ -23,83 +23,75 @@ const logger = log4js.getLogger();
 logger.level = 'all';
 
 module.exports = {
-    log: (log) => {
-        return new Promise(async (resolve, reject) => {
-            logger.log(log);
-            const embed = emb.generate(null, null, log, `#159879`, process.env.LSMS_LOGO_V2, null, `LOG`, null, null, null, null, true);
-            await webhookClient.send({ embeds: [embed] });
-        });
+    log: async (log) => {
+        logger.log(log);
+        const embed = emb.generate(null, null, log, `#159879`, process.env.LSMS_LOGO_V2, null, `LOG`, null, null, null, null, true);
+        await webhookClient.send({ embeds: [embed] });
     },
-    debug: (debug) => {
-        return new Promise(async (resolve, reject) => {
-            logger.debug(debug);
+    debug: async (debug) => {
+        logger.debug(debug);
+        try {
+            const embed = emb.generate(null, null, debug, `#1688CD`, process.env.LSMS_LOGO_V2, null, `DEBUG`, null, null, null, null, true);
+            await webhookClient.send({ embeds: [embed] });
+        } catch (err) {
             try {
-                const embed = emb.generate(null, null, debug, `#1688CD`, process.env.LSMS_LOGO_V2, null, `DEBUG`, null, null, null, null, true);
-                await webhookClient.send({ embeds: [embed] });
-            } catch (err) {
+                debug = JSON.stringify(debug);
+            } catch (err2) {
+            }
+            if(debug instanceof String && !debug.includes('https://')) {
                 try {
-                    debug = JSON.stringify(debug);
+                    const embed = emb.generate(null, null, debug, `#1688CD`, process.env.LSMS_LOGO_V2, null, `DEBUG`, null, null, null, null, true);
+                    await webhookClient.send({ embeds: [embed] });
                 } catch (err2) {
-                }
-                if(debug instanceof String && !debug.includes('https://')) {
-                    try {
-                        const embed = emb.generate(null, null, debug, `#1688CD`, process.env.LSMS_LOGO_V2, null, `DEBUG`, null, null, null, null, true);
-                        await webhookClient.send({ embeds: [embed] });
-                    } catch (err2) {
-                        try {
-                            await webhookClient.send({ content: '**DEBUG:**\n```\n' + debug + '\n```' });
-                        } catch (err3) {
-                            logger.error(err3);
-                        }
-                    }
-                } else {
                     try {
                         await webhookClient.send({ content: '**DEBUG:**\n```\n' + debug + '\n```' });
-                    } catch (err2) {
-                        logger.error(err2);
+                    } catch (err3) {
+                        logger.error(err3);
                     }
+                }
+            } else {
+                try {
+                    await webhookClient.send({ content: '**DEBUG:**\n```\n' + debug + '\n```' });
+                } catch (err2) {
+                    logger.error(err2);
                 }
             }
-        });
+        }
     },
-    warn: (warn) => {
-        return new Promise(async (resolve, reject) => {
-            logger.warn(warn);
-            const embed = emb.generate(null, null, warn, `#FFD800`, process.env.LSMS_LOGO_V2, null, `WARN`, null, null, null, null, true);
+    warn: async (warn) => {
+        logger.warn(warn);
+        const embed = emb.generate(null, null, warn, `#FFD800`, process.env.LSMS_LOGO_V2, null, `WARN`, null, null, null, null, true);
+        await webhookClient.send({ embeds: [embed] });
+    },
+    error: async (error) => {
+        logger.error(error);
+        try {
+            const embed = emb.generate(null, null, error, `#1688CD`, process.env.LSMS_LOGO_V2, null, `ERROR`, null, null, null, null, true);
             await webhookClient.send({ embeds: [embed] });
-        });
-    },
-    error: (error) => {
-        return new Promise(async (resolve, reject) => {
-            logger.error(error);
+        } catch (err) {
             try {
-                const embed = emb.generate(null, null, error, `#1688CD`, process.env.LSMS_LOGO_V2, null, `ERROR`, null, null, null, null, true);
-                await webhookClient.send({ embeds: [embed] });
-            } catch (err) {
+                error = JSON.stringify(error);
+            } catch (err2) {
+            }
+            if(error instanceof String && !error.includes('https://')) {
                 try {
-                    error = JSON.stringify(error);
+                    const embed = emb.generate(null, null, error, `#1688CD`, process.env.LSMS_LOGO_V2, null, `ERROR`, null, null, null, null, true);
+                    await webhookClient.send({ embeds: [embed] });
                 } catch (err2) {
-                }
-                if(error instanceof String && !error.includes('https://')) {
-                    try {
-                        const embed = emb.generate(null, null, error, `#1688CD`, process.env.LSMS_LOGO_V2, null, `ERROR`, null, null, null, null, true);
-                        await webhookClient.send({ embeds: [embed] });
-                    } catch (err2) {
-                        try {
-                            await webhookClient.send({ content: '**ERROR:**\n```\n' + error + '\n```' });
-                        } catch (err3) {
-                            logger.error(err3);
-                        }
-                    }
-                } else {
                     try {
                         await webhookClient.send({ content: '**ERROR:**\n```\n' + error + '\n```' });
-                    } catch (err2) {
-                        logger.error(err2);
+                    } catch (err3) {
+                        logger.error(err3);
                     }
                 }
+            } else {
+                try {
+                    await webhookClient.send({ content: '**ERROR:**\n```\n' + error + '\n```' });
+                } catch (err2) {
+                    logger.error(err2);
+                }
             }
-        });
+        }
     },
     getStartDate: () => {
         return logDate;

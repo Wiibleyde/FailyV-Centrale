@@ -31,7 +31,7 @@ module.exports = {
         .addStringOption(option =>
             option.setName("telephone")
                 .setDescription("Numéro de la personne sous la forme : 555-XXXX")
-                .setMinLength(8)
+                .setMinLength(4)
                 .setMaxLength(8)
                 .setRequired(true))
         .addUserOption(option =>

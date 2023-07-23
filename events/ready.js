@@ -34,7 +34,7 @@ module.exports = {
     async execute(client) {
         deployCommands.init(client);
         logger.log(`Bot en ligne! Connecté avec le compte ${client.user.tag}`);
-        await sql.initAllTables(client);
+        await sql.initAllTables();
 
         //Récupération des personnes en service
         const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);

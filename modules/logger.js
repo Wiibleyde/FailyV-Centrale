@@ -37,8 +37,11 @@ module.exports = {
                 const embed = emb.generate(null, null, debug, `#1688CD`, process.env.LSMS_LOGO_V2, null, `DEBUG`, null, null, null, null, true);
                 await webhookClient.send({ embeds: [embed] });
             } catch (err) {
-                debug = JSON.stringify(debug);
-                if(!debug.includes('https://')) {
+                try {
+                    debug = JSON.stringify(debug);
+                } catch (err2) {
+                }
+                if(debug instanceof String && !debug.includes('https://')) {
                     try {
                         const embed = emb.generate(null, null, debug, `#1688CD`, process.env.LSMS_LOGO_V2, null, `DEBUG`, null, null, null, null, true);
                         await webhookClient.send({ embeds: [embed] });
@@ -69,8 +72,33 @@ module.exports = {
     error: (error) => {
         return new Promise(async (resolve, reject) => {
             logger.error(error);
-            const embed = emb.generate(null, null, error, `#FF0000`, process.env.LSMS_LOGO_V2, null, `ERROR`, null, null, null, null, true);
-            await webhookClient.send({ embeds: [embed] });
+            try {
+                const embed = emb.generate(null, null, error, `#1688CD`, process.env.LSMS_LOGO_V2, null, `ERROR`, null, null, null, null, true);
+                await webhookClient.send({ embeds: [embed] });
+            } catch (err) {
+                try {
+                    error = JSON.stringify(error);
+                } catch (err2) {
+                }
+                if(error instanceof String && !error.includes('https://')) {
+                    try {
+                        const embed = emb.generate(null, null, error, `#1688CD`, process.env.LSMS_LOGO_V2, null, `ERROR`, null, null, null, null, true);
+                        await webhookClient.send({ embeds: [embed] });
+                    } catch (err2) {
+                        try {
+                            await webhookClient.send({ content: '**ERROR:**\n```\n' + error + '\n```' });
+                        } catch (err3) {
+                            logger.error(err3);
+                        }
+                    }
+                } else {
+                    try {
+                        await webhookClient.send({ content: '**ERROR:**\n```\n' + error + '\n```' });
+                    } catch (err2) {
+                        logger.error(err2);
+                    }
+                }
+            }
         });
     },
     getStartDate: () => {

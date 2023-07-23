@@ -67,7 +67,7 @@ module.exports = {
         const doctorCardData = await doctorCardSql.getDoctorCard();
         const doctorRankData = await doctorRankSql.getDoctorRank();
 
-        if(doctorRankData[0] == null) {
+        if(doctorRankData == null) {
             const embed = emb.generate("Désolé :(", null, `Aucun grade n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
             return await interaction.editReply({ embeds: [embed], ephemeral: true });
         }

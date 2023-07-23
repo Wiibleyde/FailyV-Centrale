@@ -18,7 +18,7 @@ const logger = require('./modules/logger');
 
 //Récup des requêtes SQL du nom
 const sql = require('./sql/init/initAllTables');
-await sql.initAllTables();
+initAllSqlTable();
 
 //Discord init
 const { Client, GatewayIntentBits, Collection, Events } = require('discord.js');
@@ -84,3 +84,7 @@ process.on('SIGTERM', async () => {
     await client.destroy();
     process.exit(0);
 });
+
+async function initAllSqlTable() {
+    return await sql.initAllTables();
+}

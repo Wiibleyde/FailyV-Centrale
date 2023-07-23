@@ -15,7 +15,6 @@ module.exports = {
             radioName: radio, //"lsms-lspd"
             by: "lsms"
         }, process.env.RADIO_SERVER_JWT_SECRET));
-        ws.close();
     },
     askRadioInfo: (radio) => {
         ws.send(jwt.sign({
@@ -23,6 +22,5 @@ module.exports = {
             radioName: radio, //"lsms-lspd"
             by: "lsms"
         }, process.env.RADIO_SERVER_JWT_SECRET));
-        ws.close();
     }
 }

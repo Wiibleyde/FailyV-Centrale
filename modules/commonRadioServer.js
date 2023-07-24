@@ -18,7 +18,7 @@ module.exports = {
     },
     askManualRefresh: (radio, radiofreq) => {
         ws.send(jwt.sign({
-            type: "ask_refresh",
+            type: "ask_manual_refresh",
             radioName: radio, //"lsms-lspd"
             radioFreq: radiofreq,
             by: "lsms"

@@ -43,20 +43,36 @@ module.exports = {
         .addStringOption(option => 
             option.setName('frequence')
             .setDescription('Fréquence radio')
+            .setMinLength(5)
             .setMaxLength(5)
             .setRequired(true)
         ),
     async execute(interaction) {
     if(interaction.member.roles.cache.has(serviceID)) {
-        let orga;
-        if(interaction.options.getString('organisme') == 'regenLSMS') { orga = 'LSMS'; radio.change(interaction.client, interaction.options.getString('organisme'), interaction.options.getString('frequence'), true); }
-        if(interaction.options.getString('organisme') == 'regenFDO') { orga = 'FDO'; radioServer.askManualRefresh('lsms-lspd', interaction.options.getString('frequence')); }
-        if(interaction.options.getString('organisme') == 'regenBCMS') { orga = 'BCMS'; radioServer.askManualRefresh('lsms-bcms', interaction.options.getString('frequence')); }
-        if(interaction.options.getString('organisme') == 'regenEvent') { orga = 'évènementielle'; radio.change(interaction.client, interaction.options.getString('organisme'), interaction.options.getString('frequence'), true); }
-        await interaction.reply({ embeds: [emb.generate(null, null, `La radio **${orga}** à bien été mise à jour sur **${interaction.options.getString('frequence')}** !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
-        // Supprime la réponse après 5s
-        await wait(5000);
-        await interaction.deleteReply();
+        const radioRegex = /^[0-9]{3}\.[0-9]{1}$/;
+        if(radioRegex.test(newRadioFreq)) {
+            if(parseInt(newRadioFreq.substring(0,3)) >= 250 && parseInt(newRadioFreq.substring(0,3)) < 400) {
+                let orga;
+                if(interaction.options.getString('organisme') == 'regenLSMS') { orga = 'LSMS'; radio.change(interaction.client, interaction.options.getString('organisme'), interaction.options.getString('frequence'), true); }
+                if(interaction.options.getString('organisme') == 'regenFDO') { orga = 'FDO'; radioServer.askManualRefresh('lsms-lspd', interaction.options.getString('frequence')); }
+                if(interaction.options.getString('organisme') == 'regenBCMS') { orga = 'BCMS'; radioServer.askManualRefresh('lsms-bcms', interaction.options.getString('frequence')); }
+                if(interaction.options.getString('organisme') == 'regenEvent') { orga = 'évènementielle'; radio.change(interaction.client, interaction.options.getString('organisme'), interaction.options.getString('frequence'), true); }
+                await interaction.reply({ embeds: [emb.generate(null, null, `La radio **${orga}** à bien été mise à jour sur **${interaction.options.getString('frequence')}** !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
+                // Supprime la réponse après 5s
+                await wait(5000);
+                await interaction.deleteReply();
+            } else {
+                await interaction.reply({ embeds: [emb.generate(`Radio invalide :(`, null, `Désolé, la fréquence que vous avez entrée n'est pas une fréquence valide !\nElle doit obligatoirement être entre **250.0** et **399.9**`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
+                // Supprime la réponse après 5s
+                await wait(5000);
+                await interaction.deleteReply();
+            }
+        } else {
+            await interaction.reply({ embeds: [emb.generate(`Radio invalide :(`, null, `Désolé, la fréquence que vous avez entrée n'est pas une fréquence valide !\nElle doit obligatoirement être au format **trois chiffres point un chiffre** (**000.0**)`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
+            // Supprime la réponse après 5s
+            await wait(5000);
+            await interaction.deleteReply();
+        }
     } else {
         await interaction.reply({ embeds: [emb.generate(`Action impossible !`, null, `Désolé, vous devez être en service pour régénérer une radio !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
         // Supprime la réponse après 5s

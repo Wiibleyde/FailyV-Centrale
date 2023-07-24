@@ -8,9 +8,6 @@ const deployCommands = require('./../modules/deployCommands');
 //Déployement des commandes
 const service = require('./../modules/service');
 
-//Récup du service de kick
-const userservice = require('./../modules/kickservice');
-
 //Récup des requêtes SQL de debug
 const debugSQL = require('./../sql/debugMode/debugMode');
 
@@ -101,13 +98,6 @@ module.exports = {
             process.exit(1);
         });
         update.start();
-
-        const reset = new CronJob('00 00 06 * * *', async function() {
-            userservice.kick(guild, guild.members.cache.get(process.env.IRIS_DISCORD_ID), false);
-            service.resetRadios(client, null);
-            logger.log(`Reset de 06h00 effectué !`);
-        });
-        reset.start();
 
     },
     setDebugMode: (state) => {

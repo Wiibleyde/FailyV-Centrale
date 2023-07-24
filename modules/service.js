@@ -167,7 +167,7 @@ module.exports = {
     isGen: () => {
         return gen;
     },
-    resetRadios: async (client, interaction) => {
+    resetRadios: async (client, freqLSMS, freqFDO, interaction) => {
         //Récupération du serveur Discord LSMS
         const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
         //Récupération du channel des radios
@@ -181,17 +181,18 @@ module.exports = {
             radioEmb.addFields([
                 {
                     name: `💉 Radio LSMS`,
-                    value: `0.0`,
+                    value: freqLSMS,
                     inline: true
                 },
                 {
                     name: `👮 Radio FDO`,
-                    value: `0.0`,
+                    value: freqFDO,
                     inline: true
                 }
             ]);
             //Reset des radios en DB
-            await sql.setRadio('lsms', '0.0');
+            await sql.setRadio('lsms', freqLSMS);
+            await sql.setRadio('fdo', freqFDO);
             await sql.setRadio('bcms', '0.0');
             await sql.updatedRadioDisplay('bcms', '0');
             await sql.setRadio('event', '0.0');

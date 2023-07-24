@@ -67,21 +67,32 @@ client.on(Events.ClientReady, (client) => {
     const radio = require('./modules/changeRadio');
     //Requêtes SQL de radios
     const sqlRadio = require('./sql/radio/radios');
+    //Récup du service de kick
+    const userservice = require('./modules/kickservice');
+    //Déployement des commandes
+    const service = require('./modules/service');
     
     ws.onmessage = async (wsData) => {
         try {
             const data = jwt.verify(wsData.data, process.env.RADIO_SERVER_JWT_SECRET);
-            if (data.type === "refresh" || data.type === "auto_refresh") {
-                let needPing = true;
-                if(data.type === "auto_refresh") { needPing = false; }
+            if (data.type === "refresh") {
                 // On radio refresh
                 if(data.radioName == 'lsms-lspd') {
-                    radio.change(client, 'regenFDO', data.radioFreq, needPing);
+                    radio.change(client, 'regenFDO', data.radioFreq, true);
                 }
                 if(data.radioName == 'lsms-bcms') {
-                    if(needPing) {
-                        radio.change(client, 'regenBCMS', data.radioFreq, true);
-                    }
+                    radio.change(client, 'regenBCMS', data.radioFreq, true);
+                }
+            } else if(data.type === "auto_refresh") {
+                if(data.radioName == 'lsms-lspd') {
+                    //Generation aléatoire de la radio entre 250.0 et 344.9
+                    const freqUnit = Math.floor(Math.random() * (344-250+1)) + 250;
+                    const freqDeci = Math.floor(Math.random() * 10);
+                    const freqLSMS = freqUnit + '.' + freqDeci;
+                    service.resetRadios(client, freqLSMS, data.radioFreq, null);
+                    const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
+                    userservice.kick(guild, guild.members.cache.get(process.env.IRIS_DISCORD_ID), false);
+                    logger.log(`Reset de 06h00 effectué !`);
                 }
             } else if (data.type === "radio_info") {
                 // On connection and specific radio asking

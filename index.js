@@ -90,6 +90,9 @@ client.on(Events.ClientReady, (client) => {
                         radio.change(client, 'regenBCMS', data.radioFreq, false);
                     }
                 }
+            } else if(data.type === "error") {
+                // If an error is returned
+                logger.error(data);
             }
         } catch {}
     }

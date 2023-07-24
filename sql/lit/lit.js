@@ -38,7 +38,7 @@ module.exports = {
     getMessageId: () => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "SELECT `id` FROM `lit_message`",
+                    sql: "SELECT `id` FROM `message` WHERE `correspond`='lit'",
                     timeout: 40000
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
@@ -52,7 +52,7 @@ module.exports = {
     clearMessageId: () => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "DELETE FROM `lit_message` WHERE 1",
+                    sql: "DELETE FROM `message` WHERE `correspond`='lit'",
                     timeout: 40000
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
@@ -66,7 +66,7 @@ module.exports = {
     setMessageId: (msgId) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "INSERT INTO `lit_message` SET `id`=?",
+                    sql: "INSERT INTO `message` SET `id`=?, `correspond`='lit'",
                     timeout: 40000,
                     values: [msgId]
                 }, async (reqErr, result, fields) => {

@@ -16,6 +16,14 @@ module.exports = {
             by: "lsms"
         }, process.env.RADIO_SERVER_JWT_SECRET));
     },
+    askManualRefresh: (radio, radiofreq) => {
+        ws.send(jwt.sign({
+            type: "ask_refresh",
+            radioName: radio, //"lsms-lspd"
+            radioFreq: radiofreq,
+            by: "lsms"
+        }, process.env.RADIO_SERVER_JWT_SECRET));
+    },
     askRadioInfo: (radio) => {
         ws.send(jwt.sign({
             type: "ask_radio_info",

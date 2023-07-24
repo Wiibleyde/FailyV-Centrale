@@ -22,7 +22,7 @@ module.exports = {
                 radio.change(interaction.client, interaction.customId, freq, true);
             }
             if(interaction.customId == 'regenFDO') {
-                radioServer.askRefresh('lsms-lspd');
+                radioServer.askRefresh('lsms-lspd-lscs');
             }
             if(interaction.customId == 'regenBCMS') {
                 radioServer.askRefresh('lsms-bcms');

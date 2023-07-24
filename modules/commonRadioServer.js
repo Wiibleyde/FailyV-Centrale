@@ -12,14 +12,14 @@ module.exports = {
     askRefresh: (radio) => {
         ws.send(jwt.sign({
             type: "ask_refresh",
-            radioName: radio, //"lsms-lspd"
+            radioName: radio, //"lsms-lspd-lscs"
             by: "lsms"
         }, process.env.RADIO_SERVER_JWT_SECRET));
     },
     askManualRefresh: (radio, radiofreq) => {
         ws.send(jwt.sign({
             type: "ask_manual_refresh",
-            radioName: radio, //"lsms-lspd"
+            radioName: radio, //"lsms-lspd-lscs"
             radioFreq: radiofreq,
             by: "lsms"
         }, process.env.RADIO_SERVER_JWT_SECRET));
@@ -27,7 +27,7 @@ module.exports = {
     askRadioInfo: (radio) => {
         ws.send(jwt.sign({
             type: "ask_radio_info",
-            radioName: radio, //"lsms-lspd"
+            radioName: radio, //"lsms-lspd-lscs"
             by: "lsms"
         }, process.env.RADIO_SERVER_JWT_SECRET));
     }

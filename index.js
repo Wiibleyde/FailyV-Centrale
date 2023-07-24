@@ -127,14 +127,14 @@ async function updateRadios(client, ws, wsData, sqlRadio) {
         const data = jwt.verify(wsData.data, process.env.RADIO_SERVER_JWT_SECRET);
         if (data.type === "refresh") {
             // On radio refresh
-            if(data.radioName == 'lsms-lspd') {
+            if(data.radioName == 'lsms-lspd-lscs') {
                 radio.change(client, 'regenFDO', data.radioFreq, true);
             }
             if(data.radioName == 'lsms-bcms') {
                 radio.change(client, 'regenBCMS', data.radioFreq, true);
             }
         } else if(data.type === "auto_refresh") {
-            if(data.radioName == 'lsms-lspd') {
+            if(data.radioName == 'lsms-lspd-lscs') {
                 //Generation aléatoire de la radio entre 250.0 et 344.9
                 const freqUnit = Math.floor(Math.random() * (344-250+1)) + 250;
                 const freqDeci = Math.floor(Math.random() * 10);
@@ -146,7 +146,7 @@ async function updateRadios(client, ws, wsData, sqlRadio) {
             }
         } else if (data.type === "radio_info") {
             // On connection and specific radio asking
-            if(data.radioName == 'lsms-lspd') {
+            if(data.radioName == 'lsms-lspd-lscs') {
                 radio.change(client, 'regenFDO', data.radioFreq, false);
             }
             if(data.radioName == 'lsms-bcms') {

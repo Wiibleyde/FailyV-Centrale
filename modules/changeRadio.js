@@ -118,7 +118,8 @@ module.exports = {
             ]);
         }
         const radioChan = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID);
-        const messageToEdit = await getRadioMessages(await radioChan.messages.fetch(), client);
+        const messageRadioId = await sql.getRadioMessageId();
+        const messageToEdit = await radioChan.messages.fetch(messageRadioId[0].id);
         //Édition du message
         await messageToEdit.edit({ embeds: [embed], components: [radioBtns] });
         if(needToPing) {
@@ -128,18 +129,4 @@ module.exports = {
             await pingMessage.delete();
         }
     }
-}
-
-function getRadioMessages(messages, client) {
-    return new Promise((resolve, reject) => {
-        messages.forEach(msg => {
-            if(msg.author.username == client.user.username && msg.embeds[0] != null) {
-                if(msg.embeds[0].author != null) {
-                    if(msg.embeds[0].author.name == 'Gestion des radios') {
-                        resolve(msg);
-                    }
-                }
-            }
-        });
-    });
 }

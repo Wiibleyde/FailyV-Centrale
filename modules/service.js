@@ -140,15 +140,19 @@ module.exports = {
                     let letters = await beds.getLetters();
                     //Envois
                     if(radioFound == 0) {
-                        await radioChan.send({ embeds: [radioEmb], components: [radioBtns] });
+                        const radioMsg = await radioChan.send({ embeds: [radioEmb], components: [radioBtns] });
                         sendBedsImage(letters, radioChan, bedsImg);
+                        await sql.clearRadioMessageId();
+                        await sql.setRadioMessageId(radioMsg.id);
                     }
                     if(radioFound.embeds != null) {
                         if(radioFound.embeds[0].url != null) {
                             if(radioFound.embeds[0].url.includes('/lit.png')) {
                                 await radioFound.delete();
-                                await radioChan.send({ embeds: [radioEmb], components: [radioBtns] });
+                                const radioMsg = await radioChan.send({ embeds: [radioEmb], components: [radioBtns] });
                                 sendBedsImage(letters, radioChan, bedsImg);
+                                await sql.clearRadioMessageId();
+                                await sql.setRadioMessageId(radioMsg.id);
                             }
                         }
                         if(radioFound.embeds[0].author != null) {
@@ -173,8 +177,8 @@ module.exports = {
         //Récupération du channel des radios
         const radioChan = guild.channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID);
         //Refresh de tous les messages du channel et check si message bien présent
-        const messages = await radioChan.messages.fetch();
-        const msg = await getRadioMessages(messages, client);
+        const radioMessageId = sql.getRadioMessageId();
+        const msg = radioChan.messages.fetch(radioMessageId[0].id);
         if(msg != false) {
             //Reset de l'embed
             const radioEmb = emb.generate(null, null, null, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
@@ -210,8 +214,8 @@ module.exports = {
         //Récupération du channel des radios
         const radioChan = guild.channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID);
         //Refresh de tous les messages du channel et check si message bien présent
-        const messages = await radioChan.messages.fetch();
-        const msg = await getRadioMessages(messages, client);
+        const radioMessageId = sql.getRadioMessageId();
+        const msg = radioChan.messages.fetch(radioMessageId[0].id);
         var freqLSMS = await sql.getRadio('lsms');
         freqLSMS = freqLSMS[0].radiofreq;
         var freqFDO = await sql.getRadio('fdo');
@@ -220,7 +224,7 @@ module.exports = {
         freqBCMS = freqBCMS[0].radiofreq;
         var freqEvent = await sql.getRadio('event');
         freqEvent = freqEvent[0].radiofreq;
-        if(msg != false) {
+        if(msg) {
             //Reset de l'embed
             const newRadioEmb = emb.generate(null, null, null, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
             newRadioEmb.addFields([

@@ -59,57 +59,21 @@ client.on(Events.MessageCreate, async (message) => {
 client.on(Events.ClientReady, (client) => {
     //Récupération du module WebSocket
     const WebSocket = require("ws");
-    //Récupération du module de création de JsonWebToken
-    const jwt = require('jsonwebtoken');
     //Connection au serveur de radio communes
     const ws = new WebSocket(`ws://${process.env.RADIO_SERVER_URL}`);
-    //Module de mise à jour des radios
-    const radio = require('./modules/changeRadio');
     //Requêtes SQL de radios
     const sqlRadio = require('./sql/radio/radios');
-    //Récup du service de kick
-    const userservice = require('./modules/kickservice');
-    //Déployement des commandes
-    const service = require('./modules/service');
+    //Fonction pour attendre
+    const wait = require('node:timers/promises').setTimeout;
     
     ws.onmessage = async (wsData) => {
-        try {
-            const data = jwt.verify(wsData.data, process.env.RADIO_SERVER_JWT_SECRET);
-            if (data.type === "refresh") {
-                // On radio refresh
-                if(data.radioName == 'lsms-lspd') {
-                    radio.change(client, 'regenFDO', data.radioFreq, true);
-                }
-                if(data.radioName == 'lsms-bcms') {
-                    radio.change(client, 'regenBCMS', data.radioFreq, true);
-                }
-            } else if(data.type === "auto_refresh") {
-                if(data.radioName == 'lsms-lspd') {
-                    //Generation aléatoire de la radio entre 250.0 et 344.9
-                    const freqUnit = Math.floor(Math.random() * (344-250+1)) + 250;
-                    const freqDeci = Math.floor(Math.random() * 10);
-                    const freqLSMS = freqUnit + '.' + freqDeci;
-                    service.resetRadios(client, freqLSMS, data.radioFreq, null);
-                    const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
-                    userservice.kick(guild, guild.members.cache.get(process.env.IRIS_DISCORD_ID), false);
-                    logger.log(`Reset de 06h00 effectué !`);
-                }
-            } else if (data.type === "radio_info") {
-                // On connection and specific radio asking
-                if(data.radioName == 'lsms-lspd') {
-                    radio.change(client, 'regenFDO', data.radioFreq, false);
-                }
-                if(data.radioName == 'lsms-bcms') {
-                    const isBCMSDisplayed = await sqlRadio.isRadioDisplayed('bcms');
-                    if(isBCMSDisplayed[0].displayed == '1') {
-                        radio.change(client, 'regenBCMS', data.radioFreq, false);
-                    }
-                }
-            } else if(data.type === "error") {
-                // If an error is returned
-                logger.error(data);
-            }
-        } catch {}
+        const radioMessageId = await sqlRadio.getRadioMessageId();
+        if(radioMessageId[0] == null) {
+            await wait(10000);
+            updateRadios(client, ws, wsData, sqlRadio);
+        } else {
+            updateRadios(client, ws, wsData, sqlRadio);
+        }
     }
 });
 
@@ -147,4 +111,53 @@ process.on('SIGTERM', async () => {
 
 async function initAllSqlTable() {
     return await sql.initAllTables();
+}
+
+async function updateRadios(client, ws, wsData, sqlRadio) {
+    //Récupération du module de création de JsonWebToken
+    const jwt = require('jsonwebtoken');
+    //Module de mise à jour des radios
+    const radio = require('./modules/changeRadio');
+    //Récup du service de kick
+    const userservice = require('./modules/kickservice');
+    //Déployement des commandes
+    const service = require('./modules/service');
+
+    try {
+        const data = jwt.verify(wsData.data, process.env.RADIO_SERVER_JWT_SECRET);
+        if (data.type === "refresh") {
+            // On radio refresh
+            if(data.radioName == 'lsms-lspd') {
+                radio.change(client, 'regenFDO', data.radioFreq, true);
+            }
+            if(data.radioName == 'lsms-bcms') {
+                radio.change(client, 'regenBCMS', data.radioFreq, true);
+            }
+        } else if(data.type === "auto_refresh") {
+            if(data.radioName == 'lsms-lspd') {
+                //Generation aléatoire de la radio entre 250.0 et 344.9
+                const freqUnit = Math.floor(Math.random() * (344-250+1)) + 250;
+                const freqDeci = Math.floor(Math.random() * 10);
+                const freqLSMS = freqUnit + '.' + freqDeci;
+                service.resetRadios(client, freqLSMS, data.radioFreq, null);
+                const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
+                userservice.kick(guild, guild.members.cache.get(process.env.IRIS_DISCORD_ID), false);
+                logger.log(`Reset de 06h00 effectué !`);
+            }
+        } else if (data.type === "radio_info") {
+            // On connection and specific radio asking
+            if(data.radioName == 'lsms-lspd') {
+                radio.change(client, 'regenFDO', data.radioFreq, false);
+            }
+            if(data.radioName == 'lsms-bcms') {
+                const isBCMSDisplayed = await sqlRadio.isRadioDisplayed('bcms');
+                if(isBCMSDisplayed[0].displayed == '1') {
+                    radio.change(client, 'regenBCMS', data.radioFreq, false);
+                }
+            }
+        } else if(data.type === "error") {
+            // If an error is returned
+            logger.error(data);
+        }
+    } catch {}
 }

@@ -77,12 +77,12 @@ module.exports = {
             });
         });
     },
-    set: (name, plate, ct, type, type_order) => {
+    set: (name, plate, ct, type, type_order, messageID) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "INSERT INTO `vehicule` SET `name`=?, `plate`=?, `ct`=?, `type`=?, `type_order`=?",
+                    sql: "INSERT INTO `vehicule` SET `name`=?, `plate`=?, `ct`=?, `type`=?, `type_order`=?, `messageID`='0'",
                     timeout: 40000,
-                    values: [name, plate, ct, type, type_order]
+                    values: [name, plate, ct, type, type_order, messageID]
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     logger.error(reqErr);

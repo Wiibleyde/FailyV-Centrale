@@ -13,7 +13,7 @@ const serviceID = process.env.IRIS_SERVICE_ROLE_ID;
 
 //Boutons de regen radios
 const radioBtns = new ActionRowBuilder().addComponents(
-    new ButtonBuilder().setLabel('LSMS').setCustomId('regenLSMS').setStyle(ButtonStyle.Danger).setEmoji('1133034944202035321').setDisabled(false),
+    new ButtonBuilder().setLabel('LSMS').setCustomId('regenLSMS').setStyle(ButtonStyle.Danger).setEmoji('1133116950357213355').setDisabled(false),
     new ButtonBuilder().setLabel('FDO').setCustomId('regenFDO').setStyle(ButtonStyle.Primary).setEmoji('1124920279559327824').setDisabled(false),
     new ButtonBuilder().setLabel('BCMS').setCustomId('regenBCMS').setStyle(ButtonStyle.Success).setEmoji('1124910870695256106').setDisabled(false),
     new ButtonBuilder().setLabel('Event').setCustomId('regenEvent').setStyle(ButtonStyle.Secondary).setEmoji('1121278617960329257').setDisabled(false),
@@ -36,12 +36,12 @@ module.exports = {
         //Ajout des radios
         embed.addFields([
             {
-                name: `<:IrisLSMS:1133034944202035321> Radio LSMS`,
+                name: `<:IrisLSMS:1133116950357213355> Radio LSMS`,
                 value: freqLSMS,
                 inline: true
             },
             {
-                name: `<:LSPDCS:1133112776454307912> Radio FDO`,
+                name: `<:LSPDCS:1133117105848471552> Radio FDO`,
                 value: freqFDO,
                 inline: true
             }

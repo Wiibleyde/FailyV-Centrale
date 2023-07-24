@@ -68,12 +68,12 @@ module.exports = {
                     freqFDO = freqFDO[0].radiofreq;
                     radioEmb.addFields([
                         {
-                            name: `💉 Radio LSMS`,
+                            name: `<:IrisLSMS:1133034944202035321> Radio LSMS`,
                             value: freqLSMS,
                             inline: true
                         },
                         {
-                            name: `👮 Radio FDO`,
+                            name: `<:LSPDCS:1133112776454307912> Radio FDO`,
                             value: freqFDO,
                             inline: true
                         }
@@ -184,12 +184,12 @@ module.exports = {
             const radioEmb = emb.generate(null, null, null, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
             radioEmb.addFields([
                 {
-                    name: `💉 Radio LSMS`,
+                    name: `<:IrisLSMS:1133034944202035321> Radio LSMS`,
                     value: freqLSMS,
                     inline: true
                 },
                 {
-                    name: `👮 Radio FDO`,
+                    name: `<:LSPDCS:1133112776454307912> Radio FDO`,
                     value: freqFDO,
                     inline: true
                 }
@@ -229,12 +229,12 @@ module.exports = {
             const newRadioEmb = emb.generate(null, null, null, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
             newRadioEmb.addFields([
                 {
-                    name: `💉 Radio LSMS`,
+                    name: `<:IrisLSMS:1133034944202035321> Radio LSMS`,
                     value: freqLSMS,
                     inline: true
                 },
                 {
-                    name: `👮 Radio FDO`,
+                    name: `<:LSPDCS:1133112776454307912> Radio FDO`,
                     value: freqFDO,
                     inline: true
                 }

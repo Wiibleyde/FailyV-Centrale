@@ -36,12 +36,12 @@ module.exports = {
         //Ajout des radios
         embed.addFields([
             {
-                name: `💉 Radio LSMS`,
+                name: `<:IrisLSMS:1133034944202035321> Radio LSMS`,
                 value: freqLSMS,
                 inline: true
             },
             {
-                name: `👮 Radio FDO`,
+                name: `<:LSPDCS:1133112776454307912> Radio FDO`,
                 value: freqFDO,
                 inline: true
             }

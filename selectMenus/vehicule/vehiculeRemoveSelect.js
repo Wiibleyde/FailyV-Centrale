@@ -35,7 +35,7 @@ module.exports = {
         }
         //Send confirmation message
         if(!isVehNull) {
-            const allVehicles = sql.get();
+            const allVehicles = await sql.get();
             //Récupération du channel des véhicules
             const vehChanId = await sql.getChannelId();
             if(vehChanId[0] == null) {

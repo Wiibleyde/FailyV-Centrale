@@ -61,7 +61,7 @@ module.exports = {
         else if(category == 'polmav') { catOrder = '4'; }
         else { catOrder = '5'; }
         await sql.set(interaction.components[0].components[0].value, plate, sqlDate, category, catOrder);
-        const allVehicles = sql.get();
+        const allVehicles = await sql.get();
         //Send embed with buttons
         await regenVeh.all(channelToSend, allVehicles);
         //Send confirmation message

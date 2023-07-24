@@ -50,14 +50,15 @@ module.exports = {
     async execute(interaction) {
     if(interaction.member.roles.cache.has(serviceID)) {
         const radioRegex = /^[0-9]{3}\.[0-9]{1}$/;
-        if(radioRegex.test(newRadioFreq)) {
-            if(parseInt(newRadioFreq.substring(0,3)) >= 250 && parseInt(newRadioFreq.substring(0,3)) < 400) {
+        const newRadio = interaction.options.getString('frequence');
+        if(radioRegex.test(newRadio)) {
+            if(parseInt(newRadio.substring(0,3)) >= 250 && parseInt(newRadio.substring(0,3)) < 400) {
                 let orga;
-                if(interaction.options.getString('organisme') == 'regenLSMS') { orga = 'LSMS'; radio.change(interaction.client, interaction.options.getString('organisme'), interaction.options.getString('frequence'), true); }
-                if(interaction.options.getString('organisme') == 'regenFDO') { orga = 'FDO'; radioServer.askManualRefresh('lsms-lspd', interaction.options.getString('frequence')); }
-                if(interaction.options.getString('organisme') == 'regenBCMS') { orga = 'BCMS'; radioServer.askManualRefresh('lsms-bcms', interaction.options.getString('frequence')); }
-                if(interaction.options.getString('organisme') == 'regenEvent') { orga = 'évènementielle'; radio.change(interaction.client, interaction.options.getString('organisme'), interaction.options.getString('frequence'), true); }
-                await interaction.reply({ embeds: [emb.generate(null, null, `La radio **${orga}** à bien été mise à jour sur **${interaction.options.getString('frequence')}** !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
+                if(interaction.options.getString('organisme') == 'regenLSMS') { orga = 'LSMS'; radio.change(interaction.client, interaction.options.getString('organisme'), newRadio, true); }
+                if(interaction.options.getString('organisme') == 'regenFDO') { orga = 'FDO'; radioServer.askManualRefresh('lsms-lspd', newRadio); }
+                if(interaction.options.getString('organisme') == 'regenBCMS') { orga = 'BCMS'; radioServer.askManualRefresh('lsms-bcms', newRadio); }
+                if(interaction.options.getString('organisme') == 'regenEvent') { orga = 'évènementielle'; radio.change(interaction.client, interaction.options.getString('organisme'), newRadio, true); }
+                await interaction.reply({ embeds: [emb.generate(null, null, `La radio **${orga}** à bien été mise à jour sur **${newRadio}** !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
                 // Supprime la réponse après 5s
                 await wait(5000);
                 await interaction.deleteReply();

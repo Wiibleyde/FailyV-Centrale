@@ -4,7 +4,7 @@ const { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder
 module.exports = {
     execute: async function(interaction, errEmb) {
         //Création d'une liste d'opération possible
-        const options = new StringSelectMenuBuilder().setCustomId('centraleResetRadioSelect').setPlaceholder('Choisissez la/les radio(s) à réinitialiser').setMinValues(1).setMaxValues(2);
+        const options = new StringSelectMenuBuilder().setCustomId('centraleResetRadioSelect').setPlaceholder('Choisissez la/les radio(s) à retirer').setMinValues(1).setMaxValues(2);
         //Ajout des opérations possibles
         options.addOptions(new StringSelectMenuOptionBuilder().setLabel(`BCMS`).setValue(`BCMS`).setEmoji('1124910870695256106'));
         options.addOptions(new StringSelectMenuOptionBuilder().setLabel(`Event`).setValue(`évènementielle`).setEmoji('1121278617960329257'));

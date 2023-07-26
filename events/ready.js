@@ -31,6 +31,7 @@ module.exports = {
 
         //Récupération des personnes en service
         const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
+        await guild.members.fetch();
         var serviceCount = guild.roles.cache.get(process.env.IRIS_SERVICE_ROLE_ID).members.size;
         var dispatchCount = guild.roles.cache.get(process.env.IRIS_DISPATCH_ROLE_ID).members.size;
 

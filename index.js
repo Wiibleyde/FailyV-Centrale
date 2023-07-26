@@ -25,8 +25,8 @@ const sql = require('./sql/init/initAllTables');
 initAllSqlTable();
 
 //Discord init
-const { Client, GatewayIntentBits, Collection, Events } = require('discord.js');
-const client = new Client({ intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent ]});
+const { Client, GatewayIntentBits, Collection, Events, WebhookClient } = require('discord.js');
+const client = new Client({ intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildScheduledEvents ]});
 //Init des commandes Discord
 client.commands = new Collection();
 const foldersPath = path.join(__dirname, 'commands');
@@ -53,6 +53,26 @@ client.on(Events.MessageCreate, async (message) => {
             logger.warn(`${message.member.nickname} - ${message.author.username}#${message.author.discriminator} (<@${message.author.id}>)\n\nà envoyé un message dans le salon interdit "#${client.guilds.cache.get(message.guildId).channels.cache.get(message.channelId).name} <#${message.channelId}>"\n\nContenu: "${message.content}"`);
             await message.delete();
         }
+    }
+});
+
+client.on(Events.GuildScheduledEventCreate, async (guildScheduledEvent) => {
+    //Import du créateur de webhook
+    logger.log(`Événement "**${guildScheduledEvent.name}**" créé`);
+    const webhookClient = new WebhookClient({ url: process.env.IRIS_AGENDA_WEBHOOK_URL });
+    webhookClient.send({ content: `https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}` });
+});
+
+client.on(Events.GuildScheduledEventDelete, async (guildScheduledEvent) => {
+    //Récup des requêtes SQL
+    const sqlAgenda = require('./sql/agenda/agenda');
+    const agendaChannelId = await sqlAgenda.getAgendaChannelId();
+    logger.log(`Événement "**${guildScheduledEvent.name}**" supprimé`);
+    //Import du créateur de webhook
+    guildScheduledEvent.guild.channels.cache.get(agendaChannelId[0].id).messages.fetch().then(m => { m.forEach(msg => { if(msg.content == `https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}`) { msg.delete(); } }) });
+    const isEventIsDelta = await sqlAgenda.getByURL(`https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}`);
+    if(isEventIsDelta[0] != null) {
+        await sqlAgenda.updateToEndState(`https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}`);
     }
 });
 

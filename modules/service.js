@@ -1,11 +1,13 @@
 //Récupération des fonctions pour créer des boutons
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, WebhookClient } = require('discord.js');
 //Récup du logger
 const logger = require('./logger');
 //Récup du créateur d'embed
 const emb = require('./embeds');
 //Récup des requêtes SQL
 const sql = require('./../sql/radio/radios');
+//Récup des requêtes SQL
+const sqlAgenda = require('./../sql/agenda/agenda');
 //Récup des reqêtes SQL pour les lits
 const beds = require('./../sql/lit/lit');
 //Récup des réactions
@@ -44,20 +46,28 @@ module.exports = {
             const chan = guild.channels.cache.get(process.env.IRIS_SERVICE_CHANNEL_ID);
             //Récupération du channel des radios
             const radioChan = guild.channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID);
+            //Récupération du channel agenda
+            const agendaChanId = await sqlAgenda.getAgendaChannelId();
+            const agendaChan = guild.channels.cache.get(agendaChanId[0].id);
             //Refresh de tous les messages du channel et check si les messages sont bien présents
             const messages = await chan.messages.fetch();
             const found = await getServiceMessages(messages, client);
             const radioMessages = await radioChan.messages.fetch();
             const radioFound = await getCentraleMessages(radioMessages, client);
+            const agendaMessages = await agendaChan.messages.fetch();
+            const agendaMessagesCount = await getIrisAgendaMessages(agendaMessages);
+            const agendaWaiting = await sqlAgenda.getAllWaiting();
             //Si pas présent recréation du message
             if(!found) {
-                //Base de l'embed
-                const serviceEmb = emb.generate(null, null, `**Pour indiquer une prise/fin de service - Appuyez sur 🔴 \n\nPour prendre/relâcher le dispatch - Appuyez sur 🔵 \n\nPour indiquer un mal de tête - Appuyez sur ⚫**`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
-                //Envois
-                await chan.send({ embeds: [serviceEmb], components: [btns] });
+                if(!gen) {
+                    //Base de l'embed
+                    const serviceEmb = emb.generate(null, null, `**Pour indiquer une prise/fin de service - Appuyez sur 🔴 \n\nPour prendre/relâcher le dispatch - Appuyez sur 🔵 \n\nPour indiquer un mal de tête - Appuyez sur ⚫**`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
+                    //Envois
+                    await chan.send({ embeds: [serviceEmb], components: [btns] });
+                }
             }
             if(radioFound != 2) {
-                if(gen == false) {
+                if(!gen) {
                     gen = true;
                     //Base de l'embed
                     const radioEmb = emb.generate(null, null, null, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
@@ -161,6 +171,117 @@ module.exports = {
                             }
                         }
                     }    
+                }
+            }
+            if(agendaMessagesCount != agendaWaiting.length) {
+                if(!gen) {
+                    gen = true;
+                    agendaMessages.forEach(async msg => {
+                        if(msg.author.id == process.env.IRIS_DISCORD_ID) {
+                            await msg.delete();
+                        }
+                    });
+                    for(i=0;i<agendaWaiting.length;i++) {
+                        const buttons = new ActionRowBuilder().addComponents(
+                            new ButtonBuilder().setLabel(`Définir la date`).setCustomId(`agEventDefine`).setStyle(ButtonStyle.Success).setEmoji(`📆`).setDisabled(false),
+                            new ButtonBuilder().setLabel(`Responsables contactés`).setCustomId(`agRespContact`).setStyle(ButtonStyle.Primary).setEmoji(`📱`).setDisabled(false),
+                            new ButtonBuilder().setLabel(`Supprimer`).setCustomId(`agDelete`).setStyle(ButtonStyle.Danger).setEmoji(`896393106633687040`).setDisabled(false)
+                        );
+                
+                        const date = new Date(agendaWaiting[i].date);
+                        const year = date.getFullYear();
+                        let month = date.getMonth() + 1;
+                        if (month < 10) month = '0' + month;
+                        let day = date.getDate();
+                        if (day < 10) day = '0' + day;
+                        const formatedDate = day + '/' + month + '/' + year;
+    
+                        let service;
+                        if(agendaWaiting[i].by == 'LSMS') {
+                            service = '<:IrisLSMS:1133116950357213355> LSMS';
+                        } else {
+                            service = '<:IrisBCMS:1133150717125853297> BCMS';
+                        }
+                        
+                        let confi;
+                        if(agendaWaiting[i].confidentiality == '1') {
+                            confi = `Décès publique`;
+                        } else {
+                            confi = `Décès privé`;
+                        }
+                        
+                        let don;
+                        if(agendaWaiting[i].donor == '1') {
+                            don = 'Oui';
+                        } else {
+                            don = 'Non';
+                        }
+    
+                        const agendaEmbed = emb.generate(null, null, null, `#000001`, process.env.LSMS_DELTA_LOGO, null, `Gestion décès`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, agendaWaiting[i].writter, null, false);
+                        agendaEmbed.addFields(
+                            {
+                                name: `**Identité**`,
+                                value: agendaWaiting[i].name,
+                                inline: true
+                            },
+                            {
+                                name: `**Date du décès**`,
+                                value: formatedDate,
+                                inline: true
+                            },
+                            {
+                                name: `**Traité par**`,
+                                value: service,
+                                inline: true
+                            },
+                            {
+                                name: `**Personnes responsables**`,
+                                value: agendaWaiting[i].responsibles,
+                                inline: false
+                            },
+                            {
+                                name: `**Personnes autorisées**`,
+                                value: agendaWaiting[i].allowed,
+                                inline: false
+                            },
+                            {
+                                name: `**Confidentialité**`,
+                                value: confi,
+                                inline: true
+                            },
+                            {
+                                name: `**Donneur·se**`,
+                                value: don,
+                                inline: true
+                            },
+                            {
+                                name: `**Traitement**`,
+                                value: agendaWaiting[i].management,
+                                inline: false
+                            },
+                        );
+                        if(agendaWaiting[i].other != null) {
+                            agendaEmbed.addFields(
+                                {
+                                    name: `**Infos complémentaires**`,
+                                    value: agendaWaiting[i].other,
+                                    inline: false
+                                }
+                            );
+                        }
+                        if(agendaWaiting[i].contact != null) {
+                            agendaEmbed.addFields(
+                                {
+                                    name: `**Responsables contactés**`,
+                                    value: agendaWaiting[i].contact,
+                                    inline: false
+                                }
+                            );
+                        }
+                        const newAgendaMsg = await agendaChan.send({ embeds: [agendaEmbed], components: [buttons] });
+                        await sqlAgenda.updateMessageId(agendaWaiting[i].agendaID, newAgendaMsg.id);
+                    }
+                    gen = false;
                 }
             }
         }, 1000);
@@ -389,16 +510,14 @@ function getCentraleMessages(messages, client) {
     });
 }
 
-function getRadioMessages(messages, client) {
+function getIrisAgendaMessages(messages) {
     return new Promise((resolve, reject) => {
-        messages.forEach(msg => {
-            if(msg.author.username == client.user.username && msg.embeds[0] != null) {
-                if(msg.embeds[0].author != null) {
-                    if(msg.embeds[0].author.name == 'Gestion des radios') {
-                        resolve(msg);
-                    }
-                }
+        let count = 0;
+        messages.forEach(async msg => {
+            if(msg.author.id == process.env.IRIS_DISCORD_ID) {
+                count ++;
             }
         });
+        resolve(count);
     });
 }

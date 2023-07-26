@@ -41,14 +41,14 @@ module.exports = {
                 inline: true
             },
             {
-                name: `<:LSPDCS:1133117105848471552> Radio FDO`,
+                name: `<:IrisLSPDCS:1133117105848471552> Radio FDO`,
                 value: freqFDO,
                 inline: true
             }
         ]);
         //Création de variables de base
-        var titleBCMS = '<:bcms:1128889752284844124> Radio BCMS';
-        var titleEvent = '🏆 Radio Event';
+        var titleBCMS = '<:IrisBCMS:1133150717125853297> Radio BCMS';
+        var titleEvent = '<:IrisEvent:1133705259596910624> Radio Event';
         var freqBCMS = await sql.getRadio('bcms');
         freqBCMS = freqBCMS[0].radiofreq;
         var freqEvent = await sql.getRadio('event');

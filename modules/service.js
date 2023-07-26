@@ -73,7 +73,7 @@ module.exports = {
                             inline: true
                         },
                         {
-                            name: `<:LSPDCS:1133117105848471552> Radio FDO`,
+                            name: `<:IrisLSPDCS:1133117105848471552> Radio FDO`,
                             value: freqFDO,
                             inline: true
                         }
@@ -95,7 +95,7 @@ module.exports = {
                                 inline: true
                             },
                             {
-                                name: `<:bcms:1128889752284844124> Radio BCMS`,
+                                name: `<:IrisBCMS:1133150717125853297> Radio BCMS`,
                                 value: freqBCMS,
                                 inline: true
                             },
@@ -108,7 +108,7 @@ module.exports = {
                                 inline: true
                             },
                             {
-                                name: `🏆 Radio Event`,
+                                name: `<:IrisEvent:1133705259596910624> Radio Event`,
                                 value: freqEvent,
                                 inline: true
                             },
@@ -121,12 +121,12 @@ module.exports = {
                                 inline: true
                             },
                             {
-                                name: `<:bcms:1128889752284844124> Radio BCMS`,
+                                name: `<:IrisBCMS:1133150717125853297> Radio BCMS`,
                                 value: freqBCMS,
                                 inline: true
                             },
                             {
-                                name: `🏆 Radio Event`,
+                                name: `<:IrisEvent:1133705259596910624> Radio Event`,
                                 value: freqEvent,
                                 inline: true
                             },
@@ -189,7 +189,7 @@ module.exports = {
                     inline: true
                 },
                 {
-                    name: `<:LSPDCS:1133117105848471552> Radio FDO`,
+                    name: `<:IrisLSPDCS:1133117105848471552> Radio FDO`,
                     value: freqFDO,
                     inline: true
                 }
@@ -234,7 +234,7 @@ module.exports = {
                     inline: true
                 },
                 {
-                    name: `<:LSPDCS:1133117105848471552> Radio FDO`,
+                    name: `<:IrisLSPDCS:1133117105848471552> Radio FDO`,
                     value: freqFDO,
                     inline: true
                 }
@@ -251,7 +251,7 @@ module.exports = {
                             inline: true
                         },
                         {
-                            name: `🏆 Radio Event`,
+                            name: `<:IrisEvent:1133705259596910624> Radio Event`,
                             value: freqEvent,
                             inline: true
                         }
@@ -270,7 +270,7 @@ module.exports = {
                             inline: true
                         },
                         {
-                            name: `<:bcms:1128889752284844124> Radio BCMS`,
+                            name: `<:IrisBCMS:1133150717125853297> Radio BCMS`,
                             value: freqBCMS,
                             inline: true
                         }

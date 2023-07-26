@@ -60,17 +60,19 @@ module.exports = {
             //Si pas présent recréation du message
             if(!found) {
                 if(!gen) {
+                    gen = true;
                     //Base de l'embed
                     const serviceEmb = emb.generate(null, null, `**Pour indiquer une prise/fin de service - Appuyez sur 🔴 \n\nPour prendre/relâcher le dispatch - Appuyez sur 🔵 \n\nPour indiquer un mal de tête - Appuyez sur ⚫**`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
                     //Envois
                     await chan.send({ embeds: [serviceEmb], components: [btns] });
+                    gen = false;
                 }
             }
             if(radioFound != 2) {
                 if(!gen) {
                     gen = true;
                     //Base de l'embed
-                    const radioEmb = emb.generate(null, null, null, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
+                    const radioEmb = emb.generate(null, null, `**Note: Ctrl+R si vous ne voyez pas les radios actualisées !**\n\u200b`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
                     //Radios
                     var freqLSMS = await sql.getRadio('lsms');
                     freqLSMS = freqLSMS[0].radiofreq;
@@ -302,7 +304,7 @@ module.exports = {
         const msg = radioChan.messages.fetch(radioMessageId[0].id);
         if(msg != false) {
             //Reset de l'embed
-            const radioEmb = emb.generate(null, null, null, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
+            const radioEmb = emb.generate(null, null, `**Note: Ctrl+R si vous ne voyez pas les radios actualisées !**\n\u200b`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
             radioEmb.addFields([
                 {
                     name: `<:IrisLSMS:1133116950357213355> Radio LSMS`,
@@ -347,7 +349,7 @@ module.exports = {
         freqEvent = freqEvent[0].radiofreq;
         if(msg) {
             //Reset de l'embed
-            const newRadioEmb = emb.generate(null, null, null, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
+            const newRadioEmb = emb.generate(null, null, `**Note: Ctrl+R si vous ne voyez pas les radios actualisées !**\n\u200b`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
             newRadioEmb.addFields([
                 {
                     name: `<:IrisLSMS:1133116950357213355> Radio LSMS`,

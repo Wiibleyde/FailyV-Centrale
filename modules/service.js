@@ -177,7 +177,7 @@ module.exports = {
         //Récupération du channel des radios
         const radioChan = guild.channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID);
         //Refresh de tous les messages du channel et check si message bien présent
-        const radioMessageId = sql.getRadioMessageId();
+        const radioMessageId = await sql.getRadioMessageId();
         const msg = radioChan.messages.fetch(radioMessageId[0].id);
         if(msg != false) {
             //Reset de l'embed

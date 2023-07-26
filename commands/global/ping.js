@@ -20,6 +20,7 @@ module.exports = {
         .setName('ping')
         .setDescription('Replies with Pong!'),
     async execute(interaction) {
+        const firstResponse = await interaction.deferReply({ ephemeral: true, fetchReply: true });
         try {
             //Calcul du statut du ping
             let status;
@@ -56,10 +57,10 @@ module.exports = {
             const memoryData = process.memoryUsage();
 
             //Création de l'embed
-            const pingEmbed = emb.generate(null,null,`🏓 **Pong !**\n- **Ping :** ${interaction.client.ws.ping} ms (${status})\n- **Latence :** ${interaction.createdTimestamp - Date.now()}ms\n- **Mémoire :** ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024 * 100) / 100} MB\n- **En ligne depuis :** <t:${(new Date() / 1000 - interaction.client.uptime / 1000).toFixed()}:R>`,`Gold`,null,null,null,null,null,interaction.client.user.username,interaction.client.user.avatarURL(),true);
+            const pingEmbed = emb.generate(null,null,`🏓 **Pong !**\n- **Ping :** ${interaction.client.ws.ping} ms (${status})\n- **Latence :** ${firstResponse.createdTimestamp - interaction.createdTimestamp}ms\n- **Mémoire :** ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024 * 100) / 100} MB\n- **En ligne depuis :** <t:${(new Date() / 1000 - interaction.client.uptime / 1000).toFixed()}:R>`,`Gold`,null,null,null,null,null,interaction.client.user.username,interaction.client.user.avatarURL(),true);
 
             //Envoi de l'embed
-            return interaction.reply({ embeds: [pingEmbed], ephemeral: true });
+            return interaction.followUp({ embeds: [pingEmbed], ephemeral: true });
         } catch (error) {
             logger.error(error);
         }

@@ -36,16 +36,16 @@ module.exports = {
                 if(user.roles.cache.has(dispatchID)) {
                     let dispatchRole = interaction.guild.roles.cache.find(role => role.id === dispatchID);
                     user.roles.remove(dispatchRole);
-                    logRP.fdd(interaction.guild, user.nickname, interaction.guild.members.cache.get(interaction.user.id).nickname);
+                    logRP.fdd(interaction.guild, user.nickname, interaction.member.nickname);
                 }
                 if(user.roles.cache.has(offID)) {
                     let offRole = interaction.guild.roles.cache.find(role => role.id === offID);
                     user.roles.remove(offRole);
                 }
                 user.roles.remove(switchRole);
-                logRP.fds(interaction.guild, user.nickname, interaction.guild.members.cache.get(interaction.user.id).nickname);
+                logRP.fds(interaction.guild, user.nickname, interaction.member.nickname);
                 try {
-                    await user.send({ embeds: [emb.generate(`Bonjour, ${user.nickname}`, null, `Vous n'avez pas pris votre fin de service.\nMerci de penser à la prendre à l'avenir !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, `Cordialement, ${interaction.guild.members.cache.get(interaction.user.id).nickname}`, null, true)] });
+                    await user.send({ embeds: [emb.generate(`Bonjour, ${user.nickname}`, null, `Vous n'avez pas pris votre fin de service.\nMerci de penser à la prendre à l'avenir !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, `Cordialement, ${interaction.member.nickname}`, null, true)] });
                 } catch(err) {
                 }
             }

@@ -155,7 +155,7 @@ module.exports = {
             "Annonce",
             `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`,
             null,
-            `${interaction.guild.members.cache.get(interaction.user.id).nickname}`,
+            `${interaction.member.nickname}`,
             null,
             true
         );

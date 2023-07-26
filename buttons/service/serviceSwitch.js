@@ -31,23 +31,23 @@ module.exports = {
                 interaction.member.roles.remove(switchRole);
                 if(roleRemoved == '') {
                     embed = emb.generate(`Fin de service`, null, `Bonne fin de service ${interaction.user} !\n*Faites attention à vous 💙*`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
-                    logRP.fds(interaction.guild, interaction.guild.members.cache.get(interaction.user.id).nickname, null);
+                    logRP.fds(interaction.guild, interaction.member.nickname, null);
                 } else if(roleRemoved == '-dispatch') {
                     embed = emb.generate(`Fin de service`, null, `Bonne fin de service ${interaction.user} !\n\n⚠️ Attention vous aviez toujours le rôle de dispatcheur, il vous à été retiré automatiquement !\n\n*Et n'oubliez pas faites attention à vous 💙*`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
-                    logRP.fdd(interaction.guild, interaction.guild.members.cache.get(interaction.user.id).nickname, interaction.guild.members.cache.get(process.env.IRIS_DISCORD_ID).nickname);
-                    logRP.fds(interaction.guild, interaction.guild.members.cache.get(interaction.user.id).nickname, null);
+                    logRP.fdd(interaction.guild, interaction.member.nickname, interaction.guild.members.cache.get(process.env.IRIS_DISCORD_ID).nickname);
+                    logRP.fds(interaction.guild, interaction.member.nickname, null);
                 } else if(roleRemoved == '-off') {
                     embed = emb.generate(`Fin de service`, null, `Bonne fin de service ${interaction.user} !\n\nComme vous n'êtes plus en service, le rôle de off radio vous a été retiré automatiquement !\n\n*Et n'oubliez pas faites attention à vous 💙*`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
-                    logRP.fds(interaction.guild, interaction.guild.members.cache.get(interaction.user.id).nickname, null);
+                    logRP.fds(interaction.guild, interaction.member.nickname, null);
                 } else {
                     embed = emb.generate(`Fin de service`, null, `Bonne fin de service ${interaction.user} !\n\n⚠️ Attention vous aviez toujours le rôle de dispatcheur et off radio, ils vous ont été retirés automatiquement !\n\n*Et n'oubliez pas faites attention à vous 💙*`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
-                    logRP.fdd(interaction.guild, interaction.guild.members.cache.get(interaction.user.id).nickname, interaction.guild.members.cache.get(process.env.IRIS_DISCORD_ID).nickname);
-                    logRP.fds(interaction.guild, interaction.guild.members.cache.get(interaction.user.id).nickname, null);
+                    logRP.fdd(interaction.guild, interaction.member.nickname, interaction.guild.members.cache.get(process.env.IRIS_DISCORD_ID).nickname);
+                    logRP.fds(interaction.guild, interaction.member.nickname, null);
                 }
             } else {
                 interaction.member.roles.add(switchRole);
                 embed = emb.generate(`Prise de service`, null, `Bonne prise de serviiiiiiiiice ${interaction.user} !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
-                logRP.pds(interaction.guild, interaction.guild.members.cache.get(interaction.user.id).nickname, null);
+                logRP.pds(interaction.guild, interaction.member.nickname, null);
             }
             //Confirmation à l'utilisateur du succès de l'opération
             await interaction.reply({ embeds: [embed], ephemeral: true });

@@ -20,10 +20,6 @@ const readcmd = readline.createInterface({
 //Récup du logger
 const logger = require('./modules/logger');
 
-//Récup des requêtes SQL du nom
-const sql = require('./sql/init/initAllTables');
-initAllSqlTable();
-
 //Discord init
 const { Client, GatewayIntentBits, Collection, Events, WebhookClient } = require('discord.js');
 const client = new Client({ intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildScheduledEvents ]});
@@ -87,8 +83,14 @@ client.on(Events.ClientReady, (client) => {
     const wait = require('node:timers/promises').setTimeout;
     
     ws.onmessage = async (wsData) => {
-        const radioMessageId = await sqlRadio.getRadioMessageId();
-        if(radioMessageId[0] == null) {
+        let radioMessageId;
+        try {
+            radioMessageId = await sqlRadio.getRadioMessageId();
+            radioMessageId = radioMessageId[0];
+        } catch(err) {
+            radioMessageId = null;
+        }
+        if(radioMessageId == null) {
             await wait(10000);
             updateRadios(client, ws, wsData, sqlRadio);
         } else {
@@ -128,10 +130,6 @@ process.on('SIGTERM', async () => {
     await client.destroy();
     process.exit(0);
 });
-
-async function initAllSqlTable() {
-    return await sql.initAllTables();
-}
 
 async function updateRadios(client, ws, wsData, sqlRadio) {
     //Récupération du module de création de JsonWebToken

@@ -38,7 +38,9 @@ module.exports = {
             //Récupération de l'image des lits
             let bedsImg;
             client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_BEDS_CHANNEL_ID).messages.fetch({ limit: 1 }).then(messages => {
-                messages.first().attachments.map(bedImg => bedsImg = bedImg.attachment);
+                if(messages.first() != null) {
+                    messages.first().attachments.map(bedImg => bedsImg = bedImg.attachment);
+                }
             });
             //Récupération du serveur Discord LSMS
             const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
@@ -48,14 +50,21 @@ module.exports = {
             const radioChan = guild.channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID);
             //Récupération du channel agenda
             const agendaChanId = await sqlAgenda.getAgendaChannelId();
-            const agendaChan = guild.channels.cache.get(agendaChanId[0].id);
+            let agendaChan;
+            let agendaMessages;
+            let agendaMessagesCount;
+            if(agendaChanId[0] != null) {
+                agendaChan = guild.channels.cache.get(agendaChanId[0].id);
+                agendaMessages = await agendaChan.messages.fetch();
+                agendaMessagesCount = await getIrisAgendaMessages(agendaMessages);
+            } else {
+                agendaMessagesCount = 0;
+            }
             //Refresh de tous les messages du channel et check si les messages sont bien présents
             const messages = await chan.messages.fetch();
             const found = await getServiceMessages(messages, client);
             const radioMessages = await radioChan.messages.fetch();
             const radioFound = await getCentraleMessages(radioMessages, client);
-            const agendaMessages = await agendaChan.messages.fetch();
-            const agendaMessagesCount = await getIrisAgendaMessages(agendaMessages);
             const agendaWaiting = await sqlAgenda.getAllWaiting();
             //Si pas présent recréation du message
             if(!found) {

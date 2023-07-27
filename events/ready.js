@@ -20,12 +20,16 @@ const CronJob = require('cron').CronJob;
 //Fonction pour attendre
 const wait = require('node:timers/promises').setTimeout;
 
+//Récup des requêtes SQL du nom
+const sql = require('./../sql/init/initAllTables');
+
 let isDebugMode = false;
 
 module.exports = {
     name: 'ready',
     once: true,
     async execute(client) {
+        await sql.initAllTables();
         deployCommands.init(client);
         logger.log(`Bot en ligne! Connecté avec le compte ${client.user.tag}`);
 

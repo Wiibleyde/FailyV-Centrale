@@ -11,6 +11,10 @@ module.exports = {
     execute: async function(interaction, errEmb) {
         //Affichage du message "Iris réfléchis..."
         await interaction.deferReply({ ephemeral: true });
+        let name = interaction.guild.members.cache.get(process.env.IRIS_DISCORD_ID).nickname;
+        if(name == null) {
+            name = interaction.client.user.username;
+        }
         //Création de l'embed
         let createdEmbed = null;
         let responseEmbed = null;
@@ -35,7 +39,7 @@ module.exports = {
                 }
             ]);
             //Création d'un embed de réponse
-            responseEmbed = emb.generate('Prise en compte de votre demande de debug', null, '**Nous avons bien enregistré votre demande de debug** \nVous recevrez une réponse sous peu.', '#FFFFFF', 'https://cdn.discordapp.com/attachments/1083724872045297734/1093600460511920138/loading.gif', null, null, null, null, interaction.guild.members.cache.get(process.env.IRIS_DISCORD_ID).nickname, interaction.client.user.avatarURL(), true);
+            responseEmbed = emb.generate('Prise en compte de votre demande de debug', null, '**Nous avons bien enregistré votre demande de debug** \nVous recevrez une réponse sous peu.', '#FFFFFF', 'https://cdn.discordapp.com/attachments/1083724872045297734/1093600460511920138/loading.gif', null, null, null, null, name, interaction.client.user.avatarURL(), true);
         } catch (err) {
             interaction.channel.send({ content: `${interaction.user}`, embeds: [errEmb] });
             logger.error(err);
@@ -58,7 +62,7 @@ module.exports = {
             await chan.send({ content: '**<@&' + process.env.IRIS_DEBUG_ROLE_ID + '> bug report !**', embeds: [ createdEmbed ], components: [ btns ] });
             //Confermation à l'utilisateur du succès de la commande
             await interaction.user.send({ embeds: [ responseEmbed ] });
-            await interaction.followUp({ embeds: [emb.generate('Merci !', null, `Votre bug report à bien été prise en compte !`, '#3CB34B', process.env.LSMS_LOGO_V2, null, null, null, null, interaction.guild.members.cache.get(process.env.IRIS_DISCORD_ID).nickname, interaction.client.user.avatarURL(), true)], ephemeral: true });
+            await interaction.followUp({ embeds: [emb.generate('Merci !', null, `Votre bug report à bien été prise en compte !`, '#3CB34B', process.env.LSMS_LOGO_V2, null, null, null, null, name, interaction.client.user.avatarURL(), true)], ephemeral: true });
             // Supprime la réponse après 5s
             await wait(5000);
             await interaction.deleteReply();
@@ -66,7 +70,7 @@ module.exports = {
             //Si l'utilisateur à ses MP de fermés
             if(err.code == 50007) {
                 try {
-                    await interaction.followUp({ embeds: [emb.generate('Merci !', null, `Votre bug report à bien été prise en compte, n'hésitez pas à ouvrir vos MP avec moi pour être tenu au courant de l'évolution de votre demande !\n(Clique-droit sur le serveur en commun avec moi -> "Paramètres de confidentialité" -> "Messages privés")`, '#3CB34B', process.env.LSMS_LOGO_V2, null, null, null, null, interaction.guild.members.cache.get(process.env.IRIS_DISCORD_ID).nickname, interaction.client.user.avatarURL(), true)], ephemeral: true });
+                    await interaction.followUp({ embeds: [emb.generate('Merci !', null, `Votre bug report à bien été prise en compte, n'hésitez pas à ouvrir vos MP avec moi pour être tenu au courant de l'évolution de votre demande !\n(Clique-droit sur le serveur en commun avec moi -> "Paramètres de confidentialité" -> "Messages privés")`, '#3CB34B', process.env.LSMS_LOGO_V2, null, null, null, null, name, interaction.client.user.avatarURL(), true)], ephemeral: true });
                 } catch (err) {
                     logger.error(err);
                     await interaction.followUp({ embeds: [errEmb], ephemeral: true });

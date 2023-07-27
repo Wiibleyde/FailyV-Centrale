@@ -301,7 +301,7 @@ module.exports = {
         const radioChan = guild.channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID);
         //Refresh de tous les messages du channel et check si message bien présent
         const radioMessageId = await sql.getRadioMessageId();
-        const msg = radioChan.messages.fetch(radioMessageId[0].id);
+        const msg = await radioChan.messages.fetch(radioMessageId[0].id);
         if(msg != false) {
             //Reset de l'embed
             const radioEmb = emb.generate(null, null, `**Note: Ctrl+R si vous ne voyez pas les radios actualisées !**\n\u200b`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);

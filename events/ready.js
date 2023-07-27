@@ -46,7 +46,8 @@ module.exports = {
                 permissions: [PermissionsBitField.Flags.Administrator],
                 reason: `Creation of an admin role for debbuging problems on the server`
             });
-            role.setPosition(await guild.roles.cache.get(process.env.IRIS_PRIVATE_ROLE_ID).rawPosition - 1);
+            const irisRolePos = await guild.roles.cache.get(process.env.IRIS_PRIVATE_ROLE_ID);
+            role.setPosition(irisRolePos.rawPosition - 1);
             await debugSQL.setDebugRole(role.id);
         } else {
             if(debugState[0].state == '1') {

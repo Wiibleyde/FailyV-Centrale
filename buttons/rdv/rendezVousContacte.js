@@ -27,7 +27,7 @@ module.exports = {
         if(color == parseInt(process.env.LSMS_COLORCODE.split('#')[1], 16)) {
             color = parseInt('#5865f2'.split('#')[1], 16);
         }
-        const newEmbed = emb.generate(null, null, null, color, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, rendezVousEmb.footer.text, null, false);
+        const newEmbed = emb.generate(null, null, null, color, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, rendezVousEmb.footer.text, null, false);
         for (let i = 0; i < rendezVousEmb.fields.length; i++) {
             newEmbed.addFields(
                 {

@@ -23,7 +23,7 @@ module.exports = {
         let minutes = now.getMinutes();
         if (minutes < 10) minutes = '0' + minutes;
         //Create new embed
-        const newEmbed = emb.generate(null, null, null, `#000001`, process.env.LSMS_DELTA_LOGO, null, `Gestion décès`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, rendezVousEmb.footer.text, null, false);
+        const newEmbed = emb.generate(null, null, null, `#000001`, process.env.LSMS_DELTA_LOGO, null, `Gestion décès`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, rendezVousEmb.footer.text, null, false);
         let contacte = 1;
         for(i=0;i<rendezVousEmb.fields.length;i++) {
             newEmbed.addFields(

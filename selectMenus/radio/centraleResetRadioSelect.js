@@ -30,7 +30,7 @@ module.exports = {
             radiosToReset.push('none');
         }
         service.resetSpecificRadio(interaction.client, interaction, radiosToReset);
-        interaction.followUp({ embeds: [emb.generate(null, null, respContent + ` a/ont correctement été réinitialisée(s) !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, true)], ephemeral: true });
+        interaction.followUp({ embeds: [emb.generate(null, null, respContent + ` a/ont correctement été réinitialisée(s) !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true)], ephemeral: true });
         // Supprime la réponse après 5s
         await wait(5000);
         await interaction.deleteReply();

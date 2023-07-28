@@ -41,7 +41,7 @@ module.exports = {
         //Format patient name
         const patient = format.name(interaction.components[0].components[0].value.toLowerCase());
         //Create embed
-        const rendezVousEmb = emb.generate(null, null, null, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, pseudo, null, false);
+        const rendezVousEmb = emb.generate(null, null, null, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, pseudo, null, false);
         rendezVousEmb.addFields(
             {
                 name: `**Patient**`,
@@ -65,7 +65,7 @@ module.exports = {
             },
         );
         //Get channel by looking at env var
-        const channelToSend = interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(process.env.IRIS_PSYCHO_CHANNEL_ID);
+        const channelToSend = interaction.guild.channels.cache.get(process.env.IRIS_PSYCHO_CHANNEL_ID);
         //Ajout des boutons sous l'embed pour : Dire que le rendez vous est fini, que la personne a été contactée, que le rendez-vous a été pris/que la date a été fixée, que le rendez-vous a été annulé
         const rendezVousActionRow = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setCustomId('rendezVousFini').setLabel("Terminer/Supprimer").setStyle(ButtonStyle.Success).setEmoji("896393106700775544").setDisabled(false),
@@ -77,7 +77,7 @@ module.exports = {
         //Save RDV in DB
         await rdv.registerRDV(2, patient, phoneNumber, interaction.components[2].components[0].value, `**0** fois`, pseudo, rdvMsg.id);
         //Send confirmation message
-        await interaction.reply({ embeds: [emb.generate(null, null, `Le rendez-vous de psychologie a bien été ajouté à l'agenda !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });            // Supprime la réponse après 5s
+        await interaction.reply({ embeds: [emb.generate(null, null, `Le rendez-vous de psychologie a bien été ajouté à l'agenda !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], ephemeral: true });            // Supprime la réponse après 5s
         await wait(5000);
         await interaction.deleteReply();
     }

@@ -81,7 +81,7 @@ module.exports = {
             .setRequired(false)),
     async execute(interaction) {
         await interaction.deferReply({ ephemeral: true });
-        const guild = interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
+        const guild = interaction.guild;
         const serverIconURL = `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`;
         const agendaChannelId = await sql.getAgendaChannelId();
         const mairieDécèsChannelId = await sql.getMairieDécèsChannelId();

@@ -82,7 +82,7 @@ module.exports = {
             const numInPsy = await rdv.getRDVByType(2);
             let numInGText;
             if(numInG.length == 1) { numInGText = `**${numInG.length}** rendez-vous général`; } else { numInGText = `**${numInG.length}** rendez-vous généraux`; }
-            interaction.followUp({ embeds: [emb.generate(null, null, `Il y a actuellement\n- ${numInGText}\n- **${numInChir.length}** rendez-vous de chirurgie\n- **${numInPsy.length}** rendez-vous de psychologie\n\d'enregistrés ! Si vous constatez qu'il manque un rendez-vous n'hésitez pas à utiliser l'option "**Régénérer les rendez-vous**" de la commande </${interaction.commandName}:${interaction.commandId}> !`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
+            interaction.followUp({ embeds: [emb.generate(null, null, `Il y a actuellement\n- ${numInGText}\n- **${numInChir.length}** rendez-vous de chirurgie\n- **${numInPsy.length}** rendez-vous de psychologie\n\d'enregistrés ! Si vous constatez qu'il manque un rendez-vous n'hésitez pas à utiliser l'option "**Régénérer les rendez-vous**" de la commande </${interaction.commandName}:${interaction.commandId}> !`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], ephemeral: true });
         } else if(interaction.options.getString('action') === 'regen') {
             //Affichage du message "Iris réfléchis..."
             await interaction.deferReply({ ephemeral: true });
@@ -102,7 +102,7 @@ module.exports = {
             );
             for(i=0;i<numInG.length;i++) {
                 //Create embed
-                const rendezVousEmb = emb.generate(null, null, null, numInG[i].color, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, numInG[i].writter, null, false);
+                const rendezVousEmb = emb.generate(null, null, null, numInG[i].color, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, numInG[i].writter, null, false);
                 rendezVousEmb.addFields(
                     {
                         name: `**Patient**`,
@@ -139,7 +139,7 @@ module.exports = {
             }
             for(i=0;i<numInChir.length;i++) {
                 //Create embed
-                const rendezVousEmb = emb.generate(null, null, null, numInChir[i].color, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, numInChir[i].writter, null, false);
+                const rendezVousEmb = emb.generate(null, null, null, numInChir[i].color, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, numInChir[i].writter, null, false);
                 rendezVousEmb.addFields(
                     {
                         name: `**Patient**`,
@@ -176,7 +176,7 @@ module.exports = {
             }
             for(i=0;i<numInPsy.length;i++) {
                 //Create embed
-                const rendezVousEmb = emb.generate(null, null, null, numInPsy[i].color, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, numInPsy[i].writter, null, false);
+                const rendezVousEmb = emb.generate(null, null, null, numInPsy[i].color, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, numInPsy[i].writter, null, false);
                 rendezVousEmb.addFields(
                     {
                         name: `**Patient**`,
@@ -211,7 +211,7 @@ module.exports = {
                 const newMsg = await chanPsy.send({ embeds: [rendezVousEmb], components: [rendezVousActionRow] });
                 await rdv.updateRDVMessageId(numInPsy[i].messageID, newMsg.id);
             }
-            interaction.followUp({ embeds: [emb.generate(null, null, `Tous les rendez-vous ont correctement été régénérés !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)] });
+            interaction.followUp({ embeds: [emb.generate(null, null, `Tous les rendez-vous ont correctement été régénérés !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)] });
         }
     },
 }

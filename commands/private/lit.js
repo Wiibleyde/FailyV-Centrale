@@ -62,7 +62,7 @@ module.exports = {
     async execute(interaction) {
         if(!service.isGen()) {
             await interaction.deferReply({ ephemeral: true });
-            const guild = interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
+            const guild = interaction.guild;
             const radioChannel = guild.channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID);
             const getMsgId = await beds.getMessageId();
             const msgId = getMsgId[0].id;

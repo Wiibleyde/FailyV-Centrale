@@ -20,7 +20,7 @@ module.exports = {
         const regexDate = /^(0[1-9]|1\d|2[0-8]|29(?=\/\d\d\/(?!1[01345789]00|2[1235679]00)\d\d(?:[02468][048]|[13579][26]))|30(?!\/02)|31(?=\/0[13578]|\/1[02]))\/(0[1-9]|1[0-2])\/([12]\d{3})$/gm;
         let date = interaction.components[2].components[0].value;
         if(!regexDate.test(date)) {
-            return await interaction.reply({ embeds: [emb.generate(null, null, `La date du **contrôle technique** n'est pas une date valide !\n\nVous devez insérer une date au format **JJ/MM/AAAA**`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
+            return await interaction.reply({ embeds: [emb.generate(null, null, `La date du **contrôle technique** n'est pas une date valide !\n\nVous devez insérer une date au format **JJ/MM/AAAA**`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], ephemeral: true });
         } else {
             date = date.split('/');
             date = date[1] + '/' + date[0] + '/' + date[2];
@@ -37,14 +37,14 @@ module.exports = {
         }
         const isVehicleExist = await sql.getByPlate(plate);
         if(isVehicleExist[0] != null) {
-            return await interaction.reply({ embeds: [emb.generate(null, null, `Désolé :(\nIl semblerait qu'il existe déjà un véhicule avec cette plaque d'immatriculation d'enregistré`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
+            return await interaction.reply({ embeds: [emb.generate(null, null, `Désolé :(\nIl semblerait qu'il existe déjà un véhicule avec cette plaque d'immatriculation d'enregistré`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], ephemeral: true });
         }
         const vehChanId = await sql.getChannelId();
         if(vehChanId[0] == null) {
-            return interaction.followUp({ embeds: [emb.generate(`Oups :(`, null, `Aucun salon de gestion des véhicules n'a été trouvé en base de donnée\nVeuillez contacter un des développeurs (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour régler ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
+            return interaction.followUp({ embeds: [emb.generate(`Oups :(`, null, `Aucun salon de gestion des véhicules n'a été trouvé en base de donnée\nVeuillez contacter un des développeurs (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour régler ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], ephemeral: true });
         }
         let vehiculeChannelID = vehChanId[0].id;
-        const channelToSend = await interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(vehiculeChannelID);
+        const channelToSend = await interaction.guild.channels.cache.get(vehiculeChannelID);
         //Ajout des boutons sous l'embed pour gérer le véhicule
         const vehiclesBtns = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setCustomId('vehAvailable').setStyle(ButtonStyle.Success).setEmoji("896393106700775544").setDisabled(true),
@@ -65,7 +65,7 @@ module.exports = {
         //Send embed with buttons
         await regenVeh.all(channelToSend, allVehicles);
         //Send confirmation message
-        await interaction.followUp({ embeds: [emb.generate(null, null, `Le véhicule immatriculé **${plate}** a bien été ajouté à la liste !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
+        await interaction.followUp({ embeds: [emb.generate(null, null, `Le véhicule immatriculé **${plate}** a bien été ajouté à la liste !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], ephemeral: true });
         // Supprime la réponse après 5s
         await wait(5000);
         await interaction.deleteReply();

@@ -39,7 +39,7 @@ module.exports = {
             //Récupération du channel des véhicules
             const vehChanId = await sql.getChannelId();
             if(vehChanId[0] == null) {
-                return interaction.reply({ embeds: [emb.generate(null, null, `Oups :(\n\nAucun salon de gestion des véhicules n'a été trouvé en base de donnée\nVeuillez contacter un des développeurs (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour régler ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
+                return interaction.reply({ embeds: [emb.generate(`Oups :(`, null, `Aucun salon de gestion des véhicules n'a été trouvé en base de donnée\nVeuillez contacter un des développeurs (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour régler ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false)], ephemeral: true });
             }
             let vehiculeChannelID = vehChanId[0].id;
             const vehChan = await interaction.guild.channels.cache.get(vehiculeChannelID);

@@ -101,3 +101,9 @@ Pour retrouver un rendez-vous supprimé par erreur (sans passer par le bouton "T
 
 Pour ajouter un docteur, il suffit de faire la commande `/add` et de renseigner le nom, prénom, telephone, et le tag sur l'intranet du docteur. Cela va alors ajouter le docteur dans la liste des docteurs, lui donner les permissions pour voir les channels du LSMS et fais une annonce dans le channel #annonces.
 NB: On peut aussi ajouter un docteur en faisant la commande `/add` et en précisant le grade du docteur dans un argument optionnel.
+
+### Mettre/retirer un docteur en vacances
+
+Pour mettre un docteur en vacances, il suffit de faire la commande `/vacances` et de renseigner le docteur à mettre en vacances. Cela va alors mettre le docteur en vacances et lui retirer les permissions pour voir les channels du LSMS.
+Pour retirer un docteur en vacances, il suffit de faire la commande `/vacances` et de renseigner le docteur à retirer des vacances. Cela va alors retirer le docteur des vacances et lui redonner les permissions pour voir les channels du LSMS.
+

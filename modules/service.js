@@ -5,11 +5,13 @@ const logger = require('./logger');
 //Récup du créateur d'embed
 const emb = require('./embeds');
 //Récup des requêtes SQL
-const sql = require('./../sql/radio/radios');
+const sqlRadio = require('./../sql/radio/radios');
 //Récup des requêtes SQL
 const sqlAgenda = require('./../sql/agenda/agenda');
+//Récup des requêtes SQL
+//const sqlFollow = require('./../sql/follow/suivi');
 //Récup des reqêtes SQL pour les lits
-const beds = require('./../sql/lit/lit');
+const sqlBeds = require('./../sql/lit/lit');
 //Récup des réactions
 const btnCreator = require('./btnCreator');
 
@@ -44,11 +46,15 @@ module.exports = {
             });
             //Récupération du serveur Discord LSMS
             const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
-            //Récupération du channel de service
-            const chan = guild.channels.cache.get(process.env.IRIS_SERVICE_CHANNEL_ID);
-            //Récupération du channel des radios
+            //Refresh de tous les messages du channel et check si les messages sont bien présents (service)
+            const serviceChan = guild.channels.cache.get(process.env.IRIS_SERVICE_CHANNEL_ID);
+            const messages = await serviceChan.messages.fetch();
+            const found = await getServiceMessages(messages, client);
+            //Refresh de tous les messages du channel et check si les messages sont bien présents (radios)
             const radioChan = guild.channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID);
-            //Récupération du channel agenda
+            const radioMessages = await radioChan.messages.fetch();
+            const radioFound = await getCentraleMessages(radioMessages, client);
+            //Refresh de tous les messages du channel et check si les messages sont bien présents (agenda)
             const agendaChanId = await sqlAgenda.getAgendaChannelId();
             let agendaChan;
             let agendaMessages;
@@ -56,16 +62,24 @@ module.exports = {
             if(agendaChanId[0] != null) {
                 agendaChan = guild.channels.cache.get(agendaChanId[0].id);
                 agendaMessages = await agendaChan.messages.fetch();
-                agendaMessagesCount = await getIrisAgendaMessages(agendaMessages);
+                agendaMessagesCount = await getIrisChannelMessages(agendaMessages);
             } else {
                 agendaMessagesCount = 0;
             }
-            //Refresh de tous les messages du channel et check si les messages sont bien présents
-            const messages = await chan.messages.fetch();
-            const found = await getServiceMessages(messages, client);
-            const radioMessages = await radioChan.messages.fetch();
-            const radioFound = await getCentraleMessages(radioMessages, client);
             const agendaWaiting = await sqlAgenda.getAllWaiting();
+            //Refresh de tous les messages du channel et check si les messages sont bien présents (suivi)
+            /*const followChanId = await sqlFollow.getFollowChannelId();
+            let followChan;
+            let followMessages;
+            let followMessagesCount;
+            if(followChanId[0] != null) {
+                followChan = guild.channels.cache.get(followChanId[0].id);
+                followMessages = await followChan.messages.fetch();
+                followMessagesCount = await getIrisChannelMessages(followMessages);
+            } else {
+                followMessagesCount = 0;
+            }*/
+            //const followWaiting = await sqlAgenda.getAllWaiting();
             //Si pas présent recréation du message
             if(!found) {
                 if(!gen) {
@@ -73,7 +87,7 @@ module.exports = {
                     //Base de l'embed
                     const serviceEmb = emb.generate(null, null, `**Pour indiquer une prise/fin de service - Appuyez sur 🔴 \n\nPour prendre/relâcher le dispatch - Appuyez sur 🔵 \n\nPour indiquer un mal de tête - Appuyez sur ⚫**`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
                     //Envois
-                    await chan.send({ embeds: [serviceEmb], components: [btns] });
+                    await serviceChan.send({ embeds: [serviceEmb], components: [btns] });
                     gen = false;
                 }
             }
@@ -83,9 +97,9 @@ module.exports = {
                     //Base de l'embed
                     const radioEmb = emb.generate(null, null, `**Note: Ctrl+R si vous ne voyez pas les radios actualisées !**\n\u200b`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
                     //Radios
-                    var freqLSMS = await sql.getRadio('lsms');
+                    var freqLSMS = await sqlRadio.getRadio('lsms');
                     freqLSMS = freqLSMS[0].radiofreq;
-                    var freqFDO = await sql.getRadio('fdo');
+                    var freqFDO = await sqlRadio.getRadio('fdo');
                     freqFDO = freqFDO[0].radiofreq;
                     radioEmb.addFields([
                         {
@@ -100,13 +114,13 @@ module.exports = {
                         }
                     ]);
                     //Check de si les radios optionnelles doivent être affichées
-                    var genBCMS = await sql.isRadioDisplayed('bcms');
+                    var genBCMS = await sqlRadio.isRadioDisplayed('bcms');
                     genBCMS = genBCMS[0].displayed;
-                    var genEvent = await sql.isRadioDisplayed('event');
+                    var genEvent = await sqlRadio.isRadioDisplayed('event');
                     genEvent = genEvent[0].displayed;
-                    var freqBCMS = await sql.getRadio('bcms');
+                    var freqBCMS = await sqlRadio.getRadio('bcms');
                     freqBCMS = freqBCMS[0].radiofreq;
-                    var freqEvent = await sql.getRadio('event');
+                    var freqEvent = await sqlRadio.getRadio('event');
                     freqEvent = freqEvent[0].radiofreq;
                     if(genBCMS == '1' && genEvent == '0') {
                         radioEmb.addFields([
@@ -158,13 +172,13 @@ module.exports = {
                             }
                         ]);
                     }
-                    let letters = await beds.getLetters();
+                    let letters = await sqlBeds.getLetters();
                     //Envois
                     if(radioFound == 0) {
                         const radioMsg = await radioChan.send({ embeds: [radioEmb], components: [radioBtns] });
                         sendBedsImage(letters, radioChan, bedsImg);
-                        await sql.clearRadioMessageId();
-                        await sql.setRadioMessageId(radioMsg.id);
+                        await sqlRadio.clearRadioMessageId();
+                        await sqlRadio.setRadioMessageId(radioMsg.id);
                     }
                     if(radioFound.embeds != null) {
                         if(radioFound.embeds[0].url != null) {
@@ -172,8 +186,8 @@ module.exports = {
                                 await radioFound.delete();
                                 const radioMsg = await radioChan.send({ embeds: [radioEmb], components: [radioBtns] });
                                 sendBedsImage(letters, radioChan, bedsImg);
-                                await sql.clearRadioMessageId();
-                                await sql.setRadioMessageId(radioMsg.id);
+                                await sqlRadio.clearRadioMessageId();
+                                await sqlRadio.setRadioMessageId(radioMsg.id);
                             }
                         }
                         if(radioFound.embeds[0].author != null) {
@@ -309,7 +323,7 @@ module.exports = {
         //Récupération du channel des radios
         const radioChan = guild.channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID);
         //Refresh de tous les messages du channel et check si message bien présent
-        const radioMessageId = await sql.getRadioMessageId();
+        const radioMessageId = await sqlRadio.getRadioMessageId();
         const msg = await radioChan.messages.fetch(radioMessageId[0].id);
         if(msg != false) {
             //Reset de l'embed
@@ -327,12 +341,12 @@ module.exports = {
                 }
             ]);
             //Reset des radios en DB
-            await sql.setRadio('lsms', freqLSMS);
-            await sql.setRadio('fdo', freqFDO);
-            await sql.setRadio('bcms', '0.0');
-            await sql.updatedRadioDisplay('bcms', '0');
-            await sql.setRadio('event', '0.0');
-            await sql.updatedRadioDisplay('event', '0');
+            await sqlRadio.setRadio('lsms', freqLSMS);
+            await sqlRadio.setRadio('fdo', freqFDO);
+            await sqlRadio.setRadio('bcms', '0.0');
+            await sqlRadio.updatedRadioDisplay('bcms', '0');
+            await sqlRadio.setRadio('event', '0.0');
+            await sqlRadio.updatedRadioDisplay('event', '0');
             //Envois du message
             await msg.edit({ embeds: [radioEmb], components: [radioBtns] });
             if(interaction != null) {
@@ -346,15 +360,15 @@ module.exports = {
         //Récupération du channel des radios
         const radioChan = guild.channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID);
         //Refresh de tous les messages du channel et check si message bien présent
-        const radioMessageId = sql.getRadioMessageId();
+        const radioMessageId = sqlRadio.getRadioMessageId();
         const msg = radioChan.messages.fetch(radioMessageId[0].id);
-        var freqLSMS = await sql.getRadio('lsms');
+        var freqLSMS = await sqlRadio.getRadio('lsms');
         freqLSMS = freqLSMS[0].radiofreq;
-        var freqFDO = await sql.getRadio('fdo');
+        var freqFDO = await sqlRadio.getRadio('fdo');
         freqFDO = freqFDO[0].radiofreq;
-        var freqBCMS = await sql.getRadio('bcms');
+        var freqBCMS = await sqlRadio.getRadio('bcms');
         freqBCMS = freqBCMS[0].radiofreq;
-        var freqEvent = await sql.getRadio('event');
+        var freqEvent = await sqlRadio.getRadio('event');
         freqEvent = freqEvent[0].radiofreq;
         if(msg) {
             //Reset de l'embed
@@ -373,8 +387,8 @@ module.exports = {
             ]);
             if(radio[0] == 'BCMS' && radio[1] == 'none') {
                 //Reset des radios en DB
-                await sql.updatedRadioDisplay('bcms', '0');
-                const eventFreq = await sql.isRadioDisplayed('event');
+                await sqlRadio.updatedRadioDisplay('bcms', '0');
+                const eventFreq = await sqlRadio.isRadioDisplayed('event');
                 if(eventFreq[0].displayed == '1') {
                     newRadioEmb.addFields([
                         {
@@ -392,8 +406,8 @@ module.exports = {
             }
             if(radio[0] == 'évènementielle' && radio[1] == 'none') {
                 //Reset des radios en DB
-                await sql.updatedRadioDisplay('event', '0');
-                const bcmsFreq = await sql.isRadioDisplayed('bcms');
+                await sqlRadio.updatedRadioDisplay('event', '0');
+                const bcmsFreq = await sqlRadio.isRadioDisplayed('bcms');
                 if(bcmsFreq[0].displayed == '1') {
                     newRadioEmb.addFields([
                         {
@@ -411,13 +425,13 @@ module.exports = {
             }
             if(radio[0] == 'BCMS' && radio[1] == 'évènementielle') {
                 //Reset des radios en DB
-                await sql.updatedRadioDisplay('bcms', '0');
-                await sql.updatedRadioDisplay('event', '0');
+                await sqlRadio.updatedRadioDisplay('bcms', '0');
+                await sqlRadio.updatedRadioDisplay('event', '0');
             }
             if(radio[0] == 'évènementielle' && radio[1] == 'BCMS') {
                 //Reset des radios en DB
-                await sql.updatedRadioDisplay('bcms', '0');
-                await sql.updatedRadioDisplay('event', '0');
+                await sqlRadio.updatedRadioDisplay('bcms', '0');
+                await sqlRadio.updatedRadioDisplay('event', '0');
             }
             //Envois du message
             await msg.edit({ embeds: [newRadioEmb], components: [radioBtns] });
@@ -444,29 +458,29 @@ async function sendBedsImage(letters, radioChan, bedsImg) {
     }
     if(letters.length == 0) {
         const bedsMsg = await radioChan.send({ content: bedsImg });
-        await beds.clearMessageId();
-        await beds.setMessageId(bedsMsg.id);
+        await sqlBeds.clearMessageId();
+        await sqlBeds.setMessageId(bedsMsg.id);
         gen = false;
     } else if(letters.length < 6) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const bedsMsg = await radioChan.send({ content: bedsImg, components: [btns1] });
-        await beds.clearMessageId();
-        await beds.setMessageId(bedsMsg.id);
+        await sqlBeds.clearMessageId();
+        await sqlBeds.setMessageId(bedsMsg.id);
         gen = false;
     } else if(letters.length < 11) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
         const bedsMsg = await radioChan.send({ content: bedsImg, components: [btns1, btns2] });
-        await beds.clearMessageId();
-        await beds.setMessageId(bedsMsg.id);
+        await sqlBeds.clearMessageId();
+        await sqlBeds.setMessageId(bedsMsg.id);
         gen = false;
     } else if(letters.length < 16) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
         const btns3 = btnCreator.genBedsBtns(lettersArray3);
         const bedsMsg = await radioChan.send({ content: bedsImg, components: [btns1, btns2, btns3] });
-        await beds.clearMessageId();
-        await beds.setMessageId(bedsMsg.id);
+        await sqlBeds.clearMessageId();
+        await sqlBeds.setMessageId(bedsMsg.id);
         gen = false;
     } else if(letters.length < 21) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
@@ -474,8 +488,8 @@ async function sendBedsImage(letters, radioChan, bedsImg) {
         const btns3 = btnCreator.genBedsBtns(lettersArray3);
         const btns4 = btnCreator.genBedsBtns(lettersArray4);
         const bedsMsg = await radioChan.send({ content: bedsImg, components: [btns1, btns2, btns3, btns4] });
-        await beds.clearMessageId();
-        await beds.setMessageId(bedsMsg.id);
+        await sqlBeds.clearMessageId();
+        await sqlBeds.setMessageId(bedsMsg.id);
         gen = false;
     }
 }
@@ -521,7 +535,7 @@ function getCentraleMessages(messages, client) {
     });
 }
 
-function getIrisAgendaMessages(messages) {
+function getIrisChannelMessages(messages) {
     return new Promise((resolve, reject) => {
         let count = 0;
         messages.forEach(async msg => {

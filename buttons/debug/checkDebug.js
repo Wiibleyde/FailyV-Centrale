@@ -30,7 +30,7 @@ module.exports = {
             const user = interaction.client.guilds.cache.get(userGuild).members.cache.get(userid);
             try {
                 //Retour à l'utilisateur de sa demande de debug
-                await user.send({ embeds: [emb.generate('Suite à votre demande de debug', null, `La demande de debug de la foncitonnalité **${interaction.message.embeds[0].title.split(': ')[1]}** à bien été revue et corrigée !\nLa mise à jour sera disponible ${fixTime}`, '#0DE600', `https://cdn.discordapp.com/attachments/1083724872045297734/1084447289914970182/yes.webp`, null, null, null, null, `Cordialement, ` + interaction.user.username, interaction.user.avatarURL(), true)] });
+                await user.send({ embeds: [emb.generate('Suite à votre demande de debug', null, `La demande de debug de la foncitonnalité **${interaction.message.embeds[0].title.split(': ')[1]}** a bien été revue et corrigée !\nLa mise à jour sera disponible ${fixTime}`, '#0DE600', `https://cdn.discordapp.com/attachments/1083724872045297734/1084447289914970182/yes.webp`, null, null, null, null, `Cordialement, ` + interaction.user.username, interaction.user.avatarURL(), true)] });
                 await interaction.followUp({ embeds: [emb.generate('Demande fixée', null, `**${interaction.message.embeds[0].author.name}** à bien été prévenu du retour concernant sa demande !`, '#0DE600', process.env.LSMS_LOGO_V2, null, null, null, null, name, interaction.client.user.avatarURL(), true)], ephemeral: true });
                 await interaction.message.delete();
                 // Supprime la réponse après 5s

@@ -52,7 +52,7 @@ module.exports = {
         )
         .addStringOption(option => 
             option.setName('surveillance')
-            .setDescription('Est ce que le patient est en surveillance FDO ?')
+            .setDescription('Est ce que le patient est sous surveillance des FDO ?')
             .setRequired(false)
             .addChoices(
                 { name: 'Oui', value: '1' },
@@ -96,14 +96,14 @@ module.exports = {
                             patientSurveilance[patientIndex] = surveillance;
                             changePatientBed(guild, radioChannel, msgId, interaction, interaction.options.getString('patient').toLowerCase(), interaction.options.getString('lettre'), surveillance, patient, patientLetter, patientSurveilance);
                         } else {
-                            await interaction.followUp({ embeds: [emb.generate(null, null, `Désolé, se patient est déjà placé dans le lit **${patientLetter[patientIndex].toUpperCase()}** !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)], ephemeral: true });
+                            await interaction.followUp({ embeds: [emb.generate(null, null, `Désolé, ce patient est déjà placé dans le lit **${patientLetter[patientIndex].toUpperCase()}** !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)], ephemeral: true });
                             // Supprime la réponse après 5s
                             await wait(5000);
                             await interaction.deleteReply();
                         }
                     }
                 } else {
-                    await interaction.followUp({ embeds: [emb.generate(null, null, `Désolé il y a déjà un patient dans se lit, veuillez en essayer un autre !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)], ephemeral: true });
+                    await interaction.followUp({ embeds: [emb.generate(null, null, `Désolé, il y a déjà un patient dans ce lit, veuillez essayer un autre lit !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)], ephemeral: true });
                     // Supprime la réponse après 5s
                     await wait(5000);
                     await interaction.deleteReply();

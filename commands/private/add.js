@@ -76,7 +76,7 @@ module.exports = {
 
         // Check si le tag discord pour le docteur n'est pas le bot
         if (tag.id === process.env.IRIS_DISCORD_ID) {
-            const embed = emb.generate("Erreur", null, `Vous ne pouvez pas utilisé le tag ${tag} pour ajouter un nouveau docteur`, "#FF0000", process.env.LSMS_LOGO_V2, null, null, null, null, null, null, false);
+            const embed = emb.generate("Erreur", null, `Vous ne pouvez pas utiliser le tag ${tag} pour ajouter un nouveau docteur`, "#FF0000", process.env.LSMS_LOGO_V2, null, null, null, null, null, null, false);
             await interaction.editReply({ embeds: [embed], ephemeral: true });
             // Supprime la réponse après 5s
             await wait(5000);
@@ -93,7 +93,7 @@ module.exports = {
         // Check si le numéro de téléphone est bien sous le bon format
         if (!regExpFull.test(phone) && !regExpMidFull.test(phone) && !regExp.test(phone)) {
             try {
-                await interaction.reply({ content: `Le numéro de téléphone ${phone} n'est pas valide. Veuillez entrer un numéro de téléphone valide (555-5420 ou 5555420 ou 5420).`, ephemeral: true });
+                await interaction.reply({ content: `Le numéro de téléphone ${phone} est invalide. Veuillez entrer un numéro de téléphone valide (555-5420 ou 5555420 ou 5420).`, ephemeral: true });
             } catch (e) {
                 logger.error(e);
             }
@@ -116,7 +116,7 @@ module.exports = {
 
         // Check si une fiche n'existe pas déjà pour le docteur
         if (existChannelID !== "-1") {
-            const embed = emb.generate("Erreur", null, `Il y a déjà un docteur du nom de ${firstName} ${lastName} sa fiche se trouve ici : <#${existChannelID}>`, "#FF0000", process.env.LSMS_LOGO_V2, null, null, null, null, null, null, false);
+            const embed = emb.generate("Erreur", null, `Il existe déjà un docteur du nom de ${firstName} ${lastName} sa fiche se trouve ici : <#${existChannelID}>`, "#FF0000", process.env.LSMS_LOGO_V2, null, null, null, null, null, null, false);
             await interaction.editReply({ embeds: [embed], ephemeral: true });
             // Supprime la réponse après 5s
             await wait(5000);

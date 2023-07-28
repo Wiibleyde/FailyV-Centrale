@@ -21,7 +21,7 @@ module.exports = {
         //Check if phone number is valid
         if (!regExpFull.test(interaction.components[1].components[0].value) && !regExpMidFull.test(interaction.components[1].components[0].value) && !regExp.test(interaction.components[1].components[0].value)) {
             try {
-                await interaction.reply({ content: `Le numéro de téléphone ${interaction.components[1].components[0].value} n'est pas valide. Veuillez entrer un numéro de téléphone valide (555-5420 ou 5555420 ou 5420).`, ephemeral: true });
+                await interaction.reply({ content: `Le numéro de téléphone ${interaction.components[1].components[0].value} est invalide. Veuillez entrer un numéro de téléphone valide (555-5420 ou 5555420 ou 5420).`, ephemeral: true });
             } catch (e) {
                 logger.error(e);
             }

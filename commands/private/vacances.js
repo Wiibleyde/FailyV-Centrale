@@ -61,7 +61,7 @@ module.exports = {
                 //Supprime les rôles de la DB
                 doctorRoles.deleteRoles(docteurId);
                 //Envoi d'un embed de confirmation
-                interaction.followUp({ embeds: [emb.generate(`Gestion des vacanciers`, null, `Les accès de <@${docteur.id}> on bien été restitué`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
+                interaction.followUp({ embeds: [emb.generate(`Gestion des vacanciers`, null, `Les accès de <@${docteur.id}> ont bien été restitué`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
                 return;
             } catch (error) {
                 logger.error(error);
@@ -102,7 +102,7 @@ module.exports = {
             //Ajouter le rôle de vacances au docteur
             await docteur.roles.add(vacancesRole);
             //Envoi d'un embed de confirmation
-            interaction.followUp({ embeds: [emb.generate(`Gestion des vacanciers`, null, `Les accès de <@${docteur.id}> on bien été retiré`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
+            interaction.followUp({ embeds: [emb.generate(`Gestion des vacanciers`, null, `Les accès de <@${docteur.id}> ont bien été retiré`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
         }
     }
 }

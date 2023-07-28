@@ -22,7 +22,7 @@ module.exports = {
             .setRequired(true))
         .addStringOption(option =>
             option.setName(`responsables`)
-            .setDescription(`Liste des personnes réponsables`)
+            .setDescription(`Liste des personnes responsables`)
             .setRequired(true))
         .addStringOption(option =>
             option.setName(`autorisés`)
@@ -30,7 +30,7 @@ module.exports = {
             .setRequired(true))
         .addStringOption(option =>
             option.setName(`confidentialité`)
-            .setDescription(`Est ce que le décès est publique ou privé ?`)
+            .setDescription(`Décès publique ou privé`)
             .addChoices(
                 {
                     name: `Publique`,
@@ -43,7 +43,7 @@ module.exports = {
             ).setRequired(true))
         .addStringOption(option =>
             option.setName(`donneur`)
-            .setDescription(`Est ce que la personne est donneuse d'organnes ?`)
+            .setDescription(`Donneuse d'organnes`)
             .addChoices(
                 {
                     name: `Oui`,
@@ -56,11 +56,11 @@ module.exports = {
             ).setRequired(true))
         .addStringOption(option =>
             option.setName(`traitement`)
-            .setDescription(`Comment doit être traité le corps de la personne ?`)
+            .setDescription(`Traitement du corps de la personne`)
             .setRequired(true))
         .addStringOption(option =>
             option.setName(`service`)
-            .setDescription(`Quel service à géré la personne ?`)
+            .setDescription(`Service qui a géré la personne`)
             .addChoices(
                 {
                     name: `LSMS`,
@@ -73,7 +73,7 @@ module.exports = {
             ).setRequired(true))
         .addStringOption(option =>
             option.setName(`autre`)
-            .setDescription(`Des infos supplémentaires à renseigner ?`)
+            .setDescription(`Infos supplémentaires à renseigner ?`)
             .setRequired(false))
         .addStringOption(option =>
             option.setName(`date`)
@@ -102,7 +102,7 @@ module.exports = {
             patientName = patientName.join(' ');
             lastname = format.name(patientName);
         } else {
-            await interaction.followUp({ embeds: [emb.generate(`Erreur :(`, null, `Attention, il semblerai que vous n'ayez pas spécifié de **nom de famille** !\nFaites bien attention à spécifier le nom complet de la personne dans la commande !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion décès`, serverIconURL, null, null, null, false)], ephemeral: true });
+            await interaction.followUp({ embeds: [emb.generate(`Erreur :(`, null, `Attention, il semblerait que vous n'ayez pas spécifié de **nom de famille** !\nFaites bien attention à spécifier le nom complet de la personne dans la commande !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion décès`, serverIconURL, null, null, null, false)], ephemeral: true });
             await wait(5000);
             return await interaction.deleteReply();
         }
@@ -110,7 +110,7 @@ module.exports = {
         const isUserExists = await sql.getByName(firstname + ' ' + lastname);
 
         if(isUserExists[0] != null) {
-            await interaction.followUp({ embeds: [emb.generate(`Erreur :(`, null, `Attention, il semblerai que **${firstname} ${lastname}** soit déjà inscrit(e) dans l'agenda !\nSi vous souhaitez réélement recréer cette fiche, veuillez d'abord supprimer la précédente !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion décès`, serverIconURL, null, null, null, false)], ephemeral: true });
+            await interaction.followUp({ embeds: [emb.generate(`Erreur :(`, null, `Attention, il semblerait que **${firstname} ${lastname}** soit déjà inscrit(e) dans l'agenda !\nSi vous souhaitez réélement recréer cette fiche, veuillez d'abord supprimer la précédente !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion décès`, serverIconURL, null, null, null, false)], ephemeral: true });
             await wait(5000);
             return await interaction.deleteReply();
         }

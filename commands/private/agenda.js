@@ -43,7 +43,7 @@ module.exports = {
             ).setRequired(true))
         .addStringOption(option =>
             option.setName(`donneur`)
-            .setDescription(`Donneuse d'organnes`)
+            .setDescription(`Donneuse d'organes`)
             .addChoices(
                 {
                     name: `Oui`,

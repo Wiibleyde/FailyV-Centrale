@@ -78,6 +78,8 @@ module.exports = {
             if(cID == 'agRespContact') { const agRespContact = require('./../buttons/agenda/agRespContact'); agRespContact.execute(interaction, errEmb); }
             if(cID == 'agDelete') { const agDelete = require('./../buttons/agenda/agDelete'); agDelete.execute(interaction, errEmb); }
             if(cID == 'agEventDefine') { const agEventDefine = require('./../buttons/agenda/agEventDefine'); agEventDefine.execute(interaction, errEmb); }
+            if(cID == 'followRemoveOrgans') { const followRemoveOrgans = require('./../buttons/suivi/followRemoveOrgans'); followRemoveOrgans.execute(interaction, errEmb); }
+            if(cID == 'followRemoveOrgansPatient') { const followRemoveOrgansPatient = require('./../buttons/suivi/followRemoveOrgansPatient'); followRemoveOrgansPatient.execute(interaction, errEmb); }
         }
         //Lorsqu'il s'agit d'un Select Menu
         if(interaction.isChannelSelectMenu() || interaction.isStringSelectMenu()) {
@@ -89,6 +91,8 @@ module.exports = {
             if(cID == 'serviceKickSingleSelect') { const serviceKickSingleSelect = require('../selectMenus/kick/serviceKickSingleSelect'); serviceKickSingleSelect.execute(interaction, errEmb); }
             if(cID == 'centraleResetRadioSelect') { const centraleResetRadioSelect = require('../selectMenus/radio/centraleResetRadioSelect'); centraleResetRadioSelect.execute(interaction, errEmb); }
             if(cID == 'vehiculeRemoveSelect') { const vehiculeRemoveSelect = require('../selectMenus/vehicule/vehiculeRemoveSelect'); vehiculeRemoveSelect.execute(interaction, errEmb); }
+            if(cID == 'followRemoveOrgansSelect') { const followRemoveOrgansSelect = require('../selectMenus/suivi/followRemoveOrgansSelect'); followRemoveOrgansSelect.execute(interaction, errEmb); }
+            if(cID == 'followRemoveOrgansPatientSelect') { const followRemoveOrgansPatientSelect = require('../selectMenus/suivi/followRemoveOrgansPatientSelect'); followRemoveOrgansPatientSelect.execute(interaction, errEmb); }
         }
 
     },

@@ -6,14 +6,13 @@ const logger = require('./logger');
 const emb = require('./embeds');
 //Récup des requêtes SQL
 const sqlRadio = require('./../sql/radio/radios');
-//Récup des requêtes SQL
 const sqlAgenda = require('./../sql/agenda/agenda');
-//Récup des requêtes SQL
-//const sqlFollow = require('./../sql/follow/suivi');
-//Récup des reqêtes SQL pour les lits
+const sqlFollow = require('./../sql/suivi/suivi');
 const sqlBeds = require('./../sql/lit/lit');
 //Récup des réactions
 const btnCreator = require('./btnCreator');
+
+const follow = require('./suiviMessages');
 
 //Boutons de regen radios
 const radioBtns = new ActionRowBuilder().addComponents(
@@ -68,7 +67,7 @@ module.exports = {
             }
             const agendaWaiting = await sqlAgenda.getAllWaiting();
             //Refresh de tous les messages du channel et check si les messages sont bien présents (suivi)
-            /*const followChanId = await sqlFollow.getFollowChannelId();
+            const followChanId = await sqlFollow.getFollowChannelId();
             let followChan;
             let followMessages;
             let followMessagesCount;
@@ -77,9 +76,8 @@ module.exports = {
                 followMessages = await followChan.messages.fetch();
                 followMessagesCount = await getIrisChannelMessages(followMessages);
             } else {
-                followMessagesCount = 0;
-            }*/
-            //const followWaiting = await sqlAgenda.getAllWaiting();
+                followMessagesCount = 9;
+            }
             //Si pas présent recréation du message
             if(!found) {
                 if(!gen) {
@@ -306,6 +304,13 @@ module.exports = {
                         const newAgendaMsg = await agendaChan.send({ embeds: [agendaEmbed], components: [buttons] });
                         await sqlAgenda.updateMessageId(agendaWaiting[i].agendaID, newAgendaMsg.id);
                     }
+                    gen = false;
+                }
+            }
+            if(followMessagesCount != 9/*10*/) {
+                if(!gen) {
+                    gen = true;
+                    await follow.regen(client);
                     gen = false;
                 }
             }

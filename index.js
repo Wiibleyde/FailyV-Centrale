@@ -11,10 +11,10 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 //SQL init
-const sql = require('../../sql/config/config');
-const IRIS_SERVICE_CHANNEL_ID = sql.getChannel('IRIS_SERVICE_CHANNEL_ID');
-const IRIS_RADIO_CHANNEL_ID = sql.getChannel('IRIS_RADIO_CHANNEL_ID');
-const IRIS_FOLLOW_CHANNEL_ID = sql.getChannel('IRIS_FOLLOW_CHANNEL_ID');
+const sql = require('./sql/config/config');
+const IRIS_SERVICE_CHANNEL_ID = sql.getChannel('IRIS_SERVICE_CHANNEL_ID')[0].id;
+const IRIS_RADIO_CHANNEL_ID = sql.getChannel('IRIS_RADIO_CHANNEL_ID')[0].id;
+const IRIS_FOLLOW_CHANNEL_ID = sql.getChannel('IRIS_FOLLOW_CHANNEL_ID')[0].id;
 
 //Read console init
 const readline = require('readline');

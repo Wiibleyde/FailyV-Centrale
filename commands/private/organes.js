@@ -137,7 +137,7 @@ module.exports = {
             date = nowDate.getFullYear() + '-' + date[1] + '-' + date[0] + ' 00:00:00';
         } else {
             let day = nowDate.getDate();
-            day = day + 14;
+            day = day + 10;
             let month = nowDate.getMonth() + 1;
             let year = nowDate.getFullYear();
             if(month == 12) {

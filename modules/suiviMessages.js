@@ -330,30 +330,28 @@ function generateSoloSideOrganString(organArray, stringToEdit) {
             //Date format
             let formatedDate = formatDate(organArray[i].expire_date);
 
-            if(organArray.length == 1) {
-                stringToEdit = stringToEdit + `[2;36m1[0m[2;35mG[0m [2;37m([0m[2;34m${formatedDate}[0m[2;37m)[0m`;
-            } else {
-                //Check numbers of same left date
-                if(!formatedDates.includes(formatedDate)) {
-                    let count = 0;
-                    for(j=0;j<organArray.length;j++) {
-                        if(formatDate(organArray[j].expire_date) == formatedDate) {
-                            count ++;
-                        }
+            //Check numbers of same left date
+            if(!formatedDates.includes(formatedDate)) {
+                let count = 0;
+                for(j=0;j<organArray.length;j++) {
+                    if(formatDate(organArray[j].expire_date) == formatedDate) {
+                        count ++;
                     }
-                    stringToEdit = stringToEdit + `[2;36m${count}[0m [2;37m([0m[2;34m${formatedDate}[0m[2;37m) | [0m`;
-                    formatedDates.push(formatedDate);
                 }
+                stringToEdit = stringToEdit + `[2;36m${count}[0m [2;37m([0m[2;34m${formatedDate}[0m[2;37m) | [0m`;
+                formatedDates.push(formatedDate);
             }
 
         }
-        let lastSeparatorIndex;
-        for(j=0;j<stringToEdit.length;j++) {
-            if(stringToEdit.charAt(j) == '|') {
-                lastSeparatorIndex = j;
+        if(stringToEdit.includes('|')) {
+            let lastSeparatorIndex;
+            for(j=0;j<stringToEdit.length;j++) {
+                if(stringToEdit.charAt(j) == '|') {
+                    lastSeparatorIndex = j;
+                }
             }
+            stringToEdit = stringToEdit.slice(0, lastSeparatorIndex-1);
         }
-        stringToEdit = stringToEdit.slice(0, lastSeparatorIndex-1);
         return stringToEdit;
     }
 }

@@ -267,13 +267,15 @@ function generateDualSideOrganString(leftOrganArray, rightOrganArray, stringToEd
             }
 
         }
-        let lastSeparatorIndex;
-        for(j=0;j<stringToEdit.length;j++) {
-            if(stringToEdit.charAt(j) == '|') {
-                lastSeparatorIndex = j;
+        if(stringToEdit.includes('|')) {
+            let lastSeparatorIndex;
+            for(j=0;j<stringToEdit.length;j++) {
+                if(stringToEdit.charAt(j) == '|') {
+                    lastSeparatorIndex = j;
+                }
             }
+            stringToEdit = stringToEdit.slice(0, lastSeparatorIndex-1);
         }
-        stringToEdit = stringToEdit.slice(0, lastSeparatorIndex-1);
         return stringToEdit;
     }
 }

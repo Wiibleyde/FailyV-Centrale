@@ -12,13 +12,13 @@ const format = require('../../modules/formatName');
 const rdv = require('../../sql/rdvManagment/rdv');
 //Récup du module sql
 const chanSql = require('../../sql/config/config');
-// IRIS_GENERAL_CHANNEL_ID
-const IRIS_GENERAL_CHANNEL_ID = sql.getChannel('IRIS_GENERAL_CHANNEL_ID');
-const channelToSend = guild.channels.cache.get(IRIS_GENERAL_CHANNEL_ID[0].id);
 
 module.exports = {
     //Création de la commande
     execute: async function (interaction, errEmb) {
+        // IRIS_GENERAL_CHANNEL_ID
+        const IRIS_GENERAL_CHANNEL_ID = await chanSql.getChannel('IRIS_GENERAL_CHANNEL_ID');
+        const channelToSend = interaction.guild.channels.cache.get(IRIS_GENERAL_CHANNEL_ID[0].id);
         //Regex des numéros de téléphone
         const regExpFull = new RegExp("^555-[0-9]{4}$");
         const regExpMidFull = new RegExp("^555[0-9]{4}$");

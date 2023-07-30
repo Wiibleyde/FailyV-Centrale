@@ -8,6 +8,7 @@ const sql = require('../../sql/config/config');
 const emb = require('../../modules/embeds');
 //Récup des autorisations
 const { Rank, hasAuthorization } = require('../../modules/rankAuthorization');
+const agenda = require('./agenda');
 //Fonction pour attendre
 const wait = require('node:timers/promises').setTimeout;
 
@@ -54,38 +55,63 @@ module.exports = {
                 },
                 {
                     name: 'Salon des suivis',
-                    value: 'IRIS_FOLLOW_CHANNEL_ID'
+                    value: 'follow'
+                },
+                {
+                    name: 'Salon de l\'agenda',
+                    value: 'agenda'
+                },
+                {
+                    name: 'Salon des décès (Mairie)',
+                    value: 'mairie_décès'
+                },
+                {
+                    name: 'Salon des décès (LSPD)',
+                    value: 'lspd'
+                },
+                {
+                    name: 'Salon de la liste des véhicules',
+                    value: 'vehicule'
                 }
-            ),
+            )
+            .setRequired(true)
         )
-        .addStringOption( option =>
+        .addChannelOption( option =>
             option.setName('id')
             .setDescription('ID du channel')
-            .setRequired(true)
-            .setMinLength(18)
-            .setMaxLength(18)
             .setRequired(true)
         ),
     async execute(interaction) {
         //Vérification de l'autorisation si il est directeur ou si il est le créateur du bot
         if(hasAuthorization(interaction.member, Rank.MANAGER) || interaction.user.id == '461880599594926080' || interaction.user.id == '461807010086780930' || interaction.user.id == '368259650136571904') {
             //Récupération des infos
-            const channelID = interaction.options.getString('channel');
+            const channelID = interaction.options.getChannel('id').id;
             const channelName = interaction.options.getString('channel_name');
             //Vérification si le channel existe
             const channel = interaction.guild.channels.cache.get(channelID);
             if(channel) {
                 //Changement du channel
-                sql.setChannel(channelName, channelID);
-                //Envoi de l'embed
-                interaction.reply({ embeds: [emb.successEmb(interaction, `Le channel ${channelName} a bien été changé !`)] });
+                exist = await sql.checkIfExist(interaction.options.getString('action'));
+                if(exist) {
+                    await sql.updateChannel(interaction.options.getString('action'), channelID);
+                } else {
+                    await sql.setChannel(interaction.options.getString('action'), channelID);
+                }
+                //Création de l'embed
+                const embed = emb.generate(null, null, `Le channel a bien été mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true);
+                //Envoi de la réponse
+                interaction.reply({ embeds: [embed], ephemeral: true });
             } else {
-                //Envoi de l'embed
-                interaction.reply({ embeds: [emb.errorEmb(interaction, `Le channel ${channelName} n'existe pas !`)] });
+                //Création de l'embed
+                const embed = emb.generate(null, null, `Le channel n'existe pas !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true);
+                //Envoi de la réponse
+                interaction.reply({ embeds: [embed], ephemeral: true });
             }
         } else {
-            //Envoi de l'embed
-            interaction.reply({ embeds: [emb.errorEmb(interaction, `Vous n'avez pas l'autorisation d'utiliser cette commande !`)] });
+            //Création de l'embed
+            const embed = emb.generate(null, null, `Vous n'avez pas la permission d'utiliser cette commande !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true);
+            //Envoi de la réponse
+            interaction.reply({ embeds: [embed], ephemeral: true });
         }
         await wait(5000);
         await interaction.deleteReply();

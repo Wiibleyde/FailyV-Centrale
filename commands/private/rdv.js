@@ -8,15 +8,6 @@ const rdv = require('../../sql/rdvManagment/rdv');
 const emb = require('../../modules/embeds');
 
 const sql = require('../../sql/config/config');
-// IRIS_PSYCHO_CHANNEL_ID
-const IRIS_PSYCHO_CHANNEL_ID = sql.getChannel('IRIS_PSYCHO_CHANNEL_ID');
-const psychoChannelId = guild.channels.cache.get(IRIS_PSYCHO_CHANNEL_ID[0].id);
-// IRIS_SURGERY_CHANNEL_ID
-const IRIS_SURGERY_CHANNEL_ID = sql.getChannel('IRIS_SURGERY_CHANNEL_ID');
-const surgeryChannelId = guild.channels.cache.get(IRIS_SURGERY_CHANNEL_ID[0].id);
-// IRIS_GENERAL_CHANNEL_ID
-const IRIS_GENERAL_CHANNEL_ID = sql.getChannel('IRIS_GENERAL_CHANNEL_ID');
-const generalChannelId = guild.channels.cache.get(IRIS_GENERAL_CHANNEL_ID[0].id);
 
 //Création de constantes pour le choix de rendez-vous
 const rdvGen = {
@@ -55,8 +46,49 @@ module.exports = {
                 .addChoices(rdvGen, rdvChir, rdvPsy, rdvSee, rdvRegen)
         ),
     async execute(interaction) {
+        //Récupération des channels
+        let psychoChannelId;
+        let surgeryChannelId;
+        let generalChannelId;
+        if (interaction.options.getString('action') === 'psychologie') {
+            let IRIS_PSYCHO_CHANNEL_ID = await sql.getChannel('IRIS_PSYCHO_CHANNEL_ID');
+            if (IRIS_PSYCHO_CHANNEL_ID[0] == undefined) {
+                psychoChannelId = null;
+                const embed = emb.generate("Désolé :(", null, `Aucun channel n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
+                return await interaction.reply({ embeds: [embed], ephemeral: true });
+            } else {
+                psychoChannelId = interaction.guild.channels.cache.get(IRIS_PSYCHO_CHANNEL_ID[0].id);
+            }
+        } else if (interaction.options.getString('action') === 'chirurgie') {
+            let IRIS_SURGERY_CHANNEL_ID = await sql.getChannel('IRIS_SURGERY_CHANNEL_ID');
+            if (IRIS_SURGERY_CHANNEL_ID[0] == undefined) {
+                surgeryChannelId = null;
+                const embed = emb.generate("Désolé :(", null, `Aucun channel n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
+                return await interaction.reply({ embeds: [embed], ephemeral: true });
+            } else {
+                surgeryChannelId = interaction.guild.channels.cache.get(IRIS_SURGERY_CHANNEL_ID[0].id);
+            }
+        } else if (interaction.options.getString('action') === 'general') {
+            let IRIS_GENERAL_CHANNEL_ID = await sql.getChannel('IRIS_GENERAL_CHANNEL_ID');
+            if (IRIS_GENERAL_CHANNEL_ID[0] == undefined) {
+                generalChannelId = null;
+                const embed = emb.generate("Désolé :(", null, `Aucun channel n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
+                return await interaction.reply({ embeds: [embed], ephemeral: true });
+            } else {
+                generalChannelId = interaction.guild.channels.cache.get(IRIS_GENERAL_CHANNEL_ID[0].id);
+            }
+        }
+
         //Si le type est psy
         if (interaction.options.getString('action') === 'psychologie') {
+            let IRIS_PSYCHO_CHANNEL_ID = await sql.getChannel('IRIS_PSYCHO_CHANNEL_ID');
+            if (IRIS_PSYCHO_CHANNEL_ID[0] == undefined) {
+                psychoChannelId = null;
+                const embed = emb.generate("Désolé :(", null, `Aucun channel n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
+                return await interaction.reply({ embeds: [embed], ephemeral: true });
+            } else {
+                psychoChannelId = interaction.guild.channels.cache.get(IRIS_PSYCHO_CHANNEL_ID[0].id);
+            }
             //Création du modal
             const rendezVousPsyModal = new ModalBuilder().setCustomId('rendezVousPsyModal').setTitle('Ajout d\'un rendez-vous');
             const nomPrenom = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('nomPrenom').setLabel('Nom et prénom de la personne concernée').setStyle(TextInputStyle.Short).setPlaceholder('Ex: Nathan Prale').setRequired(true));
@@ -67,6 +99,14 @@ module.exports = {
             await interaction.showModal(rendezVousPsyModal);
         //Si le type est chir
         } else if(interaction.options.getString('action') === 'chirurgie') {
+            let IRIS_SURGERY_CHANNEL_ID = await sql.getChannel('IRIS_SURGERY_CHANNEL_ID');
+            if (IRIS_SURGERY_CHANNEL_ID[0] == undefined) {
+                surgeryChannelId = null;
+                const embed = emb.generate("Désolé :(", null, `Aucun channel n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
+                return await interaction.reply({ embeds: [embed], ephemeral: true });
+            } else {
+                surgeryChannelId = interaction.guild.channels.cache.get(IRIS_SURGERY_CHANNEL_ID[0].id);
+            }
             //Création du modal
             const rendezVousChirModal = new ModalBuilder().setCustomId('rendezVousChirModal').setTitle('Ajout d\'un rendez-vous');
             const nomPrenom = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('nomPrenom').setLabel('Nom et prénom de la personne concernée').setStyle(TextInputStyle.Short).setPlaceholder('Ex: Nathan Prale').setRequired(true));
@@ -77,6 +117,14 @@ module.exports = {
             await interaction.showModal(rendezVousChirModal);
         //Si le type est général
         } else if(interaction.options.getString('action') === 'general') {
+            let IRIS_GENERAL_CHANNEL_ID = await sql.getChannel('IRIS_GENERAL_CHANNEL_ID');
+            if (IRIS_GENERAL_CHANNEL_ID[0] == undefined) {
+                generalChannelId = null;
+                const embed = emb.generate("Désolé :(", null, `Aucun channel n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
+                return await interaction.reply({ embeds: [embed], ephemeral: true });
+            } else {
+                generalChannelId = interaction.guild.channels.cache.get(IRIS_GENERAL_CHANNEL_ID[0].id);
+            }
             //Création du modal
             const rendezVousGenModal = new ModalBuilder().setCustomId('rendezVousGenModal').setTitle('Ajout d\'un rendez-vous');
             const nomPrenom = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('nomPrenom').setLabel('Nom et prénom de la personne concernée').setStyle(TextInputStyle.Short).setPlaceholder('Ex: Nathan Prale').setRequired(true));
@@ -95,6 +143,30 @@ module.exports = {
             if(numInG.length == 1) { numInGText = `**${numInG.length}** rendez-vous général`; } else { numInGText = `**${numInG.length}** rendez-vous généraux`; }
             interaction.followUp({ embeds: [emb.generate(null, null, `Il y a actuellement\n- ${numInGText}\n- **${numInChir.length}** rendez-vous de chirurgie\n- **${numInPsy.length}** rendez-vous de psychologie\n\d'enregistrés ! Si vous constatez qu'il manque un rendez-vous n'hésitez pas à utiliser l'option "**Régénérer les rendez-vous**" de la commande </${interaction.commandName}:${interaction.commandId}> !`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], ephemeral: true });
         } else if(interaction.options.getString('action') === 'regen') {
+            let IRIS_PSYCHO_CHANNEL_ID = await sql.getChannel('IRIS_PSYCHO_CHANNEL_ID');
+            if (IRIS_PSYCHO_CHANNEL_ID[0] == undefined) {
+                psychoChannelId = null;
+                const embed = emb.generate("Désolé :(", null, `Aucun channel psy n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
+                return await interaction.reply({ embeds: [embed], ephemeral: true });
+            } else {
+                psychoChannelId = interaction.guild.channels.cache.get(IRIS_PSYCHO_CHANNEL_ID[0].id);
+            }
+            let IRIS_SURGERY_CHANNEL_ID = await sql.getChannel('IRIS_SURGERY_CHANNEL_ID');
+            if (IRIS_SURGERY_CHANNEL_ID[0] == undefined) {
+                surgeryChannelId = null;
+                const embed = emb.generate("Désolé :(", null, `Aucun channel chir n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
+                return await interaction.reply({ embeds: [embed], ephemeral: true });
+            } else {
+                surgeryChannelId = interaction.guild.channels.cache.get(IRIS_SURGERY_CHANNEL_ID[0].id);
+            }
+            let IRIS_GENERAL_CHANNEL_ID = await sql.getChannel('IRIS_GENERAL_CHANNEL_ID');
+            if (IRIS_GENERAL_CHANNEL_ID[0] == undefined) {
+                generalChannelId = null;
+                const embed = emb.generate("Désolé :(", null, `Aucun channel général n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
+                return await interaction.reply({ embeds: [embed], ephemeral: true });
+            } else {
+                generalChannelId = interaction.guild.channels.cache.get(IRIS_GENERAL_CHANNEL_ID[0].id);
+            }
             //Affichage du message "Iris réfléchis..."
             await interaction.deferReply({ ephemeral: true });
             await psychoChannelId.messages.fetch().then(m => { m.forEach(async msg => await msg.delete()); });

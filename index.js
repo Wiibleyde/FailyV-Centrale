@@ -12,9 +12,6 @@ dotenv.config();
 
 //SQL init
 const sql = require('./sql/config/config');
-const IRIS_SERVICE_CHANNEL_ID = sql.getChannel('IRIS_SERVICE_CHANNEL_ID')[0].id;
-const IRIS_RADIO_CHANNEL_ID = sql.getChannel('IRIS_RADIO_CHANNEL_ID')[0].id;
-const IRIS_FOLLOW_CHANNEL_ID = sql.getChannel('IRIS_FOLLOW_CHANNEL_ID')[0].id;
 
 //Read console init
 const readline = require('readline');
@@ -50,7 +47,26 @@ for(const folder of commandsFolders) {
 
 //Init des events Discord
 client.on(Events.MessageCreate, async (message) => {
-    if(message.channelId == IRIS_SERVICE_CHANNEL_ID || message.channelId == IRIS_RADIO_CHANNEL_ID || message.channelId == IRIS_FOLLOW_CHANNEL_ID) {
+    let IRIS_SERVICE_CHANNEL_ID = await sql.getChannel('IRIS_SERVICE_CHANNEL_ID');
+    if (IRIS_SERVICE_CHANNEL_ID[0] == undefined) {
+        IRIS_SERVICE_CHANNEL_ID = null;
+    } else {
+        IRIS_SERVICE_CHANNEL_ID = IRIS_SERVICE_CHANNEL_ID[0].id;
+    }
+    let IRIS_RADIO_CHANNEL_ID = await sql.getChannel('IRIS_RADIO_CHANNEL_ID');
+    if (IRIS_RADIO_CHANNEL_ID[0] == undefined) {
+        IRIS_RADIO_CHANNEL_ID = null;
+    } else {
+        IRIS_RADIO_CHANNEL_ID = IRIS_RADIO_CHANNEL_ID[0].id;
+    }
+    let IRIS_FOLLOW_CHANNEL_ID = await sql.getChannel('IRIS_FOLLOW_CHANNEL_ID');
+    if (IRIS_FOLLOW_CHANNEL_ID[0] == undefined) {
+        IRIS_FOLLOW_CHANNEL_ID = null;
+    } else {
+        IRIS_FOLLOW_CHANNEL_ID = IRIS_FOLLOW_CHANNEL_ID[0].id;
+    }
+    // if(message.channelId == IRIS_SERVICE_CHANNEL_ID || message.channelId == IRIS_RADIO_CHANNEL_ID || message.channelId == IRIS_FOLLOW_CHANNEL_ID) {
+    if (message.channelId == IRIS_SERVICE_CHANNEL_ID || message.channelId == IRIS_RADIO_CHANNEL_ID || message.channelId == IRIS_FOLLOW_CHANNEL_ID) {
         if(message.author != process.env.IRIS_DISCORD_ID) {
             logger.warn(`${message.member.nickname} - ${message.author.username}#${message.author.discriminator} (<@${message.author.id}>)\n\nà envoyé un message dans le salon interdit "#${client.guilds.cache.get(message.guildId).channels.cache.get(message.channelId).name} <#${message.channelId}>"\n\nContenu: "${message.content}"`);
             await message.delete();

@@ -6,7 +6,7 @@ const emb = require('./embeds');
 const doctorSql = require('./../sql/doctorManagement/doctor');
 
 const sql = require('./../sql/config/config');
-const IRIS_WORKFORCE_CHANNEL_ID = sql.getChannel('IRIS_WORKFORCE_CHANNEL_ID');
+const IRIS_WORKFORCE_CHANNEL_ID = sql.getChannel('IRIS_WORKFORCE_CHANNEL_ID')[0].id;
 
 module.exports = {
     generateWorkforce: async (guild) => {

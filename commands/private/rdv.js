@@ -7,10 +7,16 @@ const rdv = require('../../sql/rdvManagment/rdv');
 //Récup du créateur d'embed
 const emb = require('../../modules/embeds');
 
-const sql = require('./../sql/config/config');
+const sql = require('../../sql/config/config');
+// IRIS_PSYCHO_CHANNEL_ID
 const IRIS_PSYCHO_CHANNEL_ID = sql.getChannel('IRIS_PSYCHO_CHANNEL_ID');
+const psychoChannelId = guild.channels.cache.get(IRIS_PSYCHO_CHANNEL_ID[0].id);
+// IRIS_SURGERY_CHANNEL_ID
 const IRIS_SURGERY_CHANNEL_ID = sql.getChannel('IRIS_SURGERY_CHANNEL_ID');
+const surgeryChannelId = guild.channels.cache.get(IRIS_SURGERY_CHANNEL_ID[0].id);
+// IRIS_GENERAL_CHANNEL_ID
 const IRIS_GENERAL_CHANNEL_ID = sql.getChannel('IRIS_GENERAL_CHANNEL_ID');
+const generalChannelId = guild.channels.cache.get(IRIS_GENERAL_CHANNEL_ID[0].id);
 
 //Création de constantes pour le choix de rendez-vous
 const rdvGen = {
@@ -91,12 +97,9 @@ module.exports = {
         } else if(interaction.options.getString('action') === 'regen') {
             //Affichage du message "Iris réfléchis..."
             await interaction.deferReply({ ephemeral: true });
-            const chanG = await interaction.guild.channels.cache.get(IRIS_GENERAL_CHANNEL_ID);
-            const chanChir = await interaction.guild.channels.cache.get(IRIS_SURGERY_CHANNEL_ID);
-            const chanPsy = await interaction.guild.channels.cache.get(IRIS_PSYCHO_CHANNEL_ID);
-            await chanG.messages.fetch().then(m => { m.forEach(async msg => await msg.delete()); });
-            await chanChir.messages.fetch().then(m => { m.forEach(async msg => await msg.delete()); });
-            await chanPsy.messages.fetch().then(m => { m.forEach(async msg => await msg.delete()); });
+            await psychoChannelId.messages.fetch().then(m => { m.forEach(async msg => await msg.delete()); });
+            await surgeryChannelId.messages.fetch().then(m => { m.forEach(async msg => await msg.delete()); });
+            await generalChannelId.messages.fetch().then(m => { m.forEach(async msg => await msg.delete()); });
             const numInG = await rdv.getRDVByType(0);
             const numInChir = await rdv.getRDVByType(1);
             const numInPsy = await rdv.getRDVByType(2);
@@ -139,7 +142,7 @@ module.exports = {
                         }
                     );
                 }
-                const newMsg = await chanG.send({ embeds: [rendezVousEmb], components: [rendezVousActionRow] });
+                const newMsg = await generalChannelId.send({ embeds: [rendezVousEmb], components: [rendezVousActionRow] });
                 await rdv.updateRDVMessageId(numInG[i].messageID, newMsg.id);
             }
             for(i=0;i<numInChir.length;i++) {
@@ -176,7 +179,7 @@ module.exports = {
                         }
                     );
                 }
-                const newMsg = await chanChir.send({ embeds: [rendezVousEmb], components: [rendezVousActionRow] });
+                const newMsg = await surgeryChannelId.send({ embeds: [rendezVousEmb], components: [rendezVousActionRow] });
                 await rdv.updateRDVMessageId(numInChir[i].messageID, newMsg.id);
             }
             for(i=0;i<numInPsy.length;i++) {
@@ -213,7 +216,7 @@ module.exports = {
                         }
                     );
                 }
-                const newMsg = await chanPsy.send({ embeds: [rendezVousEmb], components: [rendezVousActionRow] });
+                const newMsg = await psychoChannelId.send({ embeds: [rendezVousEmb], components: [rendezVousActionRow] });
                 await rdv.updateRDVMessageId(numInPsy[i].messageID, newMsg.id);
             }
             interaction.followUp({ embeds: [emb.generate(null, null, `Tous les rendez-vous ont correctement été régénérés !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)] });

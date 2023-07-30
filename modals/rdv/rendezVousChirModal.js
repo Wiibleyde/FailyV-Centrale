@@ -10,6 +10,11 @@ const wait = require('node:timers/promises').setTimeout;
 const format = require('../../modules/formatName');
 //Récup du module sql
 const rdv = require('../../sql/rdvManagment/rdv');
+//Récup du module sql
+const chanSql = require('../../sql/config/config');
+// IRIS_SURGERY_CHANNEL_ID
+const IRIS_SURGERY_CHANNEL_ID = sql.getChannel('IRIS_SURGERY_CHANNEL_ID');
+const channelToSend = guild.channels.cache.get(IRIS_SURGERY_CHANNEL_ID[0].id);
 
 module.exports = {
     //Création de la commande
@@ -64,8 +69,6 @@ module.exports = {
                 inline: false
             },
         );
-        //Get channel by looking at env var
-        const channelToSend = interaction.guild.channels.cache.get(process.env.IRIS_SURGERY_CHANNEL_ID);
         //Ajout des boutons sous l'embed pour : Dire que le rendez vous est fini, que la personne a été contactée, que le rendez-vous a été pris/que la date a été fixée, que le rendez-vous a été annulé
         const rendezVousActionRow = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setCustomId('rendezVousFini').setLabel("Terminer/Supprimer").setStyle(ButtonStyle.Success).setEmoji("896393106700775544").setDisabled(false),

@@ -17,6 +17,7 @@ const btnCreator = require('../../modules/btnCreator');
 //SQL Init
 const sql = require('../../sql/config/config');
 const IRIS_RADIO_CHANNEL_ID = sql.getChannel('IRIS_RADIO_CHANNEL_ID');
+const radioChannel = guild.channels.cache.get(IRIS_RADIO_CHANNEL_ID[0].id);
 
 module.exports = {
     //Création de la commande
@@ -66,7 +67,6 @@ module.exports = {
         if(!service.isGen()) {
             await interaction.deferReply({ ephemeral: true });
             const guild = interaction.guild;
-            const radioChannel = guild.channels.cache.get(IRIS_RADIO_CHANNEL_ID);
             const getMsgId = await beds.getMessageId();
             const msgId = getMsgId[0].id;
             let surveillance;

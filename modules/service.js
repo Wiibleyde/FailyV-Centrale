@@ -15,8 +15,8 @@ const btnCreator = require('./btnCreator');
 const follow = require('./suiviMessages');
 
 const sql = require('../../sql/config/config');
-const IRIS_SERVICE_CHANNEL_ID = sql.getChannel('IRIS_SERVICE_CHANNEL_ID');
-const IRIS_RADIO_CHANNEL_ID = sql.getChannel('IRIS_RADIO_CHANNEL_ID');
+const IRIS_SERVICE_CHANNEL_ID = sql.getChannel('IRIS_SERVICE_CHANNEL_ID')[0].id;
+const IRIS_RADIO_CHANNEL_ID = sql.getChannel('IRIS_RADIO_CHANNEL_ID')[0].id;
 
 //Boutons de regen radios
 const radioBtns = new ActionRowBuilder().addComponents(

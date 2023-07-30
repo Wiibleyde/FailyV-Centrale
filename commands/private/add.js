@@ -14,7 +14,7 @@ const doctorRankSql = require('../../sql/doctorManagement/doctorRank');
 const doctorSql = require('../../sql/doctorManagement/doctor');
 //Récup du SQL pour les channels
 const sql = require('../../sql/config/config');
-const IRIS_ANNOUNCEMENT_CHANNEL_ID = sql.getChannel('IRIS_ANNOUNCEMENT_CHANNEL_ID');
+const IRIS_ANNOUNCEMENT_CHANNEL_ID = sql.getChannel('IRIS_ANNOUNCEMENT_CHANNEL_ID')[0].id;
 
 const wait = require('node:timers/promises').setTimeout;
 

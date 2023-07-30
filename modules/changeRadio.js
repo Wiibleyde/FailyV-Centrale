@@ -12,7 +12,7 @@ const wait = require('node:timers/promises').setTimeout;
 const serviceID = process.env.IRIS_SERVICE_ROLE_ID;
 
 const sql = require('../../sql/config/config');
-const IRIS_RADIO_CHANNEL_ID = sql.getChannel('IRIS_RADIO_CHANNEL_ID');
+const IRIS_RADIO_CHANNEL_ID = sql.getChannel('IRIS_RADIO_CHANNEL_ID')[0].id;
 
 //Boutons de regen radios
 const radioBtns = new ActionRowBuilder().addComponents(

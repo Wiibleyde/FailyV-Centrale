@@ -171,7 +171,7 @@ function generateDualSideOrganString(leftOrganArray, rightOrganArray, stringToEd
     let formatedDates = [];
 
     if(leftOrganArray.length + rightOrganArray.length == 0) {
-        stringToEdit = stringToEdit + '[2;36m0[0m';
+        return stringToEdit = '[2;36m0[0m';
     } else {
         for(i=0;i<leftOrganArray.length+rightOrganArray.length;i++) {
             //Date format
@@ -324,7 +324,7 @@ function generateSoloSideOrganString(organArray, stringToEdit) {
     let formatedDates = [];
 
     if(organArray.length == 0) {
-        stringToEdit = stringToEdit + '[2;36m0[0m';
+        return stringToEdit = '[2;36m0[0m';
     } else {
         for(i=0;i<organArray.length;i++) {
             //Date format

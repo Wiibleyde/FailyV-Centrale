@@ -12,6 +12,9 @@ const workforce = require('../../modules/workforce');
 const doctorCardSql = require('../../sql/doctorManagement/doctorCard');
 const doctorRankSql = require('../../sql/doctorManagement/doctorRank');
 const doctorSql = require('../../sql/doctorManagement/doctor');
+//Récup du SQL pour les channels
+const sql = require('../../sql/config/config');
+const IRIS_ANNOUNCEMENT_CHANNEL_ID = sql.getChannel('IRIS_ANNOUNCEMENT_CHANNEL_ID');
 
 const wait = require('node:timers/promises').setTimeout;
 
@@ -159,7 +162,7 @@ module.exports = {
             null,
             true
         );
-        const welcomeMessage = await interaction.client.channels.cache.get(process.env.IRIS_ANNOUNCEMENT_CHANNEL_ID).send({ content: `<@&${process.env.IRIS_LSMS_ROLE}>`, embeds: [welcomeEmbed] });
+        const welcomeMessage = await interaction.client.channels.cache.get(IRIS_ANNOUNCEMENT_CHANNEL_ID).send({ content: `<@&${process.env.IRIS_LSMS_ROLE}>`, embeds: [welcomeEmbed] });
         welcomeMessage.react("👋");
 
         // Création de la fiche d'interne

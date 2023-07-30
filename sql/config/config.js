@@ -18,5 +18,20 @@ module.exports = {
                 resolve(result);
             });
         });
+    },
+    getChannel: (name) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "SELECT `id` FROM `channels` WHERE `name` = ?",
+                    timeout: 40000,
+                    values: [name]
+                }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
     }
 }

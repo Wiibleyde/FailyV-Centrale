@@ -5,13 +5,16 @@ const emb = require('./embeds');
 
 const doctorSql = require('./../sql/doctorManagement/doctor');
 
+const sql = require('./../sql/config/config');
+const IRIS_WORKFORCE_CHANNEL_ID = sql.getChannel('IRIS_WORKFORCE_CHANNEL_ID');
+
 module.exports = {
     generateWorkforce: async (guild) => {
         // Récupération des infos des docteurs
         const allDoctor = await doctorSql.getAllDoctor();
 
         // Récupération du channel effectif
-        const channel = guild.channels.cache.get(process.env.IRIS_WORKFORCE_CHANNEL_ID);
+        const channel = guild.channels.cache.get(IRIS_WORKFORCE_CHANNEL_ID);
 
         // Suppression des messages existant
         const channelMessages = await channel.messages.fetch();

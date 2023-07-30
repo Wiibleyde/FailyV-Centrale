@@ -7,6 +7,11 @@ const rdv = require('../../sql/rdvManagment/rdv');
 //Récup du créateur d'embed
 const emb = require('../../modules/embeds');
 
+const sql = require('./../sql/config/config');
+const IRIS_PSYCHO_CHANNEL_ID = sql.getChannel('IRIS_PSYCHO_CHANNEL_ID');
+const IRIS_SURGERY_CHANNEL_ID = sql.getChannel('IRIS_SURGERY_CHANNEL_ID');
+const IRIS_GENERAL_CHANNEL_ID = sql.getChannel('IRIS_GENERAL_CHANNEL_ID');
+
 //Création de constantes pour le choix de rendez-vous
 const rdvGen = {
     name: 'Créer un rendez-vous général',
@@ -86,9 +91,9 @@ module.exports = {
         } else if(interaction.options.getString('action') === 'regen') {
             //Affichage du message "Iris réfléchis..."
             await interaction.deferReply({ ephemeral: true });
-            const chanG = await interaction.guild.channels.cache.get(process.env.IRIS_GENERAL_CHANNEL_ID);
-            const chanChir = await interaction.guild.channels.cache.get(process.env.IRIS_SURGERY_CHANNEL_ID);
-            const chanPsy = await interaction.guild.channels.cache.get(process.env.IRIS_PSYCHO_CHANNEL_ID);
+            const chanG = await interaction.guild.channels.cache.get(IRIS_GENERAL_CHANNEL_ID);
+            const chanChir = await interaction.guild.channels.cache.get(IRIS_SURGERY_CHANNEL_ID);
+            const chanPsy = await interaction.guild.channels.cache.get(IRIS_PSYCHO_CHANNEL_ID);
             await chanG.messages.fetch().then(m => { m.forEach(async msg => await msg.delete()); });
             await chanChir.messages.fetch().then(m => { m.forEach(async msg => await msg.delete()); });
             await chanPsy.messages.fetch().then(m => { m.forEach(async msg => await msg.delete()); });

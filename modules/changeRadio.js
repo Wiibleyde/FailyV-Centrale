@@ -11,6 +11,9 @@ const wait = require('node:timers/promises').setTimeout;
 
 const serviceID = process.env.IRIS_SERVICE_ROLE_ID;
 
+const sql = require('../../sql/config/config');
+const IRIS_RADIO_CHANNEL_ID = sql.getChannel('IRIS_RADIO_CHANNEL_ID');
+
 //Boutons de regen radios
 const radioBtns = new ActionRowBuilder().addComponents(
     new ButtonBuilder().setLabel('LSMS').setCustomId('regenLSMS').setStyle(ButtonStyle.Danger).setEmoji('1133116950357213355').setDisabled(false),
@@ -117,7 +120,7 @@ module.exports = {
                 }
             ]);
         }
-        const radioChan = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID);
+        const radioChan = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(IRIS_RADIO_CHANNEL_ID);
         const messageRadioId = await sql.getRadioMessageId();
         const messageToEdit = await radioChan.messages.fetch(messageRadioId[0].id);
         //Édition du message

@@ -14,6 +14,10 @@ const btnCreator = require('./btnCreator');
 
 const follow = require('./suiviMessages');
 
+const sql = require('../../sql/config/config');
+const IRIS_SERVICE_CHANNEL_ID = sql.getChannel('IRIS_SERVICE_CHANNEL_ID');
+const IRIS_RADIO_CHANNEL_ID = sql.getChannel('IRIS_RADIO_CHANNEL_ID');
+
 //Boutons de regen radios
 const radioBtns = new ActionRowBuilder().addComponents(
     new ButtonBuilder().setLabel('LSMS').setCustomId('regenLSMS').setStyle(ButtonStyle.Danger).setEmoji('1133116950357213355').setDisabled(false),
@@ -46,11 +50,11 @@ module.exports = {
             //Récupération du serveur Discord LSMS
             const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
             //Refresh de tous les messages du channel et check si les messages sont bien présents (service)
-            const serviceChan = guild.channels.cache.get(process.env.IRIS_SERVICE_CHANNEL_ID);
+            const serviceChan = guild.channels.cache.get(IRIS_SERVICE_CHANNEL_ID);
             const messages = await serviceChan.messages.fetch();
             const found = await getServiceMessages(messages, client);
             //Refresh de tous les messages du channel et check si les messages sont bien présents (radios)
-            const radioChan = guild.channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID);
+            const radioChan = guild.channels.cache.get(IRIS_RADIO_CHANNEL_ID);
             const radioMessages = await radioChan.messages.fetch();
             const radioFound = await getCentraleMessages(radioMessages, client);
             //Refresh de tous les messages du channel et check si les messages sont bien présents (agenda)
@@ -326,7 +330,7 @@ module.exports = {
         //Récupération du serveur Discord LSMS
         const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
         //Récupération du channel des radios
-        const radioChan = guild.channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID);
+        const radioChan = guild.channels.cache.get(IRIS_RADIO_CHANNEL_ID);
         //Refresh de tous les messages du channel et check si message bien présent
         const radioMessageId = await sqlRadio.getRadioMessageId();
         const msg = await radioChan.messages.fetch(radioMessageId[0].id);
@@ -363,7 +367,7 @@ module.exports = {
         //Récupération du serveur Discord LSMS
         const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
         //Récupération du channel des radios
-        const radioChan = guild.channels.cache.get(process.env.IRIS_RADIO_CHANNEL_ID);
+        const radioChan = guild.channels.cache.get(IRIS_RADIO_CHANNEL_ID);
         //Refresh de tous les messages du channel et check si message bien présent
         const radioMessageId = sqlRadio.getRadioMessageId();
         const msg = radioChan.messages.fetch(radioMessageId[0].id);

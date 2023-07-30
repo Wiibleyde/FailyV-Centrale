@@ -42,6 +42,9 @@ module.exports = {
                     try {
                         await interaction.followUp({ embeds: [emb.generate('⚠️ Attention', null, `L'utilisateur **${interaction.message.embeds[0].author.name}** n'a pas été prévenu du retour car il a ses MP de fermés`, 'Gold', process.env.LSMS_LOGO_V2, null, null, null, null, name, interaction.client.user.avatarURL(), true)], ephemeral: true });
                         await interaction.message.delete();
+                        // Supprime la réponse après 5s
+                        await wait(5000);
+                        await interaction.deleteReply();
                     } catch (err) {
                         logger.error(err);
                         await interaction.followUp({ embeds: [errEmb], ephemeral: true });
@@ -56,6 +59,9 @@ module.exports = {
             try {
                 await interaction.followUp({ embeds: [emb.generate('⚠️ Attention', null, `L'utilisateur **${interaction.message.embeds[0].author.name}** n'a pas été prévenu du retour car il n'a pas été trouvé sur un serveur en commun !`, '#FF0000', process.env.LSMS_LOGO_V2, null, null, null, null, name, interaction.client.user.avatarURL(), true)], ephemeral: true });
                 await interaction.message.delete();
+                // Supprime la réponse après 5s
+                await wait(5000);
+                await interaction.deleteReply();
             } catch (err) {
                 logger.error(err);
                 await interaction.followUp({ embeds: [errEmb], ephemeral: true });

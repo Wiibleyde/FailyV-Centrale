@@ -33,11 +33,14 @@ module.exports = {
             createdEmbed = emb.generate('Commande: ' + interaction.components[0].components[0].value, null, '**Comment cela se produit-il ?** \n' + interaction.components[1].components[0].value, 'Gold', process.env.LSMS_LOGO_V2, null, `${interaction.user.username} (<@${interaction.user.id}>)`, interaction.user.avatarURL(), null, footName, footIcon, true);
             createdEmbed.addFields([
                 {
-                    name: `Le fait-il à chaques fois ?`,
+                    name: `**Le fait-il à chaques fois ?**`,
                     value: interaction.components[2].components[0].value,
-                    inline: true
+                    inline: false
                 }
             ]);
+            if(interaction.components[3].components[0].value != '') {
+                createdEmbed.setImage(interaction.components[3].components[0].value);
+            }
             //Création d'un embed de réponse
             responseEmbed = emb.generate('Prise en compte de votre demande de debug', null, '**Nous avons bien enregistré votre demande de debug** \nVous recevrez une réponse sous peu.', '#FFFFFF', 'https://cdn.discordapp.com/attachments/1083724872045297734/1093600460511920138/loading.gif', null, null, null, null, name, interaction.client.user.avatarURL(), true);
         } catch (err) {
@@ -70,7 +73,9 @@ module.exports = {
             //Si l'utilisateur à ses MP de fermés
             if(err.code == 50007) {
                 try {
-                    await interaction.followUp({ embeds: [emb.generate('Merci !', null, `Votre bug report à bien été prise en compte, n'hésitez pas à ouvrir vos MP avec moi pour être tenu au courant de l'évolution de votre demande !\n(Clique-droit sur le serveur en commun avec moi -> "Paramètres de confidentialité" -> "Messages privés")`, '#3CB34B', process.env.LSMS_LOGO_V2, null, null, null, null, name, interaction.client.user.avatarURL(), true)], ephemeral: true });
+                    await interaction.followUp({ embeds: [emb.generate('Merci !', null, `Votre bug report à bien été prise en compte, n'hésitez pas à ouvrir vos MP avec moi pour être tenu au courant de l'évolution de votre demande !\n(Clique-droit sur le serveur en commun avec moi -> "Paramètres de confidentialité" -> "Messages privés")`, '#3CB34B', process.env.LSMS_LOGO_V2, null, null, null, null, name, interaction.client.user.avatarURL(), true)], ephemeral: true });            // Supprime la réponse après 5s
+                    await wait(5000);
+                    await interaction.deleteReply();
                 } catch (err) {
                     logger.error(err);
                     await interaction.followUp({ embeds: [errEmb], ephemeral: true });

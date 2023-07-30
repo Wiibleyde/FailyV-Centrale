@@ -35,10 +35,6 @@ module.exports = {
                 }
             ).setRequired(true)
         ).addStringOption(option =>
-            option.setName(`quantité`)
-            .setDescription(`La quantité d'organes que vous souhaitez ajouter`)
-            .setRequired(true)
-        ).addStringOption(option =>
             option.setName(`côté`)
             .setDescription(`Le côté de l'organe à ajouter`)
             .addChoices(
@@ -64,6 +60,10 @@ module.exports = {
                     value: `1`
                 }
             ).setRequired(false)
+        ).addStringOption(option =>
+            option.setName(`quantité`)
+            .setDescription(`La quantité d'organes que vous souhaitez ajouter`)
+            .setRequired(false)
         ).addStringOption(option =>
             option.setName(`date`)
             .setDescription(`Définir une date de validité diférente`)
@@ -94,12 +94,16 @@ module.exports = {
         let side = 0;
         let state = 0;
 
-        try {
-            quantity = parseInt(interaction.options.getString(`quantité`));
-        } catch (err) {
-            await interaction.followUp({ embeds: [emb.generate(`Oups :(`, null, `Ce n'est pas un nombre que tu as spécifié comme quantité ça hein <:eyes_sus:1131588112749961266>`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des organes`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], ephemeral: true });            // Supprime la réponse après 5s
-            await wait(5000);
-            return await interaction.deleteReply();
+        if(interaction.options.getString(`quantité`) != null) {
+            try {
+                quantity = parseInt(interaction.options.getString(`quantité`));
+            } catch (err) {
+                await interaction.followUp({ embeds: [emb.generate(`Oups :(`, null, `Ce n'est pas un nombre que tu as spécifié comme quantité ça hein <:eyes_sus:1131588112749961266>`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des organes`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], ephemeral: true });            // Supprime la réponse après 5s
+                await wait(5000);
+                return await interaction.deleteReply();
+            }
+        } else {
+            quantity = 1;
         }
 
         if(quantity == 0) {

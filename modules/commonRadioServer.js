@@ -5,8 +5,6 @@ const ws = new WebSocket(`ws://${process.env.RADIO_SERVER_URL}`);
 //Récupération du module de création de JsonWebToken
 const jwt = require('jsonwebtoken');
 
-let isRequested = false;
-
 module.exports = {
     getWS: () => {
         return ws;
@@ -32,11 +30,5 @@ module.exports = {
             radioName: radio, //"lsms-lspd-lscs"
             by: "lsms"
         }, process.env.RADIO_SERVER_JWT_SECRET));
-    },
-    setRequested: (state) => {
-        isRequested = state;
-    },
-    isRequested: () => {
-        return isRequested;
     }
 }

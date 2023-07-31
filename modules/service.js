@@ -119,6 +119,8 @@ module.exports = {
                     for(i=0;i<Infinity;i++) {
                         if(!ws.isRequested()) {
                             return
+                        } else {
+                            logger.debug('In ws LSPD waiting loop');
                         }
                     }
                     ws.askRadioInfo('lsms-bcms');
@@ -126,6 +128,8 @@ module.exports = {
                     for(i=0;i<Infinity;i++) {
                         if(!ws.isRequested()) {
                             return
+                        } else {
+                            logger.debug('In ws BCMS waiting loop');
                         }
                     }
                     //Base de l'embed

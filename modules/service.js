@@ -14,9 +14,14 @@ const btnCreator = require('./btnCreator');
 
 const follow = require('./suiviMessages');
 
+const ws = require('./commonRadioServer');
+
 const sql = require('../../sql/config/config');
 const IRIS_SERVICE_CHANNEL_ID = sql.getChannel('IRIS_SERVICE_CHANNEL_ID')[0].id;
 const IRIS_RADIO_CHANNEL_ID = sql.getChannel('IRIS_RADIO_CHANNEL_ID')[0].id;
+
+//Fonction pour attendre
+const wait = require('node:timers/promises').setTimeout;
 
 //Boutons de regen radios
 const radioBtns = new ActionRowBuilder().addComponents(
@@ -96,6 +101,16 @@ module.exports = {
             if(radioFound != 2) {
                 if(!gen) {
                     gen = true;
+                    ws.askRadioInfo('lsms-lspd-lscs');
+                    ws.setRequested(true);
+                    while(ws.isRequested()) {
+                        wait(1);
+                    }
+                    ws.askRadioInfo('lsms-bcms');
+                    ws.setRequested(true);
+                    while(ws.isRequested()) {
+                        wait(1);
+                    }
                     //Base de l'embed
                     const radioEmb = emb.generate(null, null, `**Note: Ctrl+R si vous ne voyez pas les radios actualisées !**\n\u200b`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
                     //Radios

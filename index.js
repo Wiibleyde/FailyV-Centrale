@@ -169,19 +169,20 @@ async function updateRadios(client, ws, wsData, sqlRadio) {
                 logger.log(`Reset de 06h00 effectué !`);
             }
         } else if (data.type === "radio_info") {
+            const wsModule = require('./modules/commonRadioServer');
             // On connection and specific radio asking
             if(data.radioName == 'lsms-lspd-lscs') {
-                radio.change(client, 'regenFDO', data.radioFreq, false);
+                await sqlRadio.setRadio('fdo', data.radioFreq);
+                wsModule.setRequested(false);
             }
             if(data.radioName == 'lsms-bcms') {
-                const isBCMSDisplayed = await sqlRadio.isRadioDisplayed('bcms');
-                if(isBCMSDisplayed[0].displayed == '1') {
-                    radio.change(client, 'regenBCMS', data.radioFreq, false);
-                }
+                await sqlRadio.setRadio('bcms', data.radioFreq);
+                wsModule.setRequested(false);
             }
         } else if(data.type === "error") {
             // If an error is returned
             logger.error(data);
+            wsModule.setRequested(false);
         }
     } catch {}
 }

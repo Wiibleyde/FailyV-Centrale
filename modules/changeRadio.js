@@ -128,13 +128,15 @@ module.exports = {
         const radioChan = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(IRIS_RADIO_CHANNEL_ID);
         const messageRadioId = await sql.getRadioMessageId();
         const messageToEdit = await radioChan.messages.fetch(messageRadioId[0].id);
-        //Édition du message
-        await messageToEdit.edit({ embeds: [embed], components: [radioBtns] });
-        if(needToPing) {
-            const pingMessage = await radioChan.send({ content: pingMsg });
-            // Supprime la réponse après 2min
-            await wait(120000);
-            await pingMessage.delete();
+        if(messageToEdit != null) {
+            //Édition du message
+            await messageToEdit.edit({ embeds: [embed], components: [radioBtns] });
+            if(needToPing) {
+                const pingMessage = await radioChan.send({ content: pingMsg });
+                // Supprime la réponse après 2min
+                await wait(120000);
+                await pingMessage.delete();
+            }
         }
     }
 }

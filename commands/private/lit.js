@@ -16,8 +16,6 @@ const service = require('../../modules/service');
 const btnCreator = require('../../modules/btnCreator');
 //SQL Init
 const sql = require('../../sql/config/config');
-const IRIS_RADIO_CHANNEL_ID = sql.getChannel('IRIS_RADIO_CHANNEL_ID');
-const radioChannel = guild.channels.cache.get(IRIS_RADIO_CHANNEL_ID[0].id);
 
 module.exports = {
     //Création de la commande
@@ -64,6 +62,15 @@ module.exports = {
             )
         ),
     async execute(interaction) {
+        let IRIS_RADIO_CHANNEL_ID = await sql.getChannel('IRIS_RADIO_CHANNEL_ID');
+        if(IRIS_RADIO_CHANNEL_ID[0] == undefined) {
+            await interaction.followUp({ embeds: [emb.generate(null, null, `Désolé, le channel radio n'est pas configuré !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)], ephemeral: true });
+            // Supprime la réponse après 5s
+            await wait(5000);
+            await interaction.deleteReply();
+            return;
+        }           
+        let radioChannel = interaction.guild.channels.cache.get(IRIS_RADIO_CHANNEL_ID[0].id);
         if(!service.isGen()) {
             await interaction.deferReply({ ephemeral: true });
             const guild = interaction.guild;

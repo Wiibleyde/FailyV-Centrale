@@ -14,7 +14,6 @@ const doctorRankSql = require('../../sql/doctorManagement/doctorRank');
 const doctorSql = require('../../sql/doctorManagement/doctor');
 //Récup du SQL pour les channels
 const sql = require('../../sql/config/config');
-const IRIS_ANNOUNCEMENT_CHANNEL_ID = sql.getChannel('IRIS_ANNOUNCEMENT_CHANNEL_ID')[0].id;
 
 const wait = require('node:timers/promises').setTimeout;
 
@@ -57,6 +56,15 @@ module.exports = {
         //Affichage du message "Iris réfléchis..."
         await interaction.deferReply({ ephemeral: true });
 
+        //Récupération du channel 
+        let IRIS_ANNOUNCEMENT_CHANNEL_ID = await sql.getChannel('IRIS_ANNOUNCEMENT_CHANNEL_ID');
+        if (IRIS_ANNOUNCEMENT_CHANNEL_ID[0] == undefined) {
+            const embed = emb.generate("Désolé :(", null, `Aucun channel n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
+            return await interaction.editReply({ embeds: [embed], ephemeral: true });
+        } else {
+            IRIS_ANNOUNCEMENT_CHANNEL_ID = IRIS_ANNOUNCEMENT_CHANNEL_ID[0].id;
+        }
+        
         // Check si l'utilisateur est chef de service ou plus
         if (!hasAuthorization(Rank.DepartementManager, interaction.member.roles.cache)) {
             const embed = emb.generate("Désolé :(", null, `Vous n'avez pas les permissions suffisantes pour utiliser cette commande. Il faut être <@&${process.env.IRIS_DEPARTEMENT_MANAGER_ROLE}> ou plus pour pouvoir vous en servir !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);

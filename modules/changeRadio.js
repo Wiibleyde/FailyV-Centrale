@@ -11,8 +11,7 @@ const wait = require('node:timers/promises').setTimeout;
 
 const serviceID = process.env.IRIS_SERVICE_ROLE_ID;
 
-const sql = require('../../sql/config/config');
-const IRIS_RADIO_CHANNEL_ID = sql.getChannel('IRIS_RADIO_CHANNEL_ID')[0].id;
+const chanSql = require('./../sql/config/config');
 
 //Boutons de regen radios
 const radioBtns = new ActionRowBuilder().addComponents(
@@ -25,6 +24,12 @@ const radioBtns = new ActionRowBuilder().addComponents(
 
 module.exports = {
     change: async (client, radioToChange, radioFreq, needToPing) => {
+        let IRIS_RADIO_CHANNEL_ID = await chanSql.getChannel('IRIS_RADIO_CHANNEL_ID');
+        if (IRIS_RADIO_CHANNEL_ID[0] == undefined) {
+            return;
+        } else {
+            IRIS_RADIO_CHANNEL_ID = IRIS_RADIO_CHANNEL_ID[0].id;
+        }
         var pingMsg = `<@&${serviceID}> changement de fréquence radio `;
         //Recréation de l'embed pour édition du message
         const embed = emb.generate(null, null, `**Note: Ctrl+R si vous ne voyez pas les radios actualisées !**\n\u200b`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);

@@ -14,11 +14,9 @@ const btnCreator = require('./btnCreator');
 
 const follow = require('./suiviMessages');
 
-const ws = require('./commonRadioServer');
+const sql = require('./../sql/config/config');
 
-const sql = require('../../sql/config/config');
-const IRIS_SERVICE_CHANNEL_ID = sql.getChannel('IRIS_SERVICE_CHANNEL_ID')[0].id;
-const IRIS_RADIO_CHANNEL_ID = sql.getChannel('IRIS_RADIO_CHANNEL_ID')[0].id;
+const ws = require('./commonRadioServer');
 
 //Fonction pour attendre
 const wait = require('node:timers/promises').setTimeout;
@@ -45,6 +43,21 @@ module.exports = {
     start: (client) => {
         //Boucle infinie pour auto-recréation en cas de supression
         setInterval(async () => {
+            //Récupération des channels
+            let IRIS_SERVICE_CHANNEL_ID = await sql.getChannel('IRIS_SERVICE_CHANNEL_ID');
+            if (IRIS_SERVICE_CHANNEL_ID[0] == undefined) {
+                IRIS_SERVICE_CHANNEL_ID = null;
+                return;
+            } else {
+                IRIS_SERVICE_CHANNEL_ID = IRIS_SERVICE_CHANNEL_ID[0].id;
+            }
+            let IRIS_RADIO_CHANNEL_ID = await sql.getChannel('IRIS_RADIO_CHANNEL_ID');
+            if (IRIS_RADIO_CHANNEL_ID[0] == undefined) {
+                IRIS_RADIO_CHANNEL_ID = null;
+                return;
+            } else {
+                IRIS_RADIO_CHANNEL_ID = IRIS_RADIO_CHANNEL_ID[0].id;
+            }
             //Récupération de l'image des lits
             let bedsImg;
             client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_BEDS_CHANNEL_ID).messages.fetch({ limit: 1 }).then(messages => {

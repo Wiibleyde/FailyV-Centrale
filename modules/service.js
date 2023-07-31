@@ -116,13 +116,17 @@ module.exports = {
                     gen = true;
                     ws.askRadioInfo('lsms-lspd-lscs');
                     ws.setRequested(true);
-                    while(ws.isRequested()) {
-                        wait(1);
+                    for(i=0;i<Infinity;i++) {
+                        if(!ws.isRequested()) {
+                            return
+                        }
                     }
                     ws.askRadioInfo('lsms-bcms');
                     ws.setRequested(true);
-                    while(ws.isRequested()) {
-                        wait(1);
+                    for(i=0;i<Infinity;i++) {
+                        if(!ws.isRequested()) {
+                            return
+                        }
                     }
                     //Base de l'embed
                     const radioEmb = emb.generate(null, null, `**Note: Ctrl+R si vous ne voyez pas les radios actualisées !**\n\u200b`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);

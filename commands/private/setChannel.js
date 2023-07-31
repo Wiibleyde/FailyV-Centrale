@@ -38,10 +38,6 @@ module.exports = {
                     value: 'IRIS_WORKFORCE_CHANNEL_ID'
                 },
                 {
-                    name: 'Salon de l\'effectif des véhicules',
-                    value: 'IRIS_VEHICLES_CHANNEL_ID'
-                },
-                {
                     name: 'Salon des rdv psychologiques',
                     value: 'IRIS_PSYCHO_CHANNEL_ID'
                 },

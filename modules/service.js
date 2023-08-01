@@ -39,25 +39,16 @@ const btns = new ActionRowBuilder().addComponents(
 
 let gen = false;
 
+//Récupération des channels
+let IRIS_SERVICE_CHANNEL_ID;
+let IRIS_RADIO_CHANNEL_ID;
+
 module.exports = {
     start: (client) => {
         //Boucle infinie pour auto-recréation en cas de supression
         setInterval(async () => {
-            //Récupération des channels
-            let IRIS_SERVICE_CHANNEL_ID = await sql.getChannel('IRIS_SERVICE_CHANNEL_ID');
-            if (IRIS_SERVICE_CHANNEL_ID[0] == undefined) {
-                IRIS_SERVICE_CHANNEL_ID = null;
-                return;
-            } else {
-                IRIS_SERVICE_CHANNEL_ID = IRIS_SERVICE_CHANNEL_ID[0].id;
-            }
-            let IRIS_RADIO_CHANNEL_ID = await sql.getChannel('IRIS_RADIO_CHANNEL_ID');
-            if (IRIS_RADIO_CHANNEL_ID[0] == undefined) {
-                IRIS_RADIO_CHANNEL_ID = null;
-                return;
-            } else {
-                IRIS_RADIO_CHANNEL_ID = IRIS_RADIO_CHANNEL_ID[0].id;
-            }
+            IRIS_SERVICE_CHANNEL_ID = await awaitSQLGetChannel('IRIS_SERVICE_CHANNEL_ID');
+            IRIS_RADIO_CHANNEL_ID = await awaitSQLGetChannel('IRIS_RADIO_CHANNEL_ID');
             //Récupération de l'image des lits
             let bedsImg;
             client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_BEDS_CHANNEL_ID).messages.fetch({ limit: 1 }).then(messages => {
@@ -574,4 +565,13 @@ function getIrisChannelMessages(messages) {
         });
         resolve(count);
     });
+}
+
+async function awaitSQLGetChannel(request) {
+    let reponse = await sql.getChannel(request);
+    if (reponse[0] == null) {
+        return null;
+    } else {
+        return reponse[0].id;
+    }
 }

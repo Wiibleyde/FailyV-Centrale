@@ -1,5 +1,5 @@
 //Récupération des fonctions pour créer une commande et un modal
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, ChannelType } = require('discord.js');
 //Récup du logger
 const logger = require('../../modules/logger');
 //Récup du SQL pour les channels
@@ -73,15 +73,16 @@ module.exports = {
             .setRequired(true)
         )
         .addChannelOption( option =>
-            option.setName('id')
-            .setDescription('ID du channel')
+            option.setName('salon')
+            .setDescription('Nouveau salon à assigner')
+            .addChannelTypes(ChannelType.AnnouncementThread, ChannelType.GuildAnnouncement, ChannelType.GuildText, ChannelType.GuildVoice, ChannelType.PrivateThread, ChannelType.PublicThread)
             .setRequired(true)
         ),
     async execute(interaction) {
         //Vérification de l'autorisation si il est directeur ou si il est le créateur du bot
         if(hasAuthorization(interaction.member, Rank.MANAGER) || interaction.user.id == '461880599594926080' || interaction.user.id == '461807010086780930' || interaction.user.id == '368259650136571904') {
             //Récupération des infos
-            const channelID = interaction.options.getChannel('id').id;
+            const channelID = interaction.options.getChannel('salon').id;
             const channelName = interaction.options.getString('channel_name');
             //Vérification si le channel existe
             const channel = interaction.guild.channels.cache.get(channelID);

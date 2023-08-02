@@ -47,53 +47,53 @@ module.exports = {
     start: (client) => {
         //Boucle infinie pour auto-recréation en cas de supression
         setInterval(async () => {
-            IRIS_SERVICE_CHANNEL_ID = await awaitSQLGetChannel('IRIS_SERVICE_CHANNEL_ID');
-            IRIS_RADIO_CHANNEL_ID = await awaitSQLGetChannel('IRIS_RADIO_CHANNEL_ID');
-            //Récupération de l'image des lits
-            let bedsImg;
-            client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_BEDS_CHANNEL_ID).messages.fetch({ limit: 1 }).then(messages => {
-                if(messages.first() != null) {
-                    messages.first().attachments.map(bedImg => bedsImg = bedImg.attachment);
+            if(!gen) {
+                IRIS_SERVICE_CHANNEL_ID = await awaitSQLGetChannel('IRIS_SERVICE_CHANNEL_ID');
+                IRIS_RADIO_CHANNEL_ID = await awaitSQLGetChannel('IRIS_RADIO_CHANNEL_ID');
+                //Récupération de l'image des lits
+                let bedsImg;
+                client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_BEDS_CHANNEL_ID).messages.fetch({ limit: 1 }).then(messages => {
+                    if(messages.first() != null) {
+                        messages.first().attachments.map(bedImg => bedsImg = bedImg.attachment);
+                    }
+                });
+                //Récupération du serveur Discord LSMS
+                const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
+                //Refresh de tous les messages du channel et check si les messages sont bien présents (service)
+                const serviceChan = guild.channels.cache.get(IRIS_SERVICE_CHANNEL_ID);
+                const messages = await serviceChan.messages.fetch();
+                const found = await getServiceMessages(messages, client);
+                //Refresh de tous les messages du channel et check si les messages sont bien présents (radios)
+                const radioChan = guild.channels.cache.get(IRIS_RADIO_CHANNEL_ID);
+                let radioMessages = await radioChan.messages.fetch();
+                let radioFound = await getCentraleMessages(radioMessages, client);
+                //Refresh de tous les messages du channel et check si les messages sont bien présents (agenda)
+                const agendaChanId = await sqlAgenda.getAgendaChannelId();
+                let agendaChan;
+                let agendaMessages;
+                let agendaMessagesCount;
+                if(agendaChanId[0] != null) {
+                    agendaChan = guild.channels.cache.get(agendaChanId[0].id);
+                    agendaMessages = await agendaChan.messages.fetch();
+                    agendaMessagesCount = await getIrisChannelMessages(agendaMessages);
+                } else {
+                    agendaMessagesCount = 0;
                 }
-            });
-            //Récupération du serveur Discord LSMS
-            const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
-            //Refresh de tous les messages du channel et check si les messages sont bien présents (service)
-            const serviceChan = guild.channels.cache.get(IRIS_SERVICE_CHANNEL_ID);
-            const messages = await serviceChan.messages.fetch();
-            const found = await getServiceMessages(messages, client);
-            //Refresh de tous les messages du channel et check si les messages sont bien présents (radios)
-            const radioChan = guild.channels.cache.get(IRIS_RADIO_CHANNEL_ID);
-            const radioMessages = await radioChan.messages.fetch();
-            const radioFound = await getCentraleMessages(radioMessages, client);
-            //Refresh de tous les messages du channel et check si les messages sont bien présents (agenda)
-            const agendaChanId = await sqlAgenda.getAgendaChannelId();
-            let agendaChan;
-            let agendaMessages;
-            let agendaMessagesCount;
-            if(agendaChanId[0] != null) {
-                agendaChan = guild.channels.cache.get(agendaChanId[0].id);
-                agendaMessages = await agendaChan.messages.fetch();
-                agendaMessagesCount = await getIrisChannelMessages(agendaMessages);
-            } else {
-                agendaMessagesCount = 0;
-            }
-            const agendaWaiting = await sqlAgenda.getAllWaiting();
-            //Refresh de tous les messages du channel et check si les messages sont bien présents (suivi)
-            const followChanId = await sqlFollow.getFollowChannelId();
-            let followChan;
-            let followMessages;
-            let followMessagesCount;
-            if(followChanId[0] != null) {
-                followChan = guild.channels.cache.get(followChanId[0].id);
-                followMessages = await followChan.messages.fetch();
-                followMessagesCount = await getIrisChannelMessages(followMessages);
-            } else {
-                followMessagesCount = 9;
-            }
-            //Si pas présent recréation du message
-            if(!found) {
-                if(!gen) {
+                const agendaWaiting = await sqlAgenda.getAllWaiting();
+                //Refresh de tous les messages du channel et check si les messages sont bien présents (suivi)
+                const followChanId = await sqlFollow.getFollowChannelId();
+                let followChan;
+                let followMessages;
+                let followMessagesCount;
+                if(followChanId[0] != null) {
+                    followChan = guild.channels.cache.get(followChanId[0].id);
+                    followMessages = await followChan.messages.fetch();
+                    followMessagesCount = await getIrisChannelMessages(followMessages);
+                } else {
+                    followMessagesCount = 9;
+                }
+                //Si pas présent recréation du message
+                if(!found) {
                     gen = true;
                     //Base de l'embed
                     const serviceEmb = emb.generate(null, null, `**Pour indiquer une prise/fin de service - Appuyez sur 🔴 \n\nPour prendre/relâcher le dispatch - Appuyez sur 🔵 \n\nPour indiquer un mal de tête - Appuyez sur ⚫**`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
@@ -101,9 +101,7 @@ module.exports = {
                     await serviceChan.send({ embeds: [serviceEmb], components: [btns] });
                     gen = false;
                 }
-            }
-            if(radioFound != 2) {
-                if(!gen) {
+                if(radioFound != 2) {
                     gen = true;
                     ws.askRadioInfo('lsms-lspd-lscs');
                     ws.askRadioInfo('lsms-bcms');
@@ -189,30 +187,33 @@ module.exports = {
                     //Envois
                     if(radioFound == 0) {
                         const radioMsg = await radioChan.send({ embeds: [radioEmb], components: [radioBtns] });
-                        sendBedsImage(letters, radioChan, bedsImg);
                         await sqlRadio.clearRadioMessageId();
                         await sqlRadio.setRadioMessageId(radioMsg.id);
-                    }
-                    if(radioFound.embeds != null) {
+                        await sendBedsImage(letters, radioChan, bedsImg);
+                        radioMessages = await radioChan.messages.fetch();
+                        radioFound = await getCentraleMessages(radioMessages, client);
+                    } else if(radioFound.embeds != null) {
                         if(radioFound.embeds[0].url != null) {
                             if(radioFound.embeds[0].url.includes('/lit.png')) {
                                 await radioFound.delete();
                                 const radioMsg = await radioChan.send({ embeds: [radioEmb], components: [radioBtns] });
-                                sendBedsImage(letters, radioChan, bedsImg);
                                 await sqlRadio.clearRadioMessageId();
                                 await sqlRadio.setRadioMessageId(radioMsg.id);
+                                await sendBedsImage(letters, radioChan, bedsImg);
+                                radioMessages = await radioChan.messages.fetch();
+                                radioFound = await getCentraleMessages(radioMessages, client);
                             }
                         }
                         if(radioFound.embeds[0].author != null) {
                             if(radioFound.embeds[0].author.name == 'Gestion des radios') {
-                                sendBedsImage(letters, radioChan, bedsImg);
+                                await sendBedsImage(letters, radioChan, bedsImg);
+                                radioMessages = await radioChan.messages.fetch();
+                                radioFound = await getCentraleMessages(radioMessages, client);
                             }
                         }
-                    }    
+                    }
                 }
-            }
-            if(agendaMessagesCount != agendaWaiting.length) {
-                if(!gen) {
+                if(agendaMessagesCount != agendaWaiting.length) {
                     gen = true;
                     agendaMessages.forEach(async msg => {
                         if(msg.author.id == process.env.IRIS_DISCORD_ID) {
@@ -321,13 +322,11 @@ module.exports = {
                     }
                     gen = false;
                 }
-            }
-            if(followMessagesCount != 9/*10*/) {
-                if(!gen) {
+                if(followMessagesCount != 9/*10*/) {
                     gen = true;
                     await follow.regen(client);
                     gen = false;
-                }
+                }    
             }
         }, 1000);
     },
@@ -480,20 +479,17 @@ async function sendBedsImage(letters, radioChan, bedsImg) {
         const bedsMsg = await radioChan.send({ content: bedsImg });
         await sqlBeds.clearMessageId();
         await sqlBeds.setMessageId(bedsMsg.id);
-        gen = false;
     } else if(letters.length < 6) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const bedsMsg = await radioChan.send({ content: bedsImg, components: [btns1] });
         await sqlBeds.clearMessageId();
         await sqlBeds.setMessageId(bedsMsg.id);
-        gen = false;
     } else if(letters.length < 11) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
         const bedsMsg = await radioChan.send({ content: bedsImg, components: [btns1, btns2] });
         await sqlBeds.clearMessageId();
         await sqlBeds.setMessageId(bedsMsg.id);
-        gen = false;
     } else if(letters.length < 16) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
@@ -501,7 +497,6 @@ async function sendBedsImage(letters, radioChan, bedsImg) {
         const bedsMsg = await radioChan.send({ content: bedsImg, components: [btns1, btns2, btns3] });
         await sqlBeds.clearMessageId();
         await sqlBeds.setMessageId(bedsMsg.id);
-        gen = false;
     } else if(letters.length < 21) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
@@ -510,7 +505,6 @@ async function sendBedsImage(letters, radioChan, bedsImg) {
         const bedsMsg = await radioChan.send({ content: bedsImg, components: [btns1, btns2, btns3, btns4] });
         await sqlBeds.clearMessageId();
         await sqlBeds.setMessageId(bedsMsg.id);
-        gen = false;
     }
 }
 
@@ -547,6 +541,7 @@ function getCentraleMessages(messages, client) {
                 existMsg = msg;
             }
         });
+        gen = false;
         if(found == 1) {
             resolve(existMsg);
         } else {

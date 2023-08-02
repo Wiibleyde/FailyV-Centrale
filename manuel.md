@@ -107,3 +107,8 @@ NB: On peut aussi ajouter un docteur en faisant la commande `/add` et en précis
 Pour mettre un docteur en vacances, il suffit de faire la commande `/vacances` et de renseigner le docteur à mettre en vacances. Cela va alors mettre le docteur en vacances et lui retirer les permissions pour voir les channels du LSMS.
 Pour retirer un docteur en vacances, il suffit de faire la commande `/vacances` et de renseigner le docteur à retirer des vacances. Cela va alors retirer le docteur des vacances et lui redonner les permissions pour voir les channels du LSMS.
 
+## Gestion de l'effectif
+
+### Modifier l'effectif
+
+L'effectif est géré au 

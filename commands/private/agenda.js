@@ -25,7 +25,7 @@ module.exports = {
             .setDescription(`Liste des personnes responsables`)
             .setRequired(true))
         .addStringOption(option =>
-            option.setName(`autorisés`)
+            option.setName(`autorisées`)
             .setDescription(`Liste des personnes autorisées`)
             .setRequired(true))
         .addStringOption(option =>

@@ -193,8 +193,6 @@ module.exports = {
         const dateNow = new Date(year + '-' + month + '-' + day + ' 00:00:00');
         const dateToTest = new Date(date);
 
-        logger.debug(dateToTest);
-        logger.debug(dateNow);
         if(dateToTest<dateNow) {
             state = 1;
         }

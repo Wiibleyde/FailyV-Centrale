@@ -103,6 +103,27 @@ module.exports = {
         });
         update.start();
 
+        const updateOrgans = new CronJob('00 00 00 * * *', async function() {
+            const sqlOrgans = require('./../sql/suivi/organes');
+            const suivi = require('./../modules/suiviMessages');
+            const allOrgans = await sqlOrgans.getAllOrgans();
+            const nowDate = new Date();
+            let day = nowDate.getDate();
+            let month = nowDate.getMonth() + 1;
+            let year = nowDate.getFullYear();
+            if (day < 10) day = '0' + day;
+            if (month < 10) month = '0' + month;
+            const dateNow = new Date(year + '-' + month + '-' + day + ' 00:00:00');
+            for(i=0;i<allOrgans.length;i++) {
+                const dateToTest = new Date(allOrgans[i].expire_date);
+                if(dateToTest<dateNow) {
+                    await sqlOrgans.updateOrganState(allOrgans[i].id, 1);
+                }
+            }
+            await suivi.regen();
+        });
+        updateOrgans.start();
+
     },
     setDebugMode: (state) => {
         isDebugMode = state;

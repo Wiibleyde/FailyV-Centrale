@@ -46,6 +46,20 @@ module.exports = {
             });
         });
     },
+    getAllOrgans: () => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "SELECT * FROM `follow_organ`",
+                    timeout: 40000
+                }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
     getPatients: () => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
@@ -111,6 +125,21 @@ module.exports = {
                     sql: "INSERT INTO `follow_patient_organ` SET name=?, organ=?, side=?",
                     timeout: 40000,
                     values: [name, organ, side]
+                }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
+    updateOrganState: (id, state) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "UPDATE FROM `follow_organ` SET state=? WHERE id=?",
+                    timeout: 40000,
+                    values: [state, id]
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     logger.error(reqErr);

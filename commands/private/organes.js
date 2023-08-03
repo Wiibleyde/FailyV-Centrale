@@ -185,6 +185,20 @@ module.exports = {
             date = year + '-' + month + '-' + day + ' 00:00:00';
         }
 
+        let day = nowDate.getDate();
+        let month = nowDate.getMonth() + 1;
+        let year = nowDate.getFullYear();
+        if (day < 10) day = '0' + day;
+        if (month < 10) month = '0' + month;
+        const dateNow = new Date(year + '-' + month + '-' + day + ' 00:00:00');
+        const dateToTest = new Date(date);
+
+        logger.debug(dateToTest);
+        logger.debug(dateNow);
+        if(dateToTest<dateNow) {
+            state = 1;
+        }
+
         for(i=0;i<quantity;i++) {
             if(side == 2) {
                 for(j=0;j<2;j++) {

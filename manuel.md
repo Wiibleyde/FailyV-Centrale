@@ -45,8 +45,8 @@ NB: Retirer quelqu'un du service, le retire aussi du dispatch.
 ### Les radios
 
 Pour voir les radios, il suffit d'aller dans le #centrale vous verrez alors les radios qui sont en utilisation dans le service. Vous pouvez cliquer sur le bouton correspondant au service pour regénérer une fréquence radio.
-NB: Les fréquences radios sont générées aléatoirement et ne sont pas réelles.
-NB2: Un changement de fréquence radio est signalé par un message qui va notifier les docteurs en service.
+> NB: Les fréquences radios sont générées aléatoirement et ne sont pas réelles.  
+> NB2: Un changement de fréquence radio est signalé par un message qui va notifier les docteurs en service.
 
 ### Les lits
 
@@ -84,7 +84,7 @@ Pour indiquer que l'on prend un rendez-vous, il suffit de cliquer sur le bouton 
 ### Indiquer que l'on a terminé/annulé un rendez-vous
 
 Pour indiquer que l'on a terminé/annulé un rendez-vous, il suffit de cliquer sur le bouton "Terminer/Supprimer" sous le message du rendez-vous. Cela enlèvera le rendez-vous de la liste des rendez-vous.
-NB: Cliquer sur le bouton "Terminer/Supprimer" supprimera le rendez-vous définitivement.
+> NB: Cliquer sur le bouton "Terminer/Supprimer" supprimera le rendez-vous définitivement.
 
 ### Vérifier les rendez-vous
 
@@ -100,15 +100,71 @@ Pour retrouver un rendez-vous supprimé par erreur (sans passer par le bouton "T
 ### Ajouter un docteur
 
 Pour ajouter un docteur, il suffit de faire la commande `/add` et de renseigner le nom, prénom, telephone, et le tag sur l'intranet du docteur. Cela va alors ajouter le docteur dans la liste des docteurs, lui donner les permissions pour voir les channels du LSMS et fais une annonce dans le channel #annonces.
-NB: On peut aussi ajouter un docteur en faisant la commande `/add` et en précisant le grade du docteur dans un argument optionnel.
+> NB: On peut aussi ajouter un docteur en faisant la commande `/add` et en précisant le grade du docteur dans un argument optionnel.
 
 ### Mettre/retirer un docteur en vacances
 
 Pour mettre un docteur en vacances, il suffit de faire la commande `/vacances` et de renseigner le docteur à mettre en vacances. Cela va alors mettre le docteur en vacances et lui retirer les permissions pour voir les channels du LSMS.
 Pour retirer un docteur en vacances, il suffit de faire la commande `/vacances` et de renseigner le docteur à retirer des vacances. Cela va alors retirer le docteur des vacances et lui redonner les permissions pour voir les channels du LSMS.
 
-## Gestion de l'effectif
+### Gestion de l'effectif
 
-### Modifier l'effectif
+#### Modifier l'effectif
 
-L'effectif est géré au 
+L'effectif est géré automatiquement, si vous voulez ajouter un docteur, passez par la commande [/add](#ajouter-un-docteur).
+> NB : Si l'effectif vous semble incorrect, vous pouvez utiliser la commande `/regenerate_workforce` qui va regénérer l'effectif.
+
+## Gestion des véhicules
+
+Pour ajouter un véhicule, il suffit de faire la commande `/vehicule`. Vous aurez le choix de :
+- Ajouter
+- Regénérer
+- Supprimer
+
+### Ajouter un véhicule
+
+Pour ajouter un véhicule, il suffit de faire la commande `/vehicule` et de choisir l'option "Ajouter". Vous aurez alors un formulaire à remplir pour ajouter le véhicule, il faudra renseigner :
+- Nom du véhicule
+- Plaque du véhicule
+- Date du contrôle technique
+- Type de véhicule
+
+Et vous pourrez ensuite valider le véhicule et il sera mis dans la liste des véhicules.
+
+### Regénérer les véhicules
+
+Pour regénérer les véhicules, il suffit de faire la commande `/vehicule` et de choisir l'option "Regénérer". Cela va alors regénérer tous les véhicules et les remettre dans la liste des véhicules.
+
+### Supprimer un véhicule
+
+Pour supprimer un véhicule, il suffit de faire la commande `/vehicule` et de choisir l'option "Supprimer". Vous aurez alors un message avec un choix multiple, et il faudra sélectionner le nom du véhicule.
+
+## Gestion de l'agenda
+
+### Ajouter un décès
+
+Pour ajouter un décès, il suffit de faire la commande `/agenda` et de renseigner :
+- Identité de la personne
+- Personnes resposables
+- Personnes autorisées
+- Confidentialité (décès public ou privé)
+- Donneur d'organe (oui ou non)
+- Traitement de la dépouille
+- Service qui a géré l'intervention (LSMS/BCMS)
+- Optionnels :
+    - D'autres informations à générer
+    - Date du décès personnalisée (par défaut Chantrale prends la date du jour)
+
+Cette commande va poster un message dans le canal #agenda, poster les informations pour le LSPD et la mairie.
+
+### Indiquer le contact des responsables
+
+Pour définir la date de la cérémonie ou de la récupération de l'urne, il suffit de cliquer sur le bouton `Responsables contactés`, ce bouton va indiquer que la personne a été contacté, qui l'a fait et combien de fois, cela a été fait.
+
+### Indiquer une date de cérémonie / incinération
+
+Pour indiquer une date de cérémonie ou d'incinération, il suffit de cliquer sur le bouton `Définir la date`, va supprimer le message et créér un évenement de l'intranet.
+
+### Supprimer un message
+
+Pour supprimer un message, il suffit de cliquer sur le bouton `Supprimer`, cela va supprimer le message.

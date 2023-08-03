@@ -7,7 +7,7 @@ module.exports = {
     updateChannel: (name, value) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "UPDATE `channels` SET `id` = ? WHERE `name` = ?",
+                    sql: "UPDATE `channels` SET `id` = ? WHERE `name`=?",
                     timeout: 40000,
                     values: [value, name]
                 }, async (reqErr, result, fields) => {
@@ -37,7 +37,7 @@ module.exports = {
     getChannel: (name) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "SELECT `id` FROM `channels` WHERE `name` = ?",
+                    sql: "SELECT `id` FROM `channels` WHERE `name`=?",
                     timeout: 40000,
                     values: [name]
                 }, async (reqErr, result, fields) => {
@@ -52,7 +52,7 @@ module.exports = {
     checkIfExist: (name) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "SELECT `id` FROM `channels` WHERE `name` = ?",
+                    sql: "SELECT `id` FROM `channels` WHERE `name`=?",
                     timeout: 40000,
                     values: [name]
                 }, async (reqErr, result, fields) => {
@@ -65,6 +65,51 @@ module.exports = {
                 } else {
                     resolve(false);
                 }
+            });
+        });
+    },
+    deleteMessage: (name) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "DELETE FROM `message` WHERE `correspond`=?",
+                    timeout: 40000,
+                    values: [name]
+                }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
+    setMessage: (name, value) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "INSERT INTO `message` (`correspond`, `id`) VALUES (?, ?)",
+                    timeout: 40000,
+                    values: [name, value]
+                }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
+    getMessage: (name) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "SELECT `id` FROM `message` WHERE `correspond`=?",
+                    timeout: 40000,
+                    values: [name]
+                }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
             });
         });
     }

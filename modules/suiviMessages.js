@@ -3,6 +3,7 @@ const { ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
 //Récup des requêtes SQL
 const sqlFollow = require('./../sql/suivi/suivi');
 const sqlFollowOrgan = require('./../sql/suivi/organes');
+const sqlMessages = require('./../sql/config/config');
 //Récup du logger
 const logger = require('./logger');
 //Récup du créateur d'embed
@@ -29,6 +30,8 @@ let totalLiver;
 let totalAvailableNumLiver;
 let totalExpiredNumLiver;
 
+let fullTxt = '';
+
 module.exports = {
     regen: (client) => {
         return new Promise(async (resolve, reject) => {
@@ -40,15 +43,6 @@ module.exports = {
 
             const channel = await client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(chan[0].id);
             const messages = await channel.messages.fetch();
-
-            messages.forEach(async msg => {
-                await msg.delete();
-            });
-
-            const btns = new ActionRowBuilder().addComponents(
-                new ButtonBuilder().setLabel('Retirer un/des organe(s)').setCustomId('followRemoveOrgans').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false),
-                new ButtonBuilder().setLabel('Retirer un/des patient(s)').setCustomId('followRemoveOrgansPatient').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false)
-            );
 
             //Poumons
             const allLungs = await sqlFollowOrgan.getAllLungs();
@@ -76,9 +70,9 @@ module.exports = {
             generateSoloSideOrganMessages('foie', allLiver);
 
             //Patients en attente de greffe
+            fullTxt = '';
             const patients = await sqlFollowOrgan.getPatients();
             const startTxt = '```ansi\n';
-            let fullTxt = '';
             const endTxt = '```';
             if(patients[0] != null) {
                 for(i=0;i<patients.length;i++) {
@@ -96,24 +90,14 @@ module.exports = {
             } else { fullTxt = '[2;34mPersonne[0m' }
             fullTxt = startTxt + fullTxt + endTxt;
 
-            const firstMsg = await channel.send({ embeds: [emb.generate(`Organes`, null, null, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
-            await channel.send({ embeds: [emb.generate(null, null, `**Sains** - ${totalAvailableNumLungs + totalAvailableNumKidney + totalAvailableNumLiver}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
-            await channel.send({ content: availableLungs + availableKidney + availableLiver });
-            await channel.send({ embeds: [emb.generate(null, null, `**Non sains (à détruire)** - ${totalExpiredNumLungs + totalExpiredNumKidney + totalExpiredNumLiver}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
-            await channel.send({ content: expiredLungs + expiredKidney + expiredLiver });
-            await channel.send({ embeds: [emb.generate(null, null, `**Total** - ${totalAvailableNumLungs + totalExpiredNumLungs + totalAvailableNumKidney + totalExpiredNumKidney + totalAvailableNumLiver + totalExpiredNumLiver}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
-            await channel.send({ content: totalLungs + totalKidney + totalLiver });
-            await channel.send({ embeds: [emb.generate(null, null, `**En attente de greffe** - ${patients.length}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
-            await channel.send({ content: fullTxt, components: [btns] });
-            //await channel.send({ content: '\u200b\n\u200b\n\u200b\n\u200b\n\u200b' });
-            await firstMsg.pin();
-            await channel.messages.fetch({ limit: 1 }).then(async msg => {
-                let lastMessage = msg.first();
+            const isMessageExists = await sqlMessages.getMessage('organe9');
 
-                if (lastMessage.author.bot) {
-                    await lastMessage.delete();
-                }
-            }).catch(logger.error);
+            if(isMessageExists[0].id != null && messages.size == 9) {
+                await editMessages(channel, patients);
+            } else {
+                await generateMessages(messages, channel, patients);
+            }
+
             resolve('Ok');
         });
     }
@@ -363,4 +347,97 @@ function formatDate(timestamp) {
     let day = date.getDate();
     if (day < 10) day = '0' + day;
     return day + '/' + month;
+}
+
+function generateMessages(messages, channel, patients) {
+    return new Promise(async (resolve, reject) => {
+        messages.forEach(async msg => {
+            await msg.delete();
+        });
+
+        const btns = new ActionRowBuilder().addComponents(
+            new ButtonBuilder().setLabel('Retirer un/des organe(s)').setCustomId('followRemoveOrgans').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false),
+            new ButtonBuilder().setLabel('Retirer un/des patient(s)').setCustomId('followRemoveOrgansPatient').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false)
+        );
+    
+        const firstMsg = await channel.send({ embeds: [emb.generate(`Organes`, null, null, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        await sqlMessages.deleteMessage('organe1');
+        await sqlMessages.setMessage('organe1', firstMsg.id);
+        const secMsg = await channel.send({ embeds: [emb.generate(null, null, `**Sains** - ${totalAvailableNumLungs + totalAvailableNumKidney + totalAvailableNumLiver}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        await sqlMessages.deleteMessage('organe2');
+        await sqlMessages.setMessage('organe2', secMsg.id);
+        const thirdMsg = await channel.send({ content: availableLungs + availableKidney + availableLiver });
+        await sqlMessages.deleteMessage('organe3');
+        await sqlMessages.setMessage('organe3', thirdMsg.id);
+        const fourthMsg = await channel.send({ embeds: [emb.generate(null, null, `**Non sains (à détruire)** - ${totalExpiredNumLungs + totalExpiredNumKidney + totalExpiredNumLiver}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        await sqlMessages.deleteMessage('organe4');
+        await sqlMessages.setMessage('organe4', fourthMsg.id);
+        const fifthMsg = await channel.send({ content: expiredLungs + expiredKidney + expiredLiver });
+        await sqlMessages.deleteMessage('organe5');
+        await sqlMessages.setMessage('organe5', fifthMsg.id);
+        const sixthMsg = await channel.send({ embeds: [emb.generate(null, null, `**Total** - ${totalAvailableNumLungs + totalExpiredNumLungs + totalAvailableNumKidney + totalExpiredNumKidney + totalAvailableNumLiver + totalExpiredNumLiver}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        await sqlMessages.deleteMessage('organe6');
+        await sqlMessages.setMessage('organe6', sixthMsg.id);
+        const seventhfirstMsg = await channel.send({ content: totalLungs + totalKidney + totalLiver });
+        await sqlMessages.deleteMessage('organe7');
+        await sqlMessages.setMessage('organe7', seventhfirstMsg.id);
+        const eighthfirstMsg = await channel.send({ embeds: [emb.generate(null, null, `**En attente de greffe** - ${patients.length}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        await sqlMessages.deleteMessage('organe8');
+        await sqlMessages.setMessage('organe8', eighthfirstMsg.id);
+        const ninthMsg = await channel.send({ content: fullTxt, components: [btns] });
+        await sqlMessages.deleteMessage('organe9');
+        await sqlMessages.setMessage('organe9', ninthMsg.id);
+        //await channel.send({ content: '\u200b\n\u200b\n\u200b\n\u200b\n\u200b' });
+        await firstMsg.pin();
+        await channel.messages.fetch({ limit: 1 }).then(async msg => {
+            let lastMessage = msg.first();
+    
+            if (lastMessage.author.bot) {
+                await lastMessage.delete();
+            }
+        }).catch(logger.error);
+        resolve('Ok');
+    });
+}
+
+function editMessages(channel, patients) {
+    return new Promise(async (resolve, reject) => {
+        const btns = new ActionRowBuilder().addComponents(
+            new ButtonBuilder().setLabel('Retirer un/des organe(s)').setCustomId('followRemoveOrgans').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false),
+            new ButtonBuilder().setLabel('Retirer un/des patient(s)').setCustomId('followRemoveOrgansPatient').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false)
+        );
+
+        const msg2Id = await sqlMessages.getMessage('organe2');
+        const msg3Id = await sqlMessages.getMessage('organe3');
+        const msg4Id = await sqlMessages.getMessage('organe4');
+        const msg5Id = await sqlMessages.getMessage('organe5');
+        const msg6Id = await sqlMessages.getMessage('organe6');
+        const msg7Id = await sqlMessages.getMessage('organe7');
+        const msg8Id = await sqlMessages.getMessage('organe8');
+        const msg9Id = await sqlMessages.getMessage('organe9');
+
+        try {
+            const msg2 = await channel.messages.fetch(msg2Id[0].id);
+            const msg3 = await channel.messages.fetch(msg3Id[0].id);
+            const msg4 = await channel.messages.fetch(msg4Id[0].id);
+            const msg5 = await channel.messages.fetch(msg5Id[0].id);
+            const msg6 = await channel.messages.fetch(msg6Id[0].id);
+            const msg7 = await channel.messages.fetch(msg7Id[0].id);
+            const msg8 = await channel.messages.fetch(msg8Id[0].id);
+            const msg9 = await channel.messages.fetch(msg9Id[0].id);
+
+            await msg2.edit({ embeds: [emb.generate(null, null, `**Sains** - ${totalAvailableNumLungs + totalAvailableNumKidney + totalAvailableNumLiver}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+            await msg3.edit({ content: availableLungs + availableKidney + availableLiver });
+            await msg4.edit({ embeds: [emb.generate(null, null, `**Non sains (à détruire)** - ${totalExpiredNumLungs + totalExpiredNumKidney + totalExpiredNumLiver}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+            await msg5.edit({ content: expiredLungs + expiredKidney + expiredLiver });
+            await msg6.edit({ embeds: [emb.generate(null, null, `**Total** - ${totalAvailableNumLungs + totalExpiredNumLungs + totalAvailableNumKidney + totalExpiredNumKidney + totalAvailableNumLiver + totalExpiredNumLiver}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+            await msg7.edit({ content: totalLungs + totalKidney + totalLiver });
+            await msg8.edit({ embeds: [emb.generate(null, null, `**En attente de greffe** - ${patients.length}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+            await msg9.edit({ content: fullTxt, components: [btns] });
+        } catch (err) {
+            logger.error(err);
+        }
+
+        resolve('Ok');
+    });
 }

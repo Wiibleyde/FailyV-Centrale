@@ -13,7 +13,7 @@ const wait = require('node:timers/promises').setTimeout;
 module.exports = {
     execute: async function(interaction, errEmb) {
 
-        const regexDate = /^(0[1-9]|1\d|2[0-8]|29(?=\/\d\d\/(?!1[01345789]00|2[1235679]00)\d\d(?:[02468][048]|[13579][26]))|30(?!\/02)|31(?=\/0[13578]|\/1[02]))\/(0[1-9]|1[0-2])\/([12]\d{3}) ([01]\d|2[0-3])h([0-5]\d)$/gm;
+        const regexDate = /^(0[1-9]|1\d|2[0-8]|29(?=\/02\/(?!1[01345789]00|2[1235679]00)\d\d(?:[02468][048]|[13579][26]))|29(?!\/02)|30(?!\/02)|31(?=\/0[13578]|\/1[02]))\/(0[1-9]|1[0-2])\/([12]\d{3}) ([01]\d|2[0-3])h([0-5]\d)$/gm;
         if(!regexDate.test(interaction.fields.components[0].components[0].value)) {
             await interaction.reply({ embeds: [emb.generate(`Erreur :(`, null, `Attention, la date de cérémonie que vous avez entrée n'est pas valide !\nVérifiez bien qu'elle est au format "**JJ/MM/AAAA HHhmm**" et que cette date existe réellement !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion décès`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], ephemeral: true });
             await wait(5000);

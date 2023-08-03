@@ -134,7 +134,7 @@ module.exports = {
 
         let date;
         if(interaction.options.getString(`date`) != null) {
-            const regexDate = /^(0[1-9]|1\d|2[0-8]|29(?=\/\d\d\/(?!1[01345789]00|2[1235679]00)\d\d(?:[02468][048]|[13579][26]))|30(?!\/02)|31(?=\/0[13578]|\/1[02]))\/(0[1-9]|1[0-2])\/([12]\d{3})$/gm;
+            const regexDate = /^(0[1-9]|1\d|2[0-8]|29(?=\/02\/(?!1[01345789]00|2[1235679]00)\d\d(?:[02468][048]|[13579][26]))|29(?!\/02)|30(?!\/02)|31(?=\/0[13578]|\/1[02]))\/(0[1-9]|1[0-2])\/([12]\d{3})$/gm;
             if(!regexDate.test(interaction.options.getString(`date`))) {
                 await interaction.reply({ embeds: [emb.generate(`Erreur :(`, null, `La date que vous avez spécifiée n'est pas une date valide !\n\nVous devez insérer une date au format **JJ/MM/AAAA**`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion décès`, serverIconURL, null, null, null, false)], ephemeral: true });
                 await wait(5000);

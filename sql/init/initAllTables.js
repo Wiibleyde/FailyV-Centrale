@@ -23,6 +23,7 @@ module.exports = {
             await sendRequest("CREATE TABLE IF NOT EXISTS `follow_organ` (`id` INT(255) NOT NULL AUTO_INCREMENT PRIMARY KEY, `type` VARCHAR(6) NOT NULL, `side` TINYINT(1) NOT NULL, `expire_date` TIMESTAMP NOT NULL, `state` BOOLEAN NOT NULL DEFAULT FALSE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci"); //0 = left | 1 = right
             await sendRequest("CREATE TABLE IF NOT EXISTS `follow_patient_organ` (`id` INT(255) NOT NULL AUTO_INCREMENT PRIMARY KEY, `name` VARCHAR(255) NOT NULL, `organ` VARCHAR(7) NOT NULL, `side` TINYINT(3) NOT NULL DEFAULT 0) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci"); //0 = none | 1 = left | 2 = right | 3 = both
             await sendRequest("CREATE TABLE IF NOT EXISTS `follow_ppa` (`id` INT(255) NOT NULL AUTO_INCREMENT PRIMARY KEY, `name` VARCHAR(255) NOT NULL, `phone` VARCHAR(8) NOT NULL, `reason` TINYINT(5) NOT NULL, `type` BOOLEAN NOT NULL DEFAULT FALSE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
+            await sendRequest("CREATE TABLE IF NOT EXISTS `inspection` (`id` INT(255) NOT NULL AUTO_INCREMENT PRIMARY KEY, `company` VARCHAR(255) NOT NULL, `date` TIMESTAMP NOT NULL, `doctor_id` FOREIGN KEY REFERENCES doctor(id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
             const getRadios = await sendRequest("SELECT * FROM `radio`");
             logger.debug(getRadios);
             if(getRadios[0] == null) {

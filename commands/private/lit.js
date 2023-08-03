@@ -71,9 +71,9 @@ module.exports = {
             return;
         }           
         let radioChannel = interaction.guild.channels.cache.get(IRIS_RADIO_CHANNEL_ID[0].id);
+        const guild = interaction.guild;
         if(!service.isGen()) {
             await interaction.deferReply({ ephemeral: true });
-            const guild = interaction.guild;
             const getMsgId = await beds.getMessageId();
             const msgId = getMsgId[0].id;
             let surveillance;

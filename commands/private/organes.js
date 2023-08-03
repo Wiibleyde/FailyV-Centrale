@@ -202,10 +202,22 @@ module.exports = {
         for(i=0;i<quantity;i++) {
             if(side == 2) {
                 for(j=0;j<2;j++) {
-                    await sqlFollowOrgan.addOrgan(interaction.options.getString(`type`), j, date, state);
+                    try {
+                        await sqlFollowOrgan.addOrgan(interaction.options.getString(`type`), j, date, state);
+                    } catch (err) {
+                        if(err.code == 'ER_TRUNCATED_WRONG_VALUE') {
+                            return interaction.followUp({ embeds: [emb.generate(`Oups :(`, null, `Il semblerait que vous n'ayez pas entré une date valide, vérifiez bien qu'elle existe puis réessayez !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des organes`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], ephemeral: true });
+                        }
+                    }
                 }
             } else {
-                await sqlFollowOrgan.addOrgan(interaction.options.getString(`type`), side, date, state);
+                try {
+                    await sqlFollowOrgan.addOrgan(interaction.options.getString(`type`), side, date, state);
+                } catch (err) {
+                    if(err.code == 'ER_TRUNCATED_WRONG_VALUE') {
+                        return interaction.followUp({ embeds: [emb.generate(`Oups :(`, null, `Il semblerait que vous n'ayez pas entré une date valide, vérifiez bien qu'elle existe puis réessayez !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des organes`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], ephemeral: true });
+                    }
+                }
             }
         }
         security.setGen(true);

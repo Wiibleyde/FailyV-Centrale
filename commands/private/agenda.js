@@ -190,7 +190,7 @@ module.exports = {
             },
             {
                 name: `**Personnes autorisées**`,
-                value: interaction.options.getString(`autorisés`),
+                value: interaction.options.getString(`autorisées`),
                 inline: false
             },
             {
@@ -235,9 +235,9 @@ module.exports = {
         date = date[1] + '/' + date[0] + '/' + date[2];
         const sqlDate = new Date(`${date} UTC+0:00`).toISOString().slice(0, 19).replace('T', ' ');
         if(interaction.options.getString(`autre`) != null) {
-            sql.insert(firstname + ' ' + lastname, sqlDate, interaction.options.getString(`service`), interaction.options.getString(`responsables`), interaction.options.getString(`autorisés`), confiDB, donDB, interaction.options.getString(`traitement`), interaction.member.nickname, agendaID.id, mayorID.id, LSPDID.id);
+            sql.insert(firstname + ' ' + lastname, sqlDate, interaction.options.getString(`service`), interaction.options.getString(`responsables`), interaction.options.getString(`autorisées`), confiDB, donDB, interaction.options.getString(`traitement`), interaction.member.nickname, agendaID.id, mayorID.id, LSPDID.id);
         } else {
-            sql.insertWithDetails(firstname + ' ' + lastname, sqlDate, interaction.options.getString(`service`), interaction.options.getString(`responsables`), interaction.options.getString(`autorisés`), confiDB, donDB, interaction.options.getString(`traitement`), interaction.options.getString(`autre`), interaction.member.nickname, agendaID.id, mayorID.id, LSPDID.id);
+            sql.insertWithDetails(firstname + ' ' + lastname, sqlDate, interaction.options.getString(`service`), interaction.options.getString(`responsables`), interaction.options.getString(`autorisées`), confiDB, donDB, interaction.options.getString(`traitement`), interaction.options.getString(`autre`), interaction.member.nickname, agendaID.id, mayorID.id, LSPDID.id);
         }
 
         await interaction.followUp({ embeds: [emb.generate(null, null, `Agenda mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion décès`, serverIconURL, null, null, null, false)], ephemeral: true });

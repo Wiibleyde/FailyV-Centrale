@@ -11,6 +11,8 @@ module.exports = {
         const message = interaction.message;
         //Get the embed
         const rendezVousEmb = interaction.message.embeds[0];
+        //Get the name of the doctor
+        const doctorName = interaction.member.displayName;
         //Get the date
         const now = new Date();
         let day = now.getDate()
@@ -46,7 +48,7 @@ module.exports = {
         newEmbed.addFields(
             {
                 name: `**Contacté**`,
-                value: `**${contacte}** fois\nDernière fois contacté : le **${day}/${month}/${year}** à **${hour}:${minutes}**`,
+                value: `**${contacte}** fois\nDernière fois contacté : le **${day}/${month}/${year}** à **${hour}:${minutes}** par ${doctorName}`,
                 inline: true
             }
         );

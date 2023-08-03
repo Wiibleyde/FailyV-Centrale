@@ -59,7 +59,7 @@ client.on(Events.MessageCreate, async (message) => {
     } else {
         IRIS_RADIO_CHANNEL_ID = IRIS_RADIO_CHANNEL_ID[0].id;
     }
-    let IRIS_FOLLOW_CHANNEL_ID = await sql.getChannel('IRIS_FOLLOW_CHANNEL_ID');
+    let IRIS_FOLLOW_CHANNEL_ID = await sql.getChannel('follow');
     if (IRIS_FOLLOW_CHANNEL_ID[0] == undefined) {
         IRIS_FOLLOW_CHANNEL_ID = null;
     } else {

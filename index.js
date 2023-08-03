@@ -81,12 +81,28 @@ client.on(Events.GuildScheduledEventCreate, async (guildScheduledEvent) => {
     webhookClient.send({ content: `https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}` });
 });
 
+client.on(Events.GuildScheduledEventUpdate, async (guildScheduledEvent) => {
+    //Récup des requêtes SQL
+    const sqlAgenda = require('./sql/agenda/agenda');
+    const agendaChannelId = await sqlAgenda.getAgendaChannelId();
+    if(guildScheduledEvent.status == 1) {
+        logger.log(`Événement "**${guildScheduledEvent.name}**" démarré`);
+    }
+    if(guildScheduledEvent.status == 2) {
+        logger.log(`Événement "**${guildScheduledEvent.name}**" terminé`);
+        guildScheduledEvent.guild.channels.cache.get(agendaChannelId[0].id).messages.fetch().then(m => { m.forEach(msg => { if(msg.content == `https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}`) { msg.delete(); } }) });
+        const isEventIsDelta = await sqlAgenda.getByURL(`https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}`);
+        if(isEventIsDelta[0] != null) {
+            await sqlAgenda.updateToEndState(`https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}`);
+        }
+    }
+});
+
 client.on(Events.GuildScheduledEventDelete, async (guildScheduledEvent) => {
     //Récup des requêtes SQL
     const sqlAgenda = require('./sql/agenda/agenda');
     const agendaChannelId = await sqlAgenda.getAgendaChannelId();
     logger.log(`Événement "**${guildScheduledEvent.name}**" supprimé`);
-    //Import du créateur de webhook
     guildScheduledEvent.guild.channels.cache.get(agendaChannelId[0].id).messages.fetch().then(m => { m.forEach(msg => { if(msg.content == `https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}`) { msg.delete(); } }) });
     const isEventIsDelta = await sqlAgenda.getByURL(`https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}`);
     if(isEventIsDelta[0] != null) {

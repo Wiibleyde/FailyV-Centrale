@@ -20,36 +20,34 @@ module.exports = {
                     value: `voir`
                 },
                 {
-                    name: `Mettre à jour l'inspection d'une entrprise`,
+                    name: `Ajouter ou mettre à jour l'inspection d'une entrprise`,
                     value: `update`
-                },
-                {
-                    name: `Ajouter`,
-                    value: `add`
                 }
             ).setRequired(true)
         ),
     async execute(interaction) {
-        switch(interaction.option.getString(`action`)) {
+        switch(interaction.options.getString(`action`)) {
             case `voir`:
-                //Récupération des inspection
-                const inspections = inspectionSQL.getInspections()
+                let inspections = await inspectionSQL.getInspections()
                 let fields = []
-                //Pour chaque inspection
+                const embed = emb.generate(`Gestion des inspection`, null, `Liste des inspections`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
+                if(inspections.length <= 0) {
+                    embed.addFields(
+                        {
+                            name: `Aucune inspection`,
+                            value: `Aucune inspection n'a été trouvée`
+                        }
+                    )
+                }
                 inspections.forEach(async inspection => {
-                    //Ajout du champ
                     fields.push({
-                        name: `ID: ${inspection.id}`,
-                        value: `${inspection.company} : ${inspection.date}\nPar ${inspection.doctor}`
+                        value: `${inspection.company} : ${inspection.date}\nPar ${inspection.doctors}`
                     })
                 })
-                const embed = emb.generate(`Gestion des inspection`, null, `Liste des inspections`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
                 embed.addFields(fields)
                 interaction.reply({embeds: [embed], ephemeral: true});
                 break;
             case `update`:
-                break;
-            case `add`:
                 break;
             default:
                 interaction.reply({content: `Action inconnue`, ephemeral: true})

@@ -15,8 +15,6 @@ const security = require('../../modules/service');
 module.exports = {
     execute: async function (interaction, errEmb) {
         await interaction.deferReply({ ephemeral: true });
-        //Logs de quel option du menu de selection à été utilisée
-        logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) l'option "${interaction.values}" du menu de séléction "${interaction.customId}"`);
         let respContent = 'Le(s) organe(s) ';
         let isOrganNull = false;
         for(i=0;i<interaction.values.length;i++) {

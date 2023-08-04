@@ -3,6 +3,7 @@ const { ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
 //Récup des requêtes SQL
 const sqlFollow = require('./../sql/suivi/suivi');
 const sqlFollowOrgan = require('./../sql/suivi/organes');
+const sqlFollowPPA = require('./../sql/suivi/ppa');
 const sqlMessages = require('./../sql/config/config');
 //Récup du logger
 const logger = require('./logger');
@@ -29,6 +30,18 @@ let expiredLiver;
 let totalLiver;
 let totalAvailableNumLiver;
 let totalExpiredNumLiver;
+
+//Variables PPA
+let fdoPatients;
+let fdoPatientsCount;
+let medicPatients;
+let medicPatientsCount;
+let mstPatients;
+let mstPatientsCount;
+let chassePatients;
+let chassePatientsCount;
+let autrePatients;
+let autrePatientsCount;
 
 let fullTxt = '';
 
@@ -90,9 +103,54 @@ module.exports = {
             } else { fullTxt = '[2;34mPersonne[0m' }
             fullTxt = startTxt + fullTxt + endTxt;
 
-            const isMessageExists = await sqlMessages.getMessage('organe9');
+            for(i=0;i<5;i++) {
+                //Patients en attente PPA
+                let txt = '';
+                let count = 0;
+                const patients = await sqlFollowPPA.getByReason(i);
+                const startTxt = '```ansi\n';
+                const endTxt = '```';
+                if(patients[0] != null) {
+                    count = patients.length;
+                    for(let j=0;j<patients.length;j++) {
+                        const patientName = format.name(patients[j].name);
+                        let end = '';
+                        if(patients[j].type == '1') { end = ' [2;37m([0m[2;35mPPA2[0m[2;37m)[0m'; }
+                        txt = txt + `[2;37m-[0m [2;34m${patientName}[0m [2;37m-[0m [2;32m${patients[j].phone}[0m${end}\n`;
+                    }
+                } else { txt = '[2;34mPersonne[0m' }
+                txt = startTxt + txt + endTxt;
+                switch(i) {
+                    case 0:
+                        fdoPatients = txt;
+                        fdoPatientsCount = count;
+                        break;
+                    case 1:
+                        medicPatients = txt;
+                        medicPatientsCount = count;
+                        break;
+                    case 2:
+                        mstPatients = txt;
+                        mstPatientsCount = count;
+                        break;
+                    case 3:
+                        chassePatients = txt;
+                        chassePatientsCount = count;
+                        break;
+                    case 4:
+                        autrePatients = txt;
+                        autrePatientsCount = count;
+                        break;
+                    default:
+                        autrePatients = txt;
+                        autrePatientsCount = count;
+                        break;
+                }
+            }
 
-            if(isMessageExists[0].id != null && messages.size == 9) {
+            const isMessageExists = await sqlMessages.getMessage('organe8');
+
+            if(isMessageExists[0].id != null && messages.size == 21) {
                 await editMessages(channel, patients);
             } else {
                 await generateMessages(messages, channel, patients);
@@ -355,46 +413,76 @@ function generateMessages(messages, channel, patients) {
             await msg.delete();
         });
 
-        const btns = new ActionRowBuilder().addComponents(
+        const btnsOrgan = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setLabel('Retirer un/des organe(s)').setCustomId('followRemoveOrgans').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false),
             new ButtonBuilder().setLabel('Retirer un/des patient(s)').setCustomId('followRemoveOrgansPatient').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false)
         );
+
+        const btnsPPA = new ActionRowBuilder().addComponents(
+            new ButtonBuilder().setLabel('Retirer un/des patient(s)').setCustomId('followRemovePPAPatient').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false)
+        );
     
-        const firstMsg = await channel.send({ embeds: [emb.generate(`Organes`, null, null, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        const firstOrganMsg = await channel.send({ embeds: [emb.generate(`Organes`, null, null, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        const secOrganMsg = await channel.send({ embeds: [emb.generate(null, null, `**Sains** - ${totalAvailableNumLungs + totalAvailableNumKidney + totalAvailableNumLiver}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
         await sqlMessages.deleteMessage('organe1');
-        await sqlMessages.setMessage('organe1', firstMsg.id);
-        const secMsg = await channel.send({ embeds: [emb.generate(null, null, `**Sains** - ${totalAvailableNumLungs + totalAvailableNumKidney + totalAvailableNumLiver}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        await sqlMessages.setMessage('organe1', secOrganMsg.id);
+        const thirdOrganMsg = await channel.send({ content: availableLungs + availableKidney + availableLiver });
         await sqlMessages.deleteMessage('organe2');
-        await sqlMessages.setMessage('organe2', secMsg.id);
-        const thirdMsg = await channel.send({ content: availableLungs + availableKidney + availableLiver });
+        await sqlMessages.setMessage('organe2', thirdOrganMsg.id);
+        const fourthOrganMsg = await channel.send({ embeds: [emb.generate(null, null, `**Non sains (à détruire)** - ${totalExpiredNumLungs + totalExpiredNumKidney + totalExpiredNumLiver}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
         await sqlMessages.deleteMessage('organe3');
-        await sqlMessages.setMessage('organe3', thirdMsg.id);
-        const fourthMsg = await channel.send({ embeds: [emb.generate(null, null, `**Non sains (à détruire)** - ${totalExpiredNumLungs + totalExpiredNumKidney + totalExpiredNumLiver}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        await sqlMessages.setMessage('organe3', fourthOrganMsg.id);
+        const fifthOrganMsg = await channel.send({ content: expiredLungs + expiredKidney + expiredLiver });
         await sqlMessages.deleteMessage('organe4');
-        await sqlMessages.setMessage('organe4', fourthMsg.id);
-        const fifthMsg = await channel.send({ content: expiredLungs + expiredKidney + expiredLiver });
+        await sqlMessages.setMessage('organe4', fifthOrganMsg.id);
+        const sixthOrganMsg = await channel.send({ embeds: [emb.generate(null, null, `**Total** - ${totalAvailableNumLungs + totalExpiredNumLungs + totalAvailableNumKidney + totalExpiredNumKidney + totalAvailableNumLiver + totalExpiredNumLiver}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
         await sqlMessages.deleteMessage('organe5');
-        await sqlMessages.setMessage('organe5', fifthMsg.id);
-        const sixthMsg = await channel.send({ embeds: [emb.generate(null, null, `**Total** - ${totalAvailableNumLungs + totalExpiredNumLungs + totalAvailableNumKidney + totalExpiredNumKidney + totalAvailableNumLiver + totalExpiredNumLiver}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        await sqlMessages.setMessage('organe5', sixthOrganMsg.id);
+        const seventhOrganMsg = await channel.send({ content: totalLungs + totalKidney + totalLiver });
         await sqlMessages.deleteMessage('organe6');
-        await sqlMessages.setMessage('organe6', sixthMsg.id);
-        const seventhfirstMsg = await channel.send({ content: totalLungs + totalKidney + totalLiver });
+        await sqlMessages.setMessage('organe6', seventhOrganMsg.id);
+        const eighthOrganMsg = await channel.send({ embeds: [emb.generate(null, null, `**En attente de greffe** - ${patients.length}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
         await sqlMessages.deleteMessage('organe7');
-        await sqlMessages.setMessage('organe7', seventhfirstMsg.id);
-        const eighthfirstMsg = await channel.send({ embeds: [emb.generate(null, null, `**En attente de greffe** - ${patients.length}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        await sqlMessages.setMessage('organe7', eighthOrganMsg.id);
+        const ninthOrganMsg = await channel.send({ content: fullTxt, components: [btnsOrgan] });
         await sqlMessages.deleteMessage('organe8');
-        await sqlMessages.setMessage('organe8', eighthfirstMsg.id);
-        const ninthMsg = await channel.send({ content: fullTxt, components: [btns] });
-        await sqlMessages.deleteMessage('organe9');
-        await sqlMessages.setMessage('organe9', ninthMsg.id);
-        //await channel.send({ content: '\u200b\n\u200b\n\u200b\n\u200b\n\u200b' });
-        await firstMsg.pin();
-        await channel.messages.fetch({ limit: 1 }).then(async msg => {
-            let lastMessage = msg.first();
-    
-            if (lastMessage.author.bot) {
-                await lastMessage.delete();
-            }
+        await sqlMessages.setMessage('organe8', ninthOrganMsg.id);
+        await channel.send({ content: '\u200b\n\u200b\n\u200b\n\u200b\n\u200b' });
+        const firstPPAMsg = await channel.send({ embeds: [emb.generate(`PPA`, null, null, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        const secPPAMsg = await channel.send({ embeds: [emb.generate(null, null, `**LSPD/LSCS** - ${fdoPatientsCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        await sqlMessages.deleteMessage('ppa1');
+        await sqlMessages.setMessage('ppa1', secPPAMsg.id);
+        const thirdPPAMsg = await channel.send({ content: fdoPatients });
+        await sqlMessages.deleteMessage('ppa2');
+        await sqlMessages.setMessage('ppa2', thirdPPAMsg.id);
+        const fourthPPAMsg = await channel.send({ embeds: [emb.generate(null, null, `**LSMS/BCMS** - ${medicPatientsCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        await sqlMessages.deleteMessage('ppa3');
+        await sqlMessages.setMessage('ppa3', fourthPPAMsg.id);
+        const fifthPPAMsg = await channel.send({ content: medicPatients });
+        await sqlMessages.deleteMessage('ppa4');
+        await sqlMessages.setMessage('ppa4', fifthPPAMsg.id);
+        const sixthPPAMsg = await channel.send({ embeds: [emb.generate(null, null, `**M$T** - ${mstPatientsCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        await sqlMessages.deleteMessage('ppa5');
+        await sqlMessages.setMessage('ppa5', sixthPPAMsg.id);
+        const seventhPPAMsg = await channel.send({ content: mstPatients });
+        await sqlMessages.deleteMessage('ppa6');
+        await sqlMessages.setMessage('ppa6', seventhPPAMsg.id);
+        const eighthPPAMsg = await channel.send({ embeds: [emb.generate(null, null, `**Chasse** - ${chassePatientsCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        await sqlMessages.deleteMessage('ppa7');
+        await sqlMessages.setMessage('ppa7', eighthPPAMsg.id);
+        const ninthPPAMsg = await channel.send({ content: chassePatients });
+        await sqlMessages.deleteMessage('ppa8');
+        await sqlMessages.setMessage('ppa8', ninthPPAMsg.id);
+        const tenthPPAMsg = await channel.send({ embeds: [emb.generate(null, null, `**Autre** - ${autrePatientsCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        await sqlMessages.deleteMessage('ppa9');
+        await sqlMessages.setMessage('ppa9', tenthPPAMsg.id);
+        const eleventhPPAMsg = await channel.send({ content: autrePatients, components: [btnsPPA] });
+        await sqlMessages.deleteMessage('ppa10');
+        await sqlMessages.setMessage('ppa10', eleventhPPAMsg.id);
+        await firstPPAMsg.pin();
+        await firstOrganMsg.pin();
+        await channel.messages.fetch({ limit: 2 }).then(async msg => {
+            msg.map(m => m.delete());
         }).catch(logger.error);
         resolve('Ok');
     });
@@ -407,33 +495,128 @@ function editMessages(channel, patients) {
             new ButtonBuilder().setLabel('Retirer un/des patient(s)').setCustomId('followRemoveOrgansPatient').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false)
         );
 
-        const msg2Id = await sqlMessages.getMessage('organe2');
-        const msg3Id = await sqlMessages.getMessage('organe3');
-        const msg4Id = await sqlMessages.getMessage('organe4');
-        const msg5Id = await sqlMessages.getMessage('organe5');
-        const msg6Id = await sqlMessages.getMessage('organe6');
-        const msg7Id = await sqlMessages.getMessage('organe7');
-        const msg8Id = await sqlMessages.getMessage('organe8');
-        const msg9Id = await sqlMessages.getMessage('organe9');
+        const btnsPPA = new ActionRowBuilder().addComponents(
+            new ButtonBuilder().setLabel('Retirer un/des patient(s)').setCustomId('followRemovePPAPatient').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false)
+        );
+
+        const organMsg1Id = await sqlMessages.getMessage('organe1');
+        const organMsg2Id = await sqlMessages.getMessage('organe2');
+        const organMsg3Id = await sqlMessages.getMessage('organe3');
+        const organMsg4Id = await sqlMessages.getMessage('organe4');
+        const organMsg5Id = await sqlMessages.getMessage('organe5');
+        const organMsg6Id = await sqlMessages.getMessage('organe6');
+        const organMsg7Id = await sqlMessages.getMessage('organe7');
+        const organMsg8Id = await sqlMessages.getMessage('organe8');
+        
+        const ppaMsg1Id = await sqlMessages.getMessage('ppa1');
+        const ppaMsg2Id = await sqlMessages.getMessage('ppa2');
+        const ppaMsg3Id = await sqlMessages.getMessage('ppa3');
+        const ppaMsg4Id = await sqlMessages.getMessage('ppa4');
+        const ppaMsg5Id = await sqlMessages.getMessage('ppa5');
+        const ppaMsg6Id = await sqlMessages.getMessage('ppa6');
+        const ppaMsg7Id = await sqlMessages.getMessage('ppa7');
+        const ppaMsg8Id = await sqlMessages.getMessage('ppa8');
+        const ppaMsg9Id = await sqlMessages.getMessage('ppa9');
+        const ppaMsg10Id = await sqlMessages.getMessage('ppa10');
 
         try {
-            const msg2 = await channel.messages.fetch(msg2Id[0].id);
-            const msg3 = await channel.messages.fetch(msg3Id[0].id);
-            const msg4 = await channel.messages.fetch(msg4Id[0].id);
-            const msg5 = await channel.messages.fetch(msg5Id[0].id);
-            const msg6 = await channel.messages.fetch(msg6Id[0].id);
-            const msg7 = await channel.messages.fetch(msg7Id[0].id);
-            const msg8 = await channel.messages.fetch(msg8Id[0].id);
-            const msg9 = await channel.messages.fetch(msg9Id[0].id);
+            //Organs
+            const organMsg1 = await channel.messages.fetch(organMsg1Id[0].id);
+            const organMsg2 = await channel.messages.fetch(organMsg2Id[0].id);
+            const organMsg3 = await channel.messages.fetch(organMsg3Id[0].id);
+            const organMsg4 = await channel.messages.fetch(organMsg4Id[0].id);
+            const organMsg5 = await channel.messages.fetch(organMsg5Id[0].id);
+            const organMsg6 = await channel.messages.fetch(organMsg6Id[0].id);
+            const organMsg7 = await channel.messages.fetch(organMsg7Id[0].id);
+            const organMsg8 = await channel.messages.fetch(organMsg8Id[0].id);
 
-            await msg2.edit({ embeds: [emb.generate(null, null, `**Sains** - ${totalAvailableNumLungs + totalAvailableNumKidney + totalAvailableNumLiver}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
-            await msg3.edit({ content: availableLungs + availableKidney + availableLiver });
-            await msg4.edit({ embeds: [emb.generate(null, null, `**Non sains (à détruire)** - ${totalExpiredNumLungs + totalExpiredNumKidney + totalExpiredNumLiver}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
-            await msg5.edit({ content: expiredLungs + expiredKidney + expiredLiver });
-            await msg6.edit({ embeds: [emb.generate(null, null, `**Total** - ${totalAvailableNumLungs + totalExpiredNumLungs + totalAvailableNumKidney + totalExpiredNumKidney + totalAvailableNumLiver + totalExpiredNumLiver}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
-            await msg7.edit({ content: totalLungs + totalKidney + totalLiver });
-            await msg8.edit({ embeds: [emb.generate(null, null, `**En attente de greffe** - ${patients.length}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
-            await msg9.edit({ content: fullTxt, components: [btns] });
+            const newOrganMsg1 = emb.generate(null, null, `**Sains** - ${totalAvailableNumLungs + totalAvailableNumKidney + totalAvailableNumLiver}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false);
+            const newOrganMsg2 = availableLungs + availableKidney + availableLiver;
+            const newOrganMsg3 = emb.generate(null, null, `**Non sains (à détruire)** - ${totalExpiredNumLungs + totalExpiredNumKidney + totalExpiredNumLiver}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false);
+            const newOrganMsg4 = expiredLungs + expiredKidney + expiredLiver;
+            const newOrganMsg5 = emb.generate(null, null, `**Total** - ${totalAvailableNumLungs + totalExpiredNumLungs + totalAvailableNumKidney + totalExpiredNumKidney + totalAvailableNumLiver + totalExpiredNumLiver}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false);
+            const newOrganMsg6 = totalLungs + totalKidney + totalLiver;
+            const newOrganMsg7 = emb.generate(null, null, `**En attente de greffe** - ${patients.length}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false);
+            const newOrganMsg8 = fullTxt;
+
+            if(organMsg1.embeds[0].data.description != newOrganMsg1.data.description) {
+                await organMsg1.edit({ embeds: [newOrganMsg1] });
+            }
+            if(organMsg2.content != newOrganMsg2) {
+                await organMsg2.edit({ content: newOrganMsg2 });
+            }
+            if(organMsg3.embeds[0].data.description != newOrganMsg3.data.description) {
+                await organMsg3.edit({ embeds: [newOrganMsg3] });
+            }
+            if(organMsg4.content != newOrganMsg4) {
+                await organMsg4.edit({ content: newOrganMsg4 });
+            }
+            if(organMsg5.embeds[0].data.description != newOrganMsg5.data.description) {
+                await organMsg5.edit({ embeds: [newOrganMsg5] });
+            }
+            if(organMsg6.content != newOrganMsg6) {
+                await organMsg6.edit({ content: newOrganMsg6 });
+            }
+            if(organMsg7.embeds[0].data.description != newOrganMsg7.data.description) {
+                await organMsg7.edit({ embeds: [newOrganMsg7] });
+            }
+            if(organMsg8.content != newOrganMsg8) {
+                await organMsg8.edit({ content: newOrganMsg8, components: [btns] });
+            }
+
+            //PPA
+            const ppaMsg1 = await channel.messages.fetch(ppaMsg1Id[0].id);
+            const ppaMsg2 = await channel.messages.fetch(ppaMsg2Id[0].id);
+            const ppaMsg3 = await channel.messages.fetch(ppaMsg3Id[0].id);
+            const ppaMsg4 = await channel.messages.fetch(ppaMsg4Id[0].id);
+            const ppaMsg5 = await channel.messages.fetch(ppaMsg5Id[0].id);
+            const ppaMsg6 = await channel.messages.fetch(ppaMsg6Id[0].id);
+            const ppaMsg7 = await channel.messages.fetch(ppaMsg7Id[0].id);
+            const ppaMsg8 = await channel.messages.fetch(ppaMsg8Id[0].id);
+            const ppaMsg9 = await channel.messages.fetch(ppaMsg9Id[0].id);
+            const ppaMsg10 = await channel.messages.fetch(ppaMsg10Id[0].id);
+            
+            const newPPAMsg1 = emb.generate(null, null, `**LSPD/LSCS** - ${fdoPatientsCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false);
+            const newPPAMsg2 = fdoPatients;
+            const newPPAMsg3 = emb.generate(null, null, `**LSMS/BCMS** - ${medicPatientsCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false);
+            const newPPAMsg4 = medicPatients;
+            const newPPAMsg5 = emb.generate(null, null, `**M$T** - ${mstPatientsCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false);
+            const newPPAMsg6 = mstPatients;
+            const newPPAMsg7 = emb.generate(null, null, `**Chasse** - ${chassePatientsCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false);
+            const newPPAMsg8 = chassePatients;
+            const newPPAMsg9 = emb.generate(null, null, `**Autre** - ${autrePatientsCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false);
+            const newPPAMsg10 = autrePatients;
+
+            if(ppaMsg1.embeds[0].data.description != newPPAMsg1.data.description) {
+                await ppaMsg1.edit({ embeds: [newPPAMsg1] });
+            }
+            if(ppaMsg2.content != newPPAMsg2) {
+                await ppaMsg2.edit({ content: newPPAMsg2 });
+            }
+            if(ppaMsg3.embeds[0].data.description != newPPAMsg3.data.description) {
+                await ppaMsg3.edit({ embeds: [newPPAMsg3] });
+            }
+            if(ppaMsg4.content != newPPAMsg4) {
+                await ppaMsg4.edit({ content: newPPAMsg4 });
+            }
+            if(ppaMsg5.embeds[0].data.description != newPPAMsg5.data.description) {
+                await ppaMsg5.edit({ embeds: [newPPAMsg5] });
+            }
+            if(ppaMsg6.content != newPPAMsg6) {
+                await ppaMsg6.edit({ content: newPPAMsg6 });
+            }
+            if(ppaMsg7.embeds[0].data.description != newPPAMsg7.data.description) {
+                await ppaMsg7.edit({ embeds: [newPPAMsg7] });
+            }
+            if(ppaMsg8.content != newPPAMsg8) {
+                await ppaMsg8.edit({ content: newPPAMsg8 });
+            }
+            if(ppaMsg9.embeds[0].data.description != newPPAMsg9.data.description) {
+                await ppaMsg9.edit({ embeds: [newPPAMsg9] });
+            }
+            if(ppaMsg10.content != newPPAMsg10) {
+                await ppaMsg10.edit({ content: newPPAMsg10, components: [btnsPPA] });
+            }
         } catch (err) {
             logger.error(err);
         }

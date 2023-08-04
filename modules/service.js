@@ -90,7 +90,7 @@ module.exports = {
                     followMessages = await followChan.messages.fetch();
                     followMessagesCount = await getIrisChannelMessages(followMessages);
                 } else {
-                    followMessagesCount = 9;
+                    followMessagesCount = 21;
                 }
                 //Si pas présent recréation du message
                 if(!found) {
@@ -322,7 +322,7 @@ module.exports = {
                     }
                     gen = false;
                 }
-                if(followMessagesCount != 9/*10*/) {
+                if(followMessagesCount != 21) {
                     gen = true;
                     await follow.regen(client);
                     gen = false;

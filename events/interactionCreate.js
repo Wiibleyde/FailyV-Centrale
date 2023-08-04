@@ -80,6 +80,7 @@ module.exports = {
             if(cID == 'agEventDefine') { const agEventDefine = require('./../buttons/agenda/agEventDefine'); agEventDefine.execute(interaction, errEmb); }
             if(cID == 'followRemoveOrgans') { const followRemoveOrgans = require('./../buttons/suivi/followRemoveOrgans'); followRemoveOrgans.execute(interaction, errEmb); }
             if(cID == 'followRemoveOrgansPatient') { const followRemoveOrgansPatient = require('./../buttons/suivi/followRemoveOrgansPatient'); followRemoveOrgansPatient.execute(interaction, errEmb); }
+            if(cID == 'followRemovePPAPatient') { const followRemovePPAPatient = require('./../buttons/suivi/followRemovePPAPatient'); followRemovePPAPatient.execute(interaction, errEmb); }
         }
         //Lorsqu'il s'agit d'un Select Menu
         if(interaction.isChannelSelectMenu() || interaction.isStringSelectMenu()) {
@@ -93,6 +94,7 @@ module.exports = {
             if(cID == 'vehiculeRemoveSelect') { const vehiculeRemoveSelect = require('../selectMenus/vehicule/vehiculeRemoveSelect'); vehiculeRemoveSelect.execute(interaction, errEmb); }
             if(cID == 'followRemoveOrgansSelect') { const followRemoveOrgansSelect = require('../selectMenus/suivi/followRemoveOrgansSelect'); followRemoveOrgansSelect.execute(interaction, errEmb); }
             if(cID == 'followRemoveOrgansPatientSelect') { const followRemoveOrgansPatientSelect = require('../selectMenus/suivi/followRemoveOrgansPatientSelect'); followRemoveOrgansPatientSelect.execute(interaction, errEmb); }
+            if(cID == 'followRemovePPAPatientSelect') { const followRemovePPAPatientSelect = require('../selectMenus/suivi/followRemovePPAPatientSelect'); followRemovePPAPatientSelect.execute(interaction, errEmb); }
         }
 
     },

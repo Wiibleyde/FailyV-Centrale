@@ -118,7 +118,7 @@ module.exports = {
         await suivi.regen(interaction.client);
         security.setGen(false);
 
-        await interaction.followUp({ embeds: [emb.generate(null, null, `Le/la patient(e) ${name} a bien été(e) ajouté(e) en attente de greffe !`, "#0DE600", process.env.LSMS_LOGO_V2, null, `Gestion des greffes`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], ephemeral: true })
+        await interaction.followUp({ embeds: [emb.generate(null, null, `Le/la patient(e) **${name}** a bien été(e) ajouté(e) en attente de greffe !`, "#0DE600", process.env.LSMS_LOGO_V2, null, `Gestion des greffes`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], ephemeral: true })
         await wait(5000);
         await interaction.deleteReply();
 

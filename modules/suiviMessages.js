@@ -150,7 +150,7 @@ module.exports = {
 
             const isMessageExists = await sqlMessages.getMessage('organe8');
 
-            if(isMessageExists[0].id != null && messages.size == 21) {
+            if(isMessageExists[0] != null && messages.size == 21) {
                 await editMessages(channel, patients);
             } else {
                 await generateMessages(messages, channel, patients);

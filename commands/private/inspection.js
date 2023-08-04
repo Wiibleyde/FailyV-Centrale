@@ -6,6 +6,8 @@ const logger = require('../../modules/logger');
 const emb = require('../../modules/embeds');
 //Récup du sql pour les inspections
 const inspectionSQL = require('../../sql/inspection/inspection');
+//Fonction pour attendre
+const wait = require('node:timers/promises').setTimeout;
 
 module.exports = {
     data: new SlashCommandBuilder()

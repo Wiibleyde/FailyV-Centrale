@@ -149,14 +149,18 @@ module.exports = {
             }
 
             const isMessageExists = await sqlMessages.getMessage('organe8');
+            const ppaThreadId = await sqlFollow.getFollowThreadPPAId();
+            const isPPAMessageExists = await sqlMessages.getMessage('ppa10');
 
-            if(isMessageExists[0] != null && messages.size == 21) {
-                await editMessages(channel, patients);
+            if(isMessageExists[0] != null && ppaThreadId[0] != null && isPPAMessageExists[0] != null && messages.size == 10) {
+                const ppaThread = await channel.threads.cache.get(ppaThreadId[0].id);
+                const ppaMessages = await ppaThread.messages.fetch();
+                if(ppaMessages != 11) { await generatePPAMessages(ppaThread, ppaMessages); } else { await editMessages(channel, ppaThreadId, patients); }
             } else {
-                await generateMessages(messages, channel, patients);
+                await generateMessages(messages, channel, ppaThreadId, patients);
             }
 
-            resolve('Ok');
+            resolve(false);
         });
     }
 }
@@ -407,11 +411,16 @@ function formatDate(timestamp) {
     return day + '/' + month;
 }
 
-function generateMessages(messages, channel, patients) {
+function generateMessages(messages, channel, ppaThreadId, patients) {
     return new Promise(async (resolve, reject) => {
         messages.forEach(async msg => {
             await msg.delete();
         });
+        if(ppaThreadId[0] != null) {
+            const ppaThread = await channel.threads.cache.get(ppaThreadId[0].id);
+            await sqlFollow.deleteFollowThreadPPAId();
+            await ppaThread.delete();
+        }
 
         const btnsOrgan = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setLabel('Retirer un/des organe(s)').setCustomId('followRemoveOrgans').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false),
@@ -447,7 +456,64 @@ function generateMessages(messages, channel, patients) {
         const ninthOrganMsg = await channel.send({ content: fullTxt, components: [btnsOrgan] });
         await sqlMessages.deleteMessage('organe8');
         await sqlMessages.setMessage('organe8', ninthOrganMsg.id);
-        await channel.send({ content: '\u200b\n\u200b\n\u200b\n\u200b\n\u200b' });
+        //await channel.send({ content: '\u200b\n\u200b\n\u200b\n\u200b\n\u200b' });
+        const newPPAThread = await channel.threads.create({
+            name: 'Suivi PPA',
+            autoArchiveDuration: 60
+        });
+        await sqlFollow.addFollowThreadPPAId(newPPAThread.id);
+        const firstPPAMsg = await newPPAThread.send({ embeds: [emb.generate(`PPA`, null, null, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        const secPPAMsg = await newPPAThread.send({ embeds: [emb.generate(null, null, `**LSPD/LSCS** - ${fdoPatientsCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        await sqlMessages.deleteMessage('ppa1');
+        await sqlMessages.setMessage('ppa1', secPPAMsg.id);
+        const thirdPPAMsg = await newPPAThread.send({ content: fdoPatients });
+        await sqlMessages.deleteMessage('ppa2');
+        await sqlMessages.setMessage('ppa2', thirdPPAMsg.id);
+        const fourthPPAMsg = await newPPAThread.send({ embeds: [emb.generate(null, null, `**LSMS/BCMS** - ${medicPatientsCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        await sqlMessages.deleteMessage('ppa3');
+        await sqlMessages.setMessage('ppa3', fourthPPAMsg.id);
+        const fifthPPAMsg = await newPPAThread.send({ content: medicPatients });
+        await sqlMessages.deleteMessage('ppa4');
+        await sqlMessages.setMessage('ppa4', fifthPPAMsg.id);
+        const sixthPPAMsg = await newPPAThread.send({ embeds: [emb.generate(null, null, `**M$T** - ${mstPatientsCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        await sqlMessages.deleteMessage('ppa5');
+        await sqlMessages.setMessage('ppa5', sixthPPAMsg.id);
+        const seventhPPAMsg = await newPPAThread.send({ content: mstPatients });
+        await sqlMessages.deleteMessage('ppa6');
+        await sqlMessages.setMessage('ppa6', seventhPPAMsg.id);
+        const eighthPPAMsg = await newPPAThread.send({ embeds: [emb.generate(null, null, `**Chasse** - ${chassePatientsCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        await sqlMessages.deleteMessage('ppa7');
+        await sqlMessages.setMessage('ppa7', eighthPPAMsg.id);
+        const ninthPPAMsg = await newPPAThread.send({ content: chassePatients });
+        await sqlMessages.deleteMessage('ppa8');
+        await sqlMessages.setMessage('ppa8', ninthPPAMsg.id);
+        const tenthPPAMsg = await newPPAThread.send({ embeds: [emb.generate(null, null, `**Autre** - ${autrePatientsCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        await sqlMessages.deleteMessage('ppa9');
+        await sqlMessages.setMessage('ppa9', tenthPPAMsg.id);
+        const eleventhPPAMsg = await newPPAThread.send({ content: autrePatients, components: [btnsPPA] });
+        await sqlMessages.deleteMessage('ppa10');
+        await sqlMessages.setMessage('ppa10', eleventhPPAMsg.id);
+        await firstPPAMsg.pin();
+        await firstOrganMsg.pin();
+        await channel.messages.fetch({ limit: 1 }).then(async msg => {
+            msg.map(m => m.delete());
+        }).catch(logger.error);
+        await newPPAThread.messages.fetch({ limit: 1 }).then(async msg => {
+            msg.map(m => m.delete());
+        }).catch(logger.error);
+        resolve('Ok');
+    });
+}
+
+function generatePPAMessages(channel, messages) {
+    return new Promise(async (resolve, reject) => {
+        messages.forEach(async msg => {
+            await msg.delete();
+        });
+
+        const btnsPPA = new ActionRowBuilder().addComponents(
+            new ButtonBuilder().setLabel('Retirer un/des patient(s)').setCustomId('followRemovePPAPatient').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false)
+        );
         const firstPPAMsg = await channel.send({ embeds: [emb.generate(`PPA`, null, null, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
         const secPPAMsg = await channel.send({ embeds: [emb.generate(null, null, `**LSPD/LSCS** - ${fdoPatientsCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
         await sqlMessages.deleteMessage('ppa1');
@@ -480,15 +546,14 @@ function generateMessages(messages, channel, patients) {
         await sqlMessages.deleteMessage('ppa10');
         await sqlMessages.setMessage('ppa10', eleventhPPAMsg.id);
         await firstPPAMsg.pin();
-        await firstOrganMsg.pin();
-        await channel.messages.fetch({ limit: 2 }).then(async msg => {
+        await channel.messages.fetch({ limit: 1 }).then(async msg => {
             msg.map(m => m.delete());
         }).catch(logger.error);
         resolve('Ok');
     });
 }
 
-function editMessages(channel, patients) {
+function editMessages(channel, ppaThreadId, patients) {
     return new Promise(async (resolve, reject) => {
         const btns = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setLabel('Retirer un/des organe(s)').setCustomId('followRemoveOrgans').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false),
@@ -565,16 +630,17 @@ function editMessages(channel, patients) {
             }
 
             //PPA
-            const ppaMsg1 = await channel.messages.fetch(ppaMsg1Id[0].id);
-            const ppaMsg2 = await channel.messages.fetch(ppaMsg2Id[0].id);
-            const ppaMsg3 = await channel.messages.fetch(ppaMsg3Id[0].id);
-            const ppaMsg4 = await channel.messages.fetch(ppaMsg4Id[0].id);
-            const ppaMsg5 = await channel.messages.fetch(ppaMsg5Id[0].id);
-            const ppaMsg6 = await channel.messages.fetch(ppaMsg6Id[0].id);
-            const ppaMsg7 = await channel.messages.fetch(ppaMsg7Id[0].id);
-            const ppaMsg8 = await channel.messages.fetch(ppaMsg8Id[0].id);
-            const ppaMsg9 = await channel.messages.fetch(ppaMsg9Id[0].id);
-            const ppaMsg10 = await channel.messages.fetch(ppaMsg10Id[0].id);
+            const ppaThread = channel.threads.cache.get(ppaThreadId[0].id);
+            const ppaMsg1 = await ppaThread.messages.fetch(ppaMsg1Id[0].id);
+            const ppaMsg2 = await ppaThread.messages.fetch(ppaMsg2Id[0].id);
+            const ppaMsg3 = await ppaThread.messages.fetch(ppaMsg3Id[0].id);
+            const ppaMsg4 = await ppaThread.messages.fetch(ppaMsg4Id[0].id);
+            const ppaMsg5 = await ppaThread.messages.fetch(ppaMsg5Id[0].id);
+            const ppaMsg6 = await ppaThread.messages.fetch(ppaMsg6Id[0].id);
+            const ppaMsg7 = await ppaThread.messages.fetch(ppaMsg7Id[0].id);
+            const ppaMsg8 = await ppaThread.messages.fetch(ppaMsg8Id[0].id);
+            const ppaMsg9 = await ppaThread.messages.fetch(ppaMsg9Id[0].id);
+            const ppaMsg10 = await ppaThread.messages.fetch(ppaMsg10Id[0].id);
             
             const newPPAMsg1 = emb.generate(null, null, `**LSPD/LSCS** - ${fdoPatientsCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false);
             const newPPAMsg2 = fdoPatients;

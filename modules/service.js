@@ -47,7 +47,7 @@ module.exports = {
     start: (client) => {
         //Boucle infinie pour auto-recréation en cas de supression
         setInterval(async () => {
-            if(!gen) {
+            if(!isGen()) {
                 IRIS_SERVICE_CHANNEL_ID = await awaitSQLGetChannel('IRIS_SERVICE_CHANNEL_ID');
                 IRIS_RADIO_CHANNEL_ID = await awaitSQLGetChannel('IRIS_RADIO_CHANNEL_ID');
                 //Récupération de l'image des lits
@@ -82,27 +82,34 @@ module.exports = {
                 const agendaWaiting = await sqlAgenda.getAllWaiting();
                 //Refresh de tous les messages du channel et check si les messages sont bien présents (suivi)
                 const followChanId = await sqlFollow.getFollowChannelId();
+                const ppaThreadId = await sqlFollow.getFollowThreadPPAId();
                 let followChan;
                 let followMessages;
-                let followMessagesCount;
+                let followMessagesCount = 10;
+                let ppaThread;
+                let ppaMessages;
+                let ppaMessagesCount = 11;
                 if(followChanId[0] != null) {
                     followChan = guild.channels.cache.get(followChanId[0].id);
                     followMessages = await followChan.messages.fetch();
                     followMessagesCount = await getIrisChannelMessages(followMessages);
-                } else {
-                    followMessagesCount = 21;
+                }
+                if(followChanId[0] != null && ppaThreadId[0] != null) {
+                    ppaThread = await followChan.threads.cache.get(ppaThreadId[0].id);
+                    ppaMessages = await ppaThread.messages.fetch();
+                    ppaMessagesCount = await getIrisChannelMessages(ppaMessages);
                 }
                 //Si pas présent recréation du message
                 if(!found) {
-                    gen = true;
+                    setGen(true);
                     //Base de l'embed
                     const serviceEmb = emb.generate(null, null, `**Pour indiquer une prise/fin de service - Appuyez sur 🔴 \n\nPour prendre/relâcher le dispatch - Appuyez sur 🔵 \n\nPour indiquer un mal de tête - Appuyez sur ⚫**`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
                     //Envois
                     await serviceChan.send({ embeds: [serviceEmb], components: [btns] });
-                    gen = false;
+                    setGen(false);
                 }
                 if(radioFound != 2) {
-                    gen = true;
+                    setGen(true);
                     ws.askRadioInfo('lsms-lspd-lscs');
                     ws.askRadioInfo('lsms-bcms');
                     //Base de l'embed
@@ -214,7 +221,7 @@ module.exports = {
                     }
                 }
                 if(agendaMessagesCount != agendaWaiting.length) {
-                    gen = true;
+                    setGen(true);
                     agendaMessages.forEach(async msg => {
                         if(msg.author.id == process.env.IRIS_DISCORD_ID) {
                             await msg.delete();
@@ -320,12 +327,11 @@ module.exports = {
                         const newAgendaMsg = await agendaChan.send({ embeds: [agendaEmbed], components: [buttons] });
                         await sqlAgenda.updateMessageId(agendaWaiting[i].agendaID, newAgendaMsg.id);
                     }
-                    gen = false;
+                    setGen(false);
                 }
-                if(followMessagesCount != 21) {
-                    gen = true;
-                    await follow.regen(client);
-                    gen = false;
+                if(followMessagesCount + ppaMessagesCount != 21) {
+                    setGen(true);
+                    setGen(await follow.regen(client));
                 }    
             }
         }, 1000);
@@ -541,7 +547,7 @@ function getCentraleMessages(messages, client) {
                 existMsg = msg;
             }
         });
-        gen = false;
+        setGen(false);
         if(found == 1) {
             resolve(existMsg);
         } else {
@@ -569,4 +575,12 @@ async function awaitSQLGetChannel(request) {
     } else {
         return reponse[0].id;
     }
+}
+
+function setGen(state) {
+    gen = state;
+}
+
+function isGen() {
+    return gen;
 }

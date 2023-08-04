@@ -1,5 +1,5 @@
 //Récupération des fonctions pour créer une commande
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require('discord.js');
 //Récup du logger
 const logger = require('../../modules/logger');
 //Récup du créateur d'embed
@@ -20,9 +20,14 @@ module.exports = {
                     value: `voir`
                 },
                 {
-                    name: `Ajouter ou mettre à jour l'inspection d'une entrprise`,
+                    name: `Ajouter ou mettre à jour une inspection`,
                     value: `update`
+                },
+                {
+                    name: `Supprimer une inspection`,
+                    value: `delete`
                 }
+
             ).setRequired(true)
         ),
     async execute(interaction) {
@@ -41,8 +46,13 @@ module.exports = {
                 }
                 inspections.forEach(async inspection => {
                     let date = inspection.date
-                    date = Math.floor(new Date(date).getTime() / 1000)
-                    date = `<t:${date}:R>`
+                    if(!isToday(date)) {
+                        let time = new Date(`${new Date(date)} GMT+2:00`);
+                        let started_at = Math.floor(time / 1000);
+                        date = `<t:${started_at}:R>`
+                    } else {
+                        date = "`Aujourd'hui`"
+                    }
                     fields.push({
                         name: `${inspection.company}`,
                         value: `${date} par : ${inspection.doctors}`
@@ -52,9 +62,44 @@ module.exports = {
                 interaction.reply({embeds: [embed], ephemeral: true});
                 break;
             case `update`:
+                const updateInspeModal = new ModalBuilder().setCustomId('updateInspeModal').setTitle('Modification ou ajout d\'une inspection.');
+                const company = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('company').setLabel('Nom de l\'entrprise').setStyle(TextInputStyle.Short).setPlaceholder('Ex: LSMS').setRequired(true));
+                const doctors = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('doctors').setLabel('Nom des docteurs participants à l\'inspection').setStyle(TextInputStyle.Short).setPlaceholder('Ex: Dr. Prale | Ex: Dr. Prale, Dr. Wolf').setRequired(true));
+                const date = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('date').setLabel('Date de l\'inspection').setStyle(TextInputStyle.Short).setPlaceholder('Ex: 09/11/2023').setRequired(false));
+                updateInspeModal.addComponents(company, doctors, date);
+                await interaction.showModal(updateInspeModal)
                 break;
+            case `delete`:
+                let companyDeleteSelect = new StringSelectMenuBuilder().setCustomId('companyDeleteSelect').setPlaceholder('Choisissez les entrprises à retirer des inspections').setMinValues(1);
+                let inspectionsDelete = await inspectionSQL.getInspections()
+                let totalCompany = 0
+                inspectionsDelete.forEach(async inspection => {
+                    companyDeleteSelect.addOption(new StringSelectMenuOptionBuilder().setLabel(inspection.company).setValue(`${inspection.id}`))
+                    totalCompany++
+                })
+                if(totalCompany <= 0) {
+                    interaction.reply({content: `Aucune inspection n'a été trouvée`, ephemeral: true})
+                    // Supprime la réponse après 5s
+                    await wait(5000);
+                    await interaction.deleteReply();
+                } else {
+                    const allOptions = new ActionRowBuilder().addComponents(companyDeleteSelect);
+                    try {
+                        await interaction.reply({components: [allOptions], ephemeral: true})
+                    } catch (err) {
+                        logger.error(err)
+                        await interaction.reply({ embeds: [errEmb], ephemeral: true });
+                    }
+                }
             default:
                 interaction.reply({content: `Action inconnue`, ephemeral: true})
         }
     }
+}
+
+const isToday = (someDate) => {
+    const today = new Date()
+    return someDate.getDate() == today.getDate() &&
+        someDate.getMonth() == today.getMonth() &&
+        someDate.getFullYear() == today.getFullYear()
 }

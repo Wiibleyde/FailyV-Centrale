@@ -5,12 +5,12 @@ const mysql = require('../../modules/sql');
 
 module.exports = {
     // AJout d'une inspection
-    addInspection: (doctor, company, date) => {
+    addInspection: (doctors, company, date) => {
         return new Promise((resolve, reject) => {
             mysql.sql(). query({
-                sql: `INSERT INTO inspection SET doctor = ?, company = ?, date = ?;`,
+                sql: `INSERT INTO inspection SET doctors = ?, company = ?, date = ?;`,
                 values: [
-                    doctor,
+                    doctors,
                     company,
                     date
                 ]
@@ -24,14 +24,14 @@ module.exports = {
         });
     },
     // Update d'une inspection
-    updateInspection: (doctor, company, date) => {
+    updateInspection: (doctors, company, date) => {
         return new Promise((resolve, reject) => {
             mysql.sql(). query({
-                sql: `UPDATE inspection SET doctor = ?, date = ? WHERE company = ?;`,
+                sql: `UPDATE inspection SET doctors = ?, date = ? WHERE company = ?;`,
                 values: [
-                    doctor,
-                    company,
-                    date
+                    doctors,
+                    date,
+                    company
                 ]
             }, async (reqErr, result, fields) => {
                 if(reqErr) {
@@ -63,12 +63,51 @@ module.exports = {
             });
         });
     },
+    // Voir si l'inspection d'une entrprise existe réélement
+    testInspection: (company) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql(). query({
+                sql: `SELECT * FROM inspection WHERE company = ?;`,
+                values: [
+                    company
+                ]
+            }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                logger.debug(result)
+                if (result.length > 0) {
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
+            });
+        })
+    },
     // Voir toutes les inspections
     getInspections: () => {
         return new Promise((resolve, reject) => {
             mysql.sql(). query({
                 sql: `SELECT * FROM inspection;`,
                 values: []
+            }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
+    // Supprimer une inspection
+    deleteInspection: (company) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql(). query({
+                sql: `DELETE FROM inspection WHERE company = ?;`,
+                values: [
+                    company
+                ]
             }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     logger.error(reqErr);

@@ -49,6 +49,7 @@ module.exports = {
             if(cID == 'vehEditCtModal') { const vehEditCtModal = require('./../modals/vehicule/vehEditCtModal'); vehEditCtModal.execute(interaction, errEmb); }
             if(cID == 'renameModal') { const renameModal = require('./../modals/rename/renameModal'); renameModal.execute(interaction, errEmb); }
             if(cID == 'agEventDefineModal') { const agEventDefineModal = require('./../modals/agenda/agEventDefineModal'); agEventDefineModal.execute(interaction, errEmb); }
+            if(cID == 'updateInspeModal') { const updateInspeModal = require('./../modals/inspection/updateInspeModal'); updateInspeModal.execute(interaction, errEmb); }
         }
         //Lorsqu'il s'agit d'un bouton
         if(interaction.isButton()) {
@@ -95,6 +96,7 @@ module.exports = {
             if(cID == 'followRemoveOrgansSelect') { const followRemoveOrgansSelect = require('../selectMenus/suivi/followRemoveOrgansSelect'); followRemoveOrgansSelect.execute(interaction, errEmb); }
             if(cID == 'followRemoveOrgansPatientSelect') { const followRemoveOrgansPatientSelect = require('../selectMenus/suivi/followRemoveOrgansPatientSelect'); followRemoveOrgansPatientSelect.execute(interaction, errEmb); }
             if(cID == 'followRemovePPAPatientSelect') { const followRemovePPAPatientSelect = require('../selectMenus/suivi/followRemovePPAPatientSelect'); followRemovePPAPatientSelect.execute(interaction, errEmb); }
+            if(cID == 'companyDeleteSelect') { const companyDeleteSelect = require('../selectMenus/inspection/companyDeleteSelect'); companyDeleteSelect.execute(interaction, errEmb); }
         }
 
     },

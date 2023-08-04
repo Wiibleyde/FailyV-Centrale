@@ -16,13 +16,20 @@ module.exports = {
         await interaction.deferReply({ ephemeral: true });
         for (i=0;i<interaction.values.length;i++) {
             const company = interaction.values[i]
-            await inspectionSQL.deleteCompany(company);
+            await inspectionSQL.deleteInspection(company);
             if(i < interaction.values.length) {
                 companies = companies + company + ", "
             } else {
                 companies = companies + company
             }
         }
-        interaction.followUp({ embeds: [emb.generate(null, null, `Les entreprises ${companies} ont bien été supprimées de la liste des entreprises à inspecter !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des inspections`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true)], ephemeral: true });
+        if(interaction.values.length > 1) {
+            interaction.followUp({ embeds: [emb.generate(null, null, `Les entreprises ${companies} ont bien été supprimées de la liste des inspections !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des inspections`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true)], ephemeral: true });
+        } else {
+            interaction.followUp({ embeds: [emb.generate(null, null, `L'entreprise ${companies} a bien été supprimée de la liste des inspections !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des inspections`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true)], ephemeral: true });
+        }
+        // Supprime la réponse après 5s
+        await wait(5000);
+        await interaction.deleteReply();
     }
 }

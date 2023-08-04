@@ -70,29 +70,32 @@ module.exports = {
                 await interaction.showModal(updateInspeModal)
                 break;
             case `delete`:
-                let companyDeleteSelect = new StringSelectMenuBuilder().setCustomId('companyDeleteSelect').setPlaceholder('Choisissez les entrprises à retirer des inspections').setMinValues(1);
                 let inspectionsDelete = await inspectionSQL.getInspections()
+                let options = new StringSelectMenuBuilder().setCustomId('companyDeleteSelect').setPlaceholder('Choisissez les entrprises à retirer des inspections').setMinValues(1);
                 let totalCompany = 0
-                inspectionsDelete.forEach(async inspection => {
-                    companyDeleteSelect.addOption(new StringSelectMenuOptionBuilder().setLabel(inspection.company).setValue(`${inspection.id}`))
+                inspectionsDelete.map(d => {
+                    options.addOptions(new StringSelectMenuOptionBuilder().setLabel(`${d.company}`).setValue(d.company))
                     totalCompany++
                 })
-                if(totalCompany <= 0) {
-                    interaction.reply({content: `Aucune inspection n'a été trouvée`, ephemeral: true})
+                options.setMaxValues(totalCompany)
+                if(totalCompany != 0) {
+                    const allOptions = new ActionRowBuilder().addComponents(options);
+                    try {
+                        //Confirmation à Discord du succès de l'opération
+                        await interaction.reply({ components: [allOptions], ephemeral: true });
+                    } catch (err) {
+                        logger.error(err)
+                        //Confirmation à Discord du succès de l'opération
+                        await interaction.reply({ embeds: [errEmb], ephemeral: true });
+                    }
+                } else {
+                    await interaction.reply({content: `Aucune entreprise n'a été trouvée`, ephemeral: true})
                     // Supprime la réponse après 5s
                     await wait(5000);
                     await interaction.deleteReply();
-                } else {
-                    const allOptions = new ActionRowBuilder().addComponents(companyDeleteSelect);
-                    try {
-                        await interaction.reply({components: [allOptions], ephemeral: true})
-                    } catch (err) {
-                        logger.error(err)
-                        await interaction.reply({ embeds: [errEmb], ephemeral: true });
-                    }
                 }
             default:
-                interaction.reply({content: `Action inconnue`, ephemeral: true})
+                break;
         }
     }
 }

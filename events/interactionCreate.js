@@ -95,6 +95,8 @@ module.exports = {
             if(cID == 'followRemoveOrgansSelect') { const followRemoveOrgansSelect = require('../selectMenus/suivi/followRemoveOrgansSelect'); followRemoveOrgansSelect.execute(interaction, errEmb); }
             if(cID == 'followRemoveOrgansPatientSelect') { const followRemoveOrgansPatientSelect = require('../selectMenus/suivi/followRemoveOrgansPatientSelect'); followRemoveOrgansPatientSelect.execute(interaction, errEmb); }
             if(cID == 'followRemovePPAPatientSelect') { const followRemovePPAPatientSelect = require('../selectMenus/suivi/followRemovePPAPatientSelect'); followRemovePPAPatientSelect.execute(interaction, errEmb); }
+            //Logs de quel option du menu de selection à été utilisée
+            logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) l'option "${interaction.values}" du menu de séléction "${interaction.customId}"`);
         }
 
     },

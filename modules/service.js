@@ -94,7 +94,7 @@ module.exports = {
                     followMessages = await followChan.messages.fetch();
                     followMessagesCount = await getIrisChannelMessages(followMessages);
                 }
-                if(followChanId[0] != null && ppaThreadId[0] != null) {
+                if(ppaThreadId[0] != null && ppaThreadId[0] != null) {
                     ppaThread = await followChan.threads.cache.get(ppaThreadId[0].id);
                     ppaMessages = await ppaThread.messages.fetch();
                     ppaMessagesCount = await getIrisChannelMessages(ppaMessages);

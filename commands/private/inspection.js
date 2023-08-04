@@ -30,7 +30,7 @@ module.exports = {
             case `voir`:
                 let inspections = await inspectionSQL.getInspections()
                 let fields = []
-                const embed = emb.generate(`Gestion des inspection`, null, `Liste des inspections`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
+                let embed = emb.generate(`Gestion des inspection`, null, `Liste des inspections`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
                 if(inspections.length <= 0) {
                     embed.addFields(
                         {
@@ -40,8 +40,12 @@ module.exports = {
                     )
                 }
                 inspections.forEach(async inspection => {
+                    let date = inspection.date
+                    date = Math.floor(new Date(date).getTime() / 1000)
+                    date = `<t:${date}:R>`
                     fields.push({
-                        value: `${inspection.company} : ${inspection.date}\nPar ${inspection.doctors}`
+                        name: `${inspection.company}`,
+                        value: `${date} par : ${inspection.doctors}`
                     })
                 })
                 embed.addFields(fields)

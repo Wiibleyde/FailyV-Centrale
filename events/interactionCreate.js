@@ -52,6 +52,7 @@ module.exports = {
             if(cID == 'updateInspeModal') { const updateInspeModal = require('./../modals/inspection/updateInspeModal'); updateInspeModal.execute(interaction, errEmb); }
             if(cID == 'addFeatureModal') { const addFeatureModal = require('./../modals/patchnote/addFeatureModal'); addFeatureModal.execute(interaction, errEmb); }
             if(cID == 'updateFeatureModal') { const updateFeatureModal = require('./../modals/patchnote/updateFeatureModal'); updateFeatureModal.execute(interaction, errEmb); }
+            if(cID == 'addPatchnoteModal') { const addPatchnoteModal = require('./../modals/patchnote/addPatchnoteModal'); addPatchnoteModal.execute(interaction, errEmb); }
         }
         //Lorsqu'il s'agit d'un bouton
         if(interaction.isButton()) {
@@ -101,6 +102,7 @@ module.exports = {
             if(cID == 'companyDeleteSelect') { const companyDeleteSelect = require('../selectMenus/inspection/companyDeleteSelect'); companyDeleteSelect.execute(interaction, errEmb); }
             if(cID == 'featureDeleteSelect') { const featureDeleteSelect = require('../selectMenus/patchnote/featureDeleteSelect'); featureDeleteSelect.execute(interaction, errEmb); }
             if(cID == 'featureUpdateSelect') { const featureUpdateSelect = require('../selectMenus/patchnote/featureUpdateSelect'); featureUpdateSelect.execute(interaction, errEmb); }
+            if(cID == 'addFeaturePatchnoteSelect') { const addFeaturePatchnoteSelect = require('../selectMenus/patchnote/addFeaturePatchnoteSelect'); addFeaturePatchnoteSelect.execute(interaction, errEmb); }
             //Logs de quel option du menu de selection à été utilisée
             logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) l'option "${interaction.values}" du menu de séléction "${interaction.customId}"`);
         }

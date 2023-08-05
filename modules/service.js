@@ -43,73 +43,81 @@ let gen = false;
 let IRIS_SERVICE_CHANNEL_ID;
 let IRIS_RADIO_CHANNEL_ID;
 
+function setGen(state) {
+    gen = state;
+}
+
+function isGen() {
+    return gen;
+}
+
 module.exports = {
     start: (client) => {
         //Boucle infinie pour auto-recréation en cas de supression
         setInterval(async () => {
-            IRIS_SERVICE_CHANNEL_ID = await awaitSQLGetChannel('IRIS_SERVICE_CHANNEL_ID');
-            IRIS_RADIO_CHANNEL_ID = await awaitSQLGetChannel('IRIS_RADIO_CHANNEL_ID');
-            //Récupération de l'image des lits
-            let bedsImg;
-            client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_BEDS_CHANNEL_ID).messages.fetch({ limit: 1 }).then(messages => {
-                if(messages.first() != null) {
-                    messages.first().attachments.map(bedImg => bedsImg = bedImg.attachment);
+            if(isGen() == false) {
+                IRIS_SERVICE_CHANNEL_ID = await awaitSQLGetChannel('IRIS_SERVICE_CHANNEL_ID');
+                IRIS_RADIO_CHANNEL_ID = await awaitSQLGetChannel('IRIS_RADIO_CHANNEL_ID');
+                //Récupération de l'image des lits
+                let bedsImg;
+                client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_BEDS_CHANNEL_ID).messages.fetch({ limit: 1 }).then(messages => {
+                    if(messages.first() != null) {
+                        messages.first().attachments.map(bedImg => bedsImg = bedImg.attachment);
+                    }
+                });
+                //Récupération du serveur Discord LSMS
+                const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
+                //Refresh de tous les messages du channel et check si les messages sont bien présents (service)
+                const serviceChan = guild.channels.cache.get(IRIS_SERVICE_CHANNEL_ID);
+                const messages = await serviceChan.messages.fetch();
+                const found = await getServiceMessages(messages, client);
+                //Refresh de tous les messages du channel et check si les messages sont bien présents (radios)
+                const radioChan = guild.channels.cache.get(IRIS_RADIO_CHANNEL_ID);
+                let radioMessages = await radioChan.messages.fetch();
+                let radioFound = await getCentraleMessages(radioMessages, client);
+                //Refresh de tous les messages du channel et check si les messages sont bien présents (agenda)
+                const agendaChanId = await sqlAgenda.getAgendaChannelId();
+                let agendaChan;
+                let agendaMessages;
+                let agendaMessagesCount;
+                if(agendaChanId[0] != null) {
+                    agendaChan = guild.channels.cache.get(agendaChanId[0].id);
+                    agendaMessages = await agendaChan.messages.fetch();
+                    agendaMessagesCount = await getIrisChannelMessages(agendaMessages);
+                } else {
+                    agendaMessagesCount = 0;
                 }
-            });
-            //Récupération du serveur Discord LSMS
-            const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
-            //Refresh de tous les messages du channel et check si les messages sont bien présents (service)
-            const serviceChan = guild.channels.cache.get(IRIS_SERVICE_CHANNEL_ID);
-            const messages = await serviceChan.messages.fetch();
-            const found = await getServiceMessages(messages, client);
-            //Refresh de tous les messages du channel et check si les messages sont bien présents (radios)
-            const radioChan = guild.channels.cache.get(IRIS_RADIO_CHANNEL_ID);
-            let radioMessages = await radioChan.messages.fetch();
-            let radioFound = await getCentraleMessages(radioMessages, client);
-            //Refresh de tous les messages du channel et check si les messages sont bien présents (agenda)
-            const agendaChanId = await sqlAgenda.getAgendaChannelId();
-            let agendaChan;
-            let agendaMessages;
-            let agendaMessagesCount;
-            if(agendaChanId[0] != null) {
-                agendaChan = guild.channels.cache.get(agendaChanId[0].id);
-                agendaMessages = await agendaChan.messages.fetch();
-                agendaMessagesCount = await getIrisChannelMessages(agendaMessages);
-            } else {
-                agendaMessagesCount = 0;
-            }
-            const agendaWaiting = await sqlAgenda.getAllWaiting();
-            //Refresh de tous les messages du channel et check si les messages sont bien présents (suivi)
-            const followChanId = await sqlFollow.getFollowChannelId();
-            const ppaThreadId = await sqlFollow.getFollowThreadPPAId();
-            const secoursThreadId = await sqlFollow.getFollowThreadSecoursId();
-            let followChan;
-            let followMessages;
-            let followMessagesCount = 11;
-            let ppaThread;
-            let ppaMessages;
-            let ppaMessagesCount = 11;
-            let secoursThread;
-            let secoursMessages;
-            let secoursMessagesCount = 13;
-            if(followChanId[0] != null) {
-                followChan = guild.channels.cache.get(followChanId[0].id);
-                followMessages = await followChan.messages.fetch();
-                followMessagesCount = await getIrisChannelMessages(followMessages);
-            }
-            if(followChanId[0] != null && ppaThreadId[0] != null) {
-                ppaThread = await followChan.threads.cache.get(ppaThreadId[0].id);
-                ppaMessages = await ppaThread.messages.fetch();
-                ppaMessagesCount = await getIrisChannelMessages(ppaMessages);
-            }
-            if(followChanId[0] != null && secoursThreadId[0] != null) {
-                secoursThread = await followChan.threads.cache.get(secoursThreadId[0].id);
-                secoursMessages = await secoursThread.messages.fetch();
-                secoursMessagesCount = await getIrisChannelMessages(secoursMessages);
-            }
-            //Si pas présent recréation du message
-            if(!found) {
-                if(isGen() == false) {
+                const agendaWaiting = await sqlAgenda.getAllWaiting();
+                //Refresh de tous les messages du channel et check si les messages sont bien présents (suivi)
+                const followChanId = await sqlFollow.getFollowChannelId();
+                const ppaThreadId = await sqlFollow.getFollowThreadPPAId();
+                const secoursThreadId = await sqlFollow.getFollowThreadSecoursId();
+                let followChan;
+                let followMessages;
+                let followMessagesCount = 11;
+                let ppaThread;
+                let ppaMessages;
+                let ppaMessagesCount = 11;
+                let secoursThread;
+                let secoursMessages;
+                let secoursMessagesCount = 13;
+                if(followChanId[0] != null) {
+                    followChan = guild.channels.cache.get(followChanId[0].id);
+                    followMessages = await followChan.messages.fetch();
+                    followMessagesCount = await getIrisChannelMessages(followMessages);
+                }
+                if(followChanId[0] != null && ppaThreadId[0] != null) {
+                    ppaThread = await followChan.threads.cache.get(ppaThreadId[0].id);
+                    ppaMessages = await ppaThread.messages.fetch();
+                    ppaMessagesCount = await getIrisChannelMessages(ppaMessages);
+                }
+                if(followChanId[0] != null && secoursThreadId[0] != null) {
+                    secoursThread = await followChan.threads.cache.get(secoursThreadId[0].id);
+                    secoursMessages = await secoursThread.messages.fetch();
+                    secoursMessagesCount = await getIrisChannelMessages(secoursMessages);
+                }
+                //Si pas présent recréation du message
+                if(!found) {
                     setGen(true);
                     //Base de l'embed
                     const serviceEmb = emb.generate(null, null, `**Pour indiquer une prise/fin de service - Appuyez sur 🔴 \n\nPour prendre/relâcher le dispatch - Appuyez sur 🔵 \n\nPour indiquer un mal de tête - Appuyez sur ⚫**`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
@@ -117,9 +125,7 @@ module.exports = {
                     await serviceChan.send({ embeds: [serviceEmb], components: [btns] });
                     setGen(false);
                 }
-            }
-            if(radioFound != 2) {
-                if(isGen() == false) {
+                if(radioFound != 2) {
                     setGen(true);
                     ws.askRadioInfo('lsms-lspd-lscs');
                     ws.askRadioInfo('lsms-bcms');
@@ -232,9 +238,7 @@ module.exports = {
                     }
                     setGen(false);
                 }
-            }
-            if(agendaMessagesCount != agendaWaiting.length) {
-                if(isGen() == false) {
+                if(agendaMessagesCount != agendaWaiting.length) {
                     setGen(true);
                     agendaMessages.forEach(async msg => {
                         if(msg.author.id == process.env.IRIS_DISCORD_ID) {
@@ -343,9 +347,7 @@ module.exports = {
                     }
                     setGen(false);
                 }
-            }
-            if(followMessagesCount + ppaMessagesCount + secoursMessagesCount != 35) {
-                if(isGen() == false) {
+                if(followMessagesCount + ppaMessagesCount + secoursMessagesCount != 35) {
                     logger.debug(isGen());
                     setGen(true);
                     setGen(await follow.regen(client));
@@ -591,12 +593,4 @@ async function awaitSQLGetChannel(request) {
     } else {
         return reponse[0].id;
     }
-}
-
-function setGen(state) {
-    gen = state;
-}
-
-function isGen() {
-    return gen;
 }

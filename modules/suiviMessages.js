@@ -4,6 +4,7 @@ const { ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
 const sqlFollow = require('./../sql/suivi/suivi');
 const sqlFollowOrgan = require('./../sql/suivi/organes');
 const sqlFollowPPA = require('./../sql/suivi/ppa');
+const sqlFollowSecours = require('./../sql/suivi/secours');
 const sqlMessages = require('./../sql/config/config');
 //Récup du logger
 const logger = require('./logger');
@@ -42,6 +43,18 @@ let chassePatients;
 let chassePatientsCount;
 let autrePatients;
 let autrePatientsCount;
+
+//Variables Secours
+let formaConfirmed;
+let formaConfirmedCount;
+let formaToCheck;
+let formaToCheckCount;
+let formaToForm;
+let formaToFormCount;
+let spWaiting;
+let spWaitingCount;
+let otherWaiting;
+let otherWaitingCount;
 
 let fullTxt = '';
 
@@ -116,7 +129,7 @@ module.exports = {
                         const patientName = format.name(patients[j].name);
                         let end = '';
                         if(patients[j].type == '1') { end = ' [2;37m([0m[2;35mPPA2[0m[2;37m)[0m'; }
-                        txt = txt + `[2;37m-[0m [2;34m${patientName}[0m [2;37m-[0m [2;32m${patients[j].phone}[0m${end}\n`;
+                        txt = txt + `[2;37m-[0m [2;34m${patientName}[0m [2;37m|[0m [2;32m${patients[j].phone}[0m${end}\n`;
                     }
                 } else { txt = '[2;34mPersonne[0m' }
                 txt = startTxt + txt + endTxt;
@@ -145,6 +158,122 @@ module.exports = {
                         autrePatients = txt;
                         autrePatientsCount = count;
                         break;
+                }
+            }
+
+            for(let i=0;i<2;i++) {
+                //Patients en liste Premiers Secours
+                const members = await sqlFollowSecours.getByCat(i);
+                const startTxt = '```ansi\n';
+                const endTxt = '```';
+                if(members[0] != null) {
+                    logger.debug('Generating members')
+                    if(i==0) {
+                        for(let j=0;j<3;j++) {
+                            let txt = '';
+                            let count = 0;
+                            const member = await sqlFollowSecours.getByFormaRank(j);
+                            if(member[0] != null) {
+                                count = member.length;
+                                for(let k=0;k<member.length;k++) {
+                                    const memberName = format.name(member[k].name);
+                                    txt = txt + `[2;37m-[0m [2;34m${memberName}[0m [2;37m|[0m [2;35m${member[k].company}[0m [2;37m|[0m [2;32m${member[k].phone}[0m\n`;
+                                }
+                            } else { txt = '[2;34mPersonne[0m'; }
+                            txt = startTxt + txt + endTxt;
+                            switch(j) {
+                                case 0:
+                                    formaToForm = txt;
+                                    formaToFormCount = count;
+                                    break;
+                                case 1:
+                                    formaToCheck = txt;
+                                    formaToCheckCount = count;
+                                    break;
+                                case 2:
+                                    formaConfirmed = txt;
+                                    formaConfirmedCount = count;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    } else {
+                        for(let j=0;j<2;j++) {
+                            let txt = '';
+                            let count = 0;
+                            let member;
+                            if(j==0) {
+                                member = await sqlFollowSecours.getPublicService();
+                            } else {
+                                member = await sqlFollowSecours.getOthers();
+                            }
+                            logger.debug(member);
+                            if(member[0] != null) {
+                                count = member.length;
+                                for(let k=0;k<member.length;k++) {
+                                    const memberName = format.name(member[k].name);
+                                    txt = txt + `[2;37m-[0m [2;34m${memberName}[0m [2;37m|[0m [2;35m${member[k].company}[0m [2;37m|[0m [2;32m${member[k].phone}[0m\n`;
+                                }
+                            } else { txt = '[2;34mPersonne[0m'; }
+                            txt = startTxt + txt + endTxt;
+                            switch(j) {
+                                case 0:
+                                    spWaiting = txt;
+                                    spWaitingCount = count;
+                                    break;
+                                case 1:
+                                    otherWaiting = txt;
+                                    otherWaitingCount = count;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                } else {
+                    logger.debug('Generating nothing')
+                    if(i==0) {
+                        let txt = '[2;34mPersonne[0m';
+                        let count = 0;
+                        txt = startTxt + txt + endTxt;
+                        for(let j=0;j<3;j++) {
+                            switch(j) {
+                                case 0:
+                                    formaToForm = txt;
+                                    formaToFormCount = count;
+                                    break;
+                                case 1:
+                                    formaToCheck = txt;
+                                    formaToCheckCount = count;
+                                    break;
+                                case 2:
+                                    formaConfirmed = txt;
+                                    formaConfirmedCount = count;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    } else {
+                        let txt = '[2;34mPersonne[0m';
+                        let count = 0;
+                        txt = startTxt + txt + endTxt;
+                        for(let j=0;j<2;j++) {
+                            switch(j) {
+                                case 0:
+                                    spWaiting = txt;
+                                    spWaitingCount = count;
+                                    break;
+                                case 1:
+                                    otherWaiting = txt;
+                                    otherWaitingCount = count;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -521,36 +650,36 @@ function generateMessages(messages, channel, ppaThreadId, secoursThreadId, patie
         });
         await sqlFollow.addFollowThreadSecoursId(newSecoursThread.id);
         const firstSecoursMsg = await newSecoursThread.send({ embeds: [emb.generate(`Formateurs`, null, null, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
-        const secSecoursMsg = await newSecoursThread.send({ embeds: [emb.generate(null, null, `**Formateurs confirmés** - 0`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        const secSecoursMsg = await newSecoursThread.send({ embeds: [emb.generate(null, null, `**Formateurs confirmés** - ${formaConfirmedCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
         await sqlMessages.deleteMessage('secours1');
         await sqlMessages.setMessage('secours1', secSecoursMsg.id);
-        const thirdSecoursMsg = await newSecoursThread.send({ content: '```ansi\n[2;34mPersonne[0m\n```' });
+        const thirdSecoursMsg = await newSecoursThread.send({ content: formaConfirmed });
         await sqlMessages.deleteMessage('secours2');
         await sqlMessages.setMessage('secours2', thirdSecoursMsg.id);
-        const fourthSecoursMsg = await newSecoursThread.send({ embeds: [emb.generate(null, null, `**Formations à valider** - 0`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        const fourthSecoursMsg = await newSecoursThread.send({ embeds: [emb.generate(null, null, `**Formations à valider** - ${formaToCheckCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
         await sqlMessages.deleteMessage('secours3');
         await sqlMessages.setMessage('secours3', fourthSecoursMsg.id);
-        const fifthSecoursMsg = await newSecoursThread.send({ content: '```ansi\n[2;34mPersonne[0m\n```' });
+        const fifthSecoursMsg = await newSecoursThread.send({ content: formaToCheck });
         await sqlMessages.deleteMessage('secours4');
         await sqlMessages.setMessage('secours4', fifthSecoursMsg.id);
-        const sixthSecoursMsg = await newSecoursThread.send({ embeds: [emb.generate(null, null, `**Intéressés par formation** - 0`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        const sixthSecoursMsg = await newSecoursThread.send({ embeds: [emb.generate(null, null, `**Intéressés par formation** - ${formaToFormCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
         await sqlMessages.deleteMessage('secours5');
         await sqlMessages.setMessage('secours5', sixthSecoursMsg.id);
-        const seventhSecoursMsg = await newSecoursThread.send({ content: '```ansi\n[2;34mPersonne[0m\n```', components: [btnsSecoursForma] });
+        const seventhSecoursMsg = await newSecoursThread.send({ content: formaToForm, components: [btnsSecoursForma] });
         await sqlMessages.deleteMessage('secours6');
         await sqlMessages.setMessage('secours6', seventhSecoursMsg.id);
         await newSecoursThread.send({ content: '\u200b\n\u200b\n\u200b\n\u200b\n\u200b' });
         const eighthSecoursMsg = await newSecoursThread.send({ embeds: [emb.generate(`Suivi des personnes en attente de diplôme`, null, null, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
-        const ninthSecoursMsg = await newSecoursThread.send({ embeds: [emb.generate(null, null, `**Services Publics** - 0`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        const ninthSecoursMsg = await newSecoursThread.send({ embeds: [emb.generate(null, null, `**Services Publics** - ${spWaitingCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
         await sqlMessages.deleteMessage('secours7');
         await sqlMessages.setMessage('secours7', ninthSecoursMsg.id);
-        const tenthSecoursMsg = await newSecoursThread.send({ content: '```ansi\n[2;34mPersonne[0m\n```' });
+        const tenthSecoursMsg = await newSecoursThread.send({ content: spWaiting });
         await sqlMessages.deleteMessage('secours8');
         await sqlMessages.setMessage('secours8', tenthSecoursMsg.id);
-        const eleventhSecoursMsg = await newSecoursThread.send({ embeds: [emb.generate(null, null, `**Civils** - 0`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        const eleventhSecoursMsg = await newSecoursThread.send({ embeds: [emb.generate(null, null, `**Civils** - ${otherWaitingCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
         await sqlMessages.deleteMessage('secours9');
         await sqlMessages.setMessage('secours9', eleventhSecoursMsg.id);
-        const twelfthSecoursMsg = await newSecoursThread.send({ content: '```ansi\n[2;34mPersonne[0m\n```', components: [btnsSecoursPatient] });
+        const twelfthSecoursMsg = await newSecoursThread.send({ content: otherWaiting, components: [btnsSecoursPatient] });
         await sqlMessages.deleteMessage('secours10');
         await sqlMessages.setMessage('secours10', twelfthSecoursMsg.id);
         await firstPPAMsg.pin();
@@ -635,36 +764,36 @@ function generateSecoursMessages(channel, messages) {
         );
 
         const firstSecoursMsg = await channel.send({ embeds: [emb.generate(`Formateurs`, null, null, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
-        const secSecoursMsg = await channel.send({ embeds: [emb.generate(null, null, `**Formateurs confirmés** - 0`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        const secSecoursMsg = await channel.send({ embeds: [emb.generate(null, null, `**Formateurs confirmés** - ${formaConfirmedCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
         await sqlMessages.deleteMessage('secours1');
         await sqlMessages.setMessage('secours1', secSecoursMsg.id);
-        const thirdSecoursMsg = await channel.send({ content: '```ansi\n[2;34mPersonne[0m\n```' });
+        const thirdSecoursMsg = await channel.send({ content: formaConfirmed });
         await sqlMessages.deleteMessage('secours2');
         await sqlMessages.setMessage('secours2', thirdSecoursMsg.id);
-        const fourthSecoursMsg = await channel.send({ embeds: [emb.generate(null, null, `**Formations à valider** - 0`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        const fourthSecoursMsg = await channel.send({ embeds: [emb.generate(null, null, `**Formations à valider** - ${formaToCheckCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
         await sqlMessages.deleteMessage('secours3');
         await sqlMessages.setMessage('secours3', fourthSecoursMsg.id);
-        const fifthSecoursMsg = await channel.send({ content: '```ansi\n[2;34mPersonne[0m\n```' });
+        const fifthSecoursMsg = await channel.send({ content: formaToCheck });
         await sqlMessages.deleteMessage('secours4');
         await sqlMessages.setMessage('secours4', fifthSecoursMsg.id);
-        const sixthSecoursMsg = await channel.send({ embeds: [emb.generate(null, null, `**Intéressés par formation** - 0`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        const sixthSecoursMsg = await channel.send({ embeds: [emb.generate(null, null, `**Intéressés par formation** - ${formaToFormCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
         await sqlMessages.deleteMessage('secours5');
         await sqlMessages.setMessage('secours5', sixthSecoursMsg.id);
-        const seventhSecoursMsg = await channel.send({ content: '```ansi\n[2;34mPersonne[0m\n```', components: [btnsSecoursForma] });
+        const seventhSecoursMsg = await channel.send({ content: formaToForm, components: [btnsSecoursForma] });
         await sqlMessages.deleteMessage('secours6');
         await sqlMessages.setMessage('secours6', seventhSecoursMsg.id);
         await channel.send({ content: '\u200b\n\u200b\n\u200b\n\u200b\n\u200b' });
         const eighthSecoursMsg = await channel.send({ embeds: [emb.generate(`Suivi des personnes en attente de diplôme`, null, null, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
-        const ninthSecoursMsg = await channel.send({ embeds: [emb.generate(null, null, `**Services Publics** - 0`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        const ninthSecoursMsg = await channel.send({ embeds: [emb.generate(null, null, `**Services Publics** - ${spWaitingCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
         await sqlMessages.deleteMessage('secours7');
         await sqlMessages.setMessage('secours7', ninthSecoursMsg.id);
-        const tenthSecoursMsg = await channel.send({ content: '```ansi\n[2;34mPersonne[0m\n```' });
+        const tenthSecoursMsg = await channel.send({ content: spWaiting });
         await sqlMessages.deleteMessage('secours8');
         await sqlMessages.setMessage('secours8', tenthSecoursMsg.id);
-        const eleventhSecoursMsg = await channel.send({ embeds: [emb.generate(null, null, `**Civils** - 0`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
+        const eleventhSecoursMsg = await channel.send({ embeds: [emb.generate(null, null, `**Civils** - ${otherWaitingCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false)] });
         await sqlMessages.deleteMessage('secours9');
         await sqlMessages.setMessage('secours9', eleventhSecoursMsg.id);
-        const twelfthSecoursMsg = await channel.send({ content: '```ansi\n[2;34mPersonne[0m\n```', components: [btnsSecoursPatient] });
+        const twelfthSecoursMsg = await channel.send({ content: otherWaiting, components: [btnsSecoursPatient] });
         await sqlMessages.deleteMessage('secours10');
         await sqlMessages.setMessage('secours10', twelfthSecoursMsg.id);
         await eighthSecoursMsg.pin();
@@ -685,6 +814,16 @@ function editMessages(channel, ppaThreadId, secoursThreadId, patients) {
 
         const btnsPPA = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setLabel('Retirer un/des patient(s)').setCustomId('followRemovePPAPatient').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false)
+        );
+
+        const btnsSecoursForma = new ActionRowBuilder().addComponents(
+            new ButtonBuilder().setLabel('Mettre à jour le status d\'un formateur').setCustomId('followUpdateSecoursFora').setStyle(ButtonStyle.Primary).setEmoji('🔃').setDisabled(false),
+            new ButtonBuilder().setLabel('Retirer un/des formateur(s)').setCustomId('followRemoveSecoursFora').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false)
+        );
+
+        const btnsSecoursPatient = new ActionRowBuilder().addComponents(
+            new ButtonBuilder().setLabel('Mettre à jour le status d\'une personne').setCustomId('followUpdateSecoursPatient').setStyle(ButtonStyle.Primary).setEmoji('🔃').setDisabled(false),
+            new ButtonBuilder().setLabel('Retirer une/des personne(s)').setCustomId('followRemoveSecoursPatient').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false)
         );
 
         const organMsg1Id = await sqlMessages.getMessage('organe1');
@@ -831,16 +970,16 @@ function editMessages(channel, ppaThreadId, secoursThreadId, patients) {
             const secoursMsg9 = await secoursThread.messages.fetch(secoursMsg9Id[0].id);
             const secoursMsg10 = await secoursThread.messages.fetch(secoursMsg10Id[0].id);
             
-            const newSecoursMsg1 = emb.generate(null, null, `**Formateurs confirmés** - 0`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false);
-            const newSecoursMsg2 = '```ansi\n[2;34mPersonne[0m\n```';
-            const newSecoursMsg3 = emb.generate(null, null, `**Formations à valider** - 0`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false);
-            const newSecoursMsg4 = '```ansi\n[2;34mPersonne[0m\n```';
-            const newSecoursMsg5 = emb.generate(null, null, `**Intéressés par formation** - 0`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false);
-            const newSecoursMsg6 = '```ansi\n[2;34mPersonne[0m\n```';
-            const newSecoursMsg7 = emb.generate(null, null, `**Services Publics** - 0`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false);
-            const newSecoursMsg8 = '```ansi\n[2;34mPersonne[0m\n```';
-            const newSecoursMsg9 = emb.generate(null, null, `**Civils** - 0`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false);
-            const newSecoursMsg10 = '```ansi\n[2;34mPersonne[0m\n```';
+            const newSecoursMsg1 = emb.generate(null, null, `**Formateurs confirmés** - ${formaConfirmedCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false);
+            const newSecoursMsg2 = formaConfirmed;
+            const newSecoursMsg3 = emb.generate(null, null, `**Formations à valider** - ${formaToCheckCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false);
+            const newSecoursMsg4 = formaToCheck;
+            const newSecoursMsg5 = emb.generate(null, null, `**Intéressés par formation** - ${formaToFormCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false);
+            const newSecoursMsg6 = formaToForm;
+            const newSecoursMsg7 = emb.generate(null, null, `**Services Publics** - ${spWaitingCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false);
+            const newSecoursMsg8 = spWaiting;
+            const newSecoursMsg9 = emb.generate(null, null, `**Civils** - ${otherWaitingCount}`, process.env.LSMS_COLORCODE, null, null, null, null, null, null, null, false);
+            const newSecoursMsg10 = otherWaiting;
 
             if(secoursMsg1.embeds[0].data.description != newSecoursMsg1.data.description) {
                 await secoursMsg1.edit({ embeds: [newSecoursMsg1] });
@@ -858,7 +997,7 @@ function editMessages(channel, ppaThreadId, secoursThreadId, patients) {
                 await secoursMsg5.edit({ embeds: [newSecoursMsg5] });
             }
             if(secoursMsg6.content != newSecoursMsg6) {
-                await secoursMsg6.edit({ content: newSecoursMsg6 });
+                await secoursMsg6.edit({ content: newSecoursMsg6, components: [btnsSecoursForma] });
             }
             if(secoursMsg7.embeds[0].data.description != newSecoursMsg7.data.description) {
                 await secoursMsg7.edit({ embeds: [newSecoursMsg7] });
@@ -870,7 +1009,7 @@ function editMessages(channel, ppaThreadId, secoursThreadId, patients) {
                 await secoursMsg9.edit({ embeds: [newSecoursMsg9] });
             }
             if(secoursMsg10.content != newSecoursMsg10) {
-                await secoursMsg10.edit({ content: newSecoursMsg10, components: [btnsSecours] });
+                await secoursMsg10.edit({ content: newSecoursMsg10, components: [btnsSecoursPatient] });
             }
         } catch (err) {
             logger.error(err);

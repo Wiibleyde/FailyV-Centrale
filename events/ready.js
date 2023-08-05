@@ -121,6 +121,7 @@ module.exports = {
                 }
             }
             await suivi.regen(client);
+            logger.log('Organs refreshed!');
         });
         updateOrgans.start();
 

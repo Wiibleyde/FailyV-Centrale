@@ -120,7 +120,7 @@ module.exports = {
                     await sqlOrgans.updateOrganState(allOrgans[i].id, 1);
                 }
             }
-            await suivi.regen();
+            await suivi.regen(client);
         });
         updateOrgans.start();
 

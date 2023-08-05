@@ -137,7 +137,7 @@ module.exports = {
     updateOrganState: (id, state) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "UPDATE FROM `follow_organ` SET state=? WHERE id=?",
+                    sql: "UPDATE `follow_organ` SET state=? WHERE id=?",
                     timeout: 40000,
                     values: [state, id]
                 }, async (reqErr, result, fields) => {

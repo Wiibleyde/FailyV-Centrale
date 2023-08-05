@@ -38,6 +38,7 @@ const btns = new ActionRowBuilder().addComponents(
 );
 
 let gen = false;
+let time = 0;
 
 //Récupération des channels
 let IRIS_SERVICE_CHANNEL_ID;
@@ -54,306 +55,11 @@ function isGen() {
 module.exports = {
     start: (client) => {
         //Boucle infinie pour auto-recréation en cas de supression
-        setInterval(async () => {
-            if(isGen() == false) {
-                IRIS_SERVICE_CHANNEL_ID = await awaitSQLGetChannel('IRIS_SERVICE_CHANNEL_ID');
-                IRIS_RADIO_CHANNEL_ID = await awaitSQLGetChannel('IRIS_RADIO_CHANNEL_ID');
-                //Récupération de l'image des lits
-                let bedsImg;
-                client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_BEDS_CHANNEL_ID).messages.fetch({ limit: 1 }).then(messages => {
-                    if(messages.first() != null) {
-                        messages.first().attachments.map(bedImg => bedsImg = bedImg.attachment);
-                    }
-                });
-                //Récupération du serveur Discord LSMS
-                const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
-                //Refresh de tous les messages du channel et check si les messages sont bien présents (service)
-                const serviceChan = guild.channels.cache.get(IRIS_SERVICE_CHANNEL_ID);
-                const messages = await serviceChan.messages.fetch();
-                const found = await getServiceMessages(messages, client);
-                //Refresh de tous les messages du channel et check si les messages sont bien présents (radios)
-                const radioChan = guild.channels.cache.get(IRIS_RADIO_CHANNEL_ID);
-                let radioMessages = await radioChan.messages.fetch();
-                let radioFound = await getCentraleMessages(radioMessages, client);
-                //Refresh de tous les messages du channel et check si les messages sont bien présents (agenda)
-                const agendaChanId = await sqlAgenda.getAgendaChannelId();
-                let agendaChan;
-                let agendaMessages;
-                let agendaMessagesCount;
-                if(agendaChanId[0] != null) {
-                    agendaChan = guild.channels.cache.get(agendaChanId[0].id);
-                    agendaMessages = await agendaChan.messages.fetch();
-                    agendaMessagesCount = await getIrisChannelMessages(agendaMessages);
-                } else {
-                    agendaMessagesCount = 0;
-                }
-                const agendaWaiting = await sqlAgenda.getAllWaiting();
-                //Refresh de tous les messages du channel et check si les messages sont bien présents (suivi)
-                const followChanId = await sqlFollow.getFollowChannelId();
-                const ppaThreadId = await sqlFollow.getFollowThreadPPAId();
-                const secoursThreadId = await sqlFollow.getFollowThreadSecoursId();
-                let followChan;
-                let followMessages;
-                let followMessagesCount = 11;
-                let ppaThread;
-                let ppaMessages;
-                let ppaMessagesCount = 11;
-                let secoursThread;
-                let secoursMessages;
-                let secoursMessagesCount = 13;
-                if(followChanId[0] != null) {
-                    followChan = guild.channels.cache.get(followChanId[0].id);
-                    followMessages = await followChan.messages.fetch();
-                    followMessagesCount = await getIrisChannelMessages(followMessages);
-                }
-                if(followChanId[0] != null && ppaThreadId[0] != null) {
-                    ppaThread = await followChan.threads.cache.get(ppaThreadId[0].id);
-                    ppaMessages = await ppaThread.messages.fetch();
-                    ppaMessagesCount = await getIrisChannelMessages(ppaMessages);
-                }
-                if(followChanId[0] != null && secoursThreadId[0] != null) {
-                    secoursThread = await followChan.threads.cache.get(secoursThreadId[0].id);
-                    secoursMessages = await secoursThread.messages.fetch();
-                    secoursMessagesCount = await getIrisChannelMessages(secoursMessages);
-                }
-                //Si pas présent recréation du message
-                if(!found) {
-                    setGen(true);
-                    //Base de l'embed
-                    const serviceEmb = emb.generate(null, null, `**Pour indiquer une prise/fin de service - Appuyez sur 🔴 \n\nPour prendre/relâcher le dispatch - Appuyez sur 🔵 \n\nPour indiquer un mal de tête - Appuyez sur ⚫**`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
-                    //Envois
-                    await serviceChan.send({ embeds: [serviceEmb], components: [btns] });
-                    setGen(false);
-                }
-                if(radioFound != 2) {
-                    setGen(true);
-                    ws.askRadioInfo('lsms-lspd-lscs');
-                    ws.askRadioInfo('lsms-bcms');
-                    //Base de l'embed
-                    const radioEmb = emb.generate(null, null, `**Note: Ctrl+R si vous ne voyez pas les radios actualisées !**\n\u200b`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
-                    //Radios
-                    var freqLSMS = await sqlRadio.getRadio('lsms');
-                    freqLSMS = freqLSMS[0].radiofreq;
-                    var freqFDO = await sqlRadio.getRadio('fdo');
-                    freqFDO = freqFDO[0].radiofreq;
-                    radioEmb.addFields([
-                        {
-                            name: `<:IrisLSMS:1133116950357213355> Radio LSMS`,
-                            value: freqLSMS,
-                            inline: true
-                        },
-                        {
-                            name: `<:IrisLSPDCS:1133117105848471552> Radio FDO`,
-                            value: freqFDO,
-                            inline: true
-                        }
-                    ]);
-                    //Check de si les radios optionnelles doivent être affichées
-                    var genBCMS = await sqlRadio.isRadioDisplayed('bcms');
-                    genBCMS = genBCMS[0].displayed;
-                    var genEvent = await sqlRadio.isRadioDisplayed('event');
-                    genEvent = genEvent[0].displayed;
-                    var freqBCMS = await sqlRadio.getRadio('bcms');
-                    freqBCMS = freqBCMS[0].radiofreq;
-                    var freqEvent = await sqlRadio.getRadio('event');
-                    freqEvent = freqEvent[0].radiofreq;
-                    if(genBCMS == '1' && genEvent == '0') {
-                        radioEmb.addFields([
-                            {
-                                name: `\u200b`,
-                                value: `\u200b`,
-                                inline: true
-                            },
-                            {
-                                name: `<:IrisBCMS:1133150717125853297> Radio BCMS`,
-                                value: freqBCMS,
-                                inline: true
-                            },
-                        ]);
-                    } else if(genBCMS == '0' && genEvent == '1') {
-                        radioEmb.addFields([
-                            {
-                                name: `\u200b`,
-                                value: `\u200b`,
-                                inline: true
-                            },
-                            {
-                                name: `<:IrisEvent:1133705259596910624> Radio Event`,
-                                value: freqEvent,
-                                inline: true
-                            },
-                        ]);
-                    } else if(genBCMS == '1' && genEvent == '1') {
-                        radioEmb.addFields([
-                            {
-                                name: `\u200b`,
-                                value: `\u200b`,
-                                inline: true
-                            },
-                            {
-                                name: `<:IrisBCMS:1133150717125853297> Radio BCMS`,
-                                value: freqBCMS,
-                                inline: true
-                            },
-                            {
-                                name: `<:IrisEvent:1133705259596910624> Radio Event`,
-                                value: freqEvent,
-                                inline: true
-                            },
-                            {
-                                name: `\u200b`,
-                                value: `\u200b`,
-                                inline: true
-                            }
-                        ]);
-                    }
-                    let letters = await sqlBeds.getLetters();
-                    //Envois
-                    if(radioFound == 0) {
-                        const radioMsg = await radioChan.send({ embeds: [radioEmb], components: [radioBtns] });
-                        await sqlRadio.clearRadioMessageId();
-                        await sqlRadio.setRadioMessageId(radioMsg.id);
-                        await sendBedsImage(letters, radioChan, bedsImg);
-                        radioMessages = await radioChan.messages.fetch();
-                        radioFound = await getCentraleMessages(radioMessages, client);
-                    } else if(radioFound.embeds != null) {
-                        if(radioFound.embeds[0].url != null) {
-                            if(radioFound.embeds[0].url.includes('/lit.png')) {
-                                await radioFound.delete();
-                                const radioMsg = await radioChan.send({ embeds: [radioEmb], components: [radioBtns] });
-                                await sqlRadio.clearRadioMessageId();
-                                await sqlRadio.setRadioMessageId(radioMsg.id);
-                                await sendBedsImage(letters, radioChan, bedsImg);
-                                radioMessages = await radioChan.messages.fetch();
-                                radioFound = await getCentraleMessages(radioMessages, client);
-                            }
-                        }
-                        if(radioFound.embeds[0].author != null) {
-                            if(radioFound.embeds[0].author.name == 'Gestion des radios') {
-                                await sendBedsImage(letters, radioChan, bedsImg);
-                                radioMessages = await radioChan.messages.fetch();
-                                radioFound = await getCentraleMessages(radioMessages, client);
-                            }
-                        }
-                    }
-                    setGen(false);
-                }
-                if(agendaMessagesCount != agendaWaiting.length) {
-                    setGen(true);
-                    agendaMessages.forEach(async msg => {
-                        if(msg.author.id == process.env.IRIS_DISCORD_ID) {
-                            await msg.delete();
-                        }
-                    });
-                    for(i=0;i<agendaWaiting.length;i++) {
-                        const buttons = new ActionRowBuilder().addComponents(
-                            new ButtonBuilder().setLabel(`Définir la date`).setCustomId(`agEventDefine`).setStyle(ButtonStyle.Success).setEmoji(`📆`).setDisabled(false),
-                            new ButtonBuilder().setLabel(`Responsables contactés`).setCustomId(`agRespContact`).setStyle(ButtonStyle.Primary).setEmoji(`📱`).setDisabled(false),
-                            new ButtonBuilder().setLabel(`Supprimer`).setCustomId(`agDelete`).setStyle(ButtonStyle.Danger).setEmoji(`896393106633687040`).setDisabled(false)
-                        );
-                
-                        const date = new Date(agendaWaiting[i].date);
-                        const year = date.getFullYear();
-                        let month = date.getMonth() + 1;
-                        if (month < 10) month = '0' + month;
-                        let day = date.getDate();
-                        if (day < 10) day = '0' + day;
-                        const formatedDate = day + '/' + month + '/' + year;
-    
-                        let service;
-                        if(agendaWaiting[i].by == 'LSMS') {
-                            service = '<:IrisLSMS:1133116950357213355> LSMS';
-                        } else {
-                            service = '<:IrisBCMS:1133150717125853297> BCMS';
-                        }
-                        
-                        let confi;
-                        if(agendaWaiting[i].confidentiality == '1') {
-                            confi = `Décès publique`;
-                        } else {
-                            confi = `Décès privé`;
-                        }
-                        
-                        let don;
-                        if(agendaWaiting[i].donor == '1') {
-                            don = 'Oui';
-                        } else {
-                            don = 'Non';
-                        }
-    
-                        const agendaEmbed = emb.generate(null, null, null, `#000001`, process.env.LSMS_DELTA_LOGO, null, `Gestion décès`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, agendaWaiting[i].writter, null, false);
-                        agendaEmbed.addFields(
-                            {
-                                name: `**Identité**`,
-                                value: agendaWaiting[i].name,
-                                inline: true
-                            },
-                            {
-                                name: `**Date du décès**`,
-                                value: formatedDate,
-                                inline: true
-                            },
-                            {
-                                name: `**Traité par**`,
-                                value: service,
-                                inline: true
-                            },
-                            {
-                                name: `**Personnes responsables**`,
-                                value: agendaWaiting[i].responsibles,
-                                inline: false
-                            },
-                            {
-                                name: `**Personnes autorisées**`,
-                                value: agendaWaiting[i].allowed,
-                                inline: false
-                            },
-                            {
-                                name: `**Confidentialité**`,
-                                value: confi,
-                                inline: true
-                            },
-                            {
-                                name: `**Donneur·se**`,
-                                value: don,
-                                inline: true
-                            },
-                            {
-                                name: `**Traitement**`,
-                                value: agendaWaiting[i].management,
-                                inline: false
-                            },
-                        );
-                        if(agendaWaiting[i].other != null) {
-                            agendaEmbed.addFields(
-                                {
-                                    name: `**Infos complémentaires**`,
-                                    value: agendaWaiting[i].other,
-                                    inline: false
-                                }
-                            );
-                        }
-                        if(agendaWaiting[i].contact != null) {
-                            agendaEmbed.addFields(
-                                {
-                                    name: `**Responsables contactés**`,
-                                    value: agendaWaiting[i].contact,
-                                    inline: false
-                                }
-                            );
-                        }
-                        const newAgendaMsg = await agendaChan.send({ embeds: [agendaEmbed], components: [buttons] });
-                        await sqlAgenda.updateMessageId(agendaWaiting[i].agendaID, newAgendaMsg.id);
-                    }
-                    setGen(false);
-                }
-                if(followMessagesCount + ppaMessagesCount + secoursMessagesCount != 35) {
-                    logger.debug(isGen());
-                    setGen(true);
-                    setGen(await follow.regen(client));
-                }
+        setInterval(() => {
+            if(time == 0) {
+                testRegen(client);
             }
-        }, 1000);
+        }, 1);
     },
     setGen: (state) => {
         gen = state;
@@ -482,6 +188,311 @@ module.exports = {
         }
     }
 
+}
+
+async function testRegen(client) {
+    if(isGen() == false) {
+        time = 2000;
+        IRIS_SERVICE_CHANNEL_ID = await awaitSQLGetChannel('IRIS_SERVICE_CHANNEL_ID');
+        IRIS_RADIO_CHANNEL_ID = await awaitSQLGetChannel('IRIS_RADIO_CHANNEL_ID');
+        //Récupération de l'image des lits
+        let bedsImg;
+        client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_BEDS_CHANNEL_ID).messages.fetch({ limit: 1 }).then(messages => {
+            if(messages.first() != null) {
+                messages.first().attachments.map(bedImg => bedsImg = bedImg.attachment);
+            }
+        });
+        //Récupération du serveur Discord LSMS
+        const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
+        //Refresh de tous les messages du channel et check si les messages sont bien présents (service)
+        const serviceChan = guild.channels.cache.get(IRIS_SERVICE_CHANNEL_ID);
+        const messages = await serviceChan.messages.fetch();
+        const found = await getServiceMessages(messages, client);
+        //Refresh de tous les messages du channel et check si les messages sont bien présents (radios)
+        const radioChan = guild.channels.cache.get(IRIS_RADIO_CHANNEL_ID);
+        let radioMessages = await radioChan.messages.fetch();
+        let radioFound = await getCentraleMessages(radioMessages, client);
+        //Refresh de tous les messages du channel et check si les messages sont bien présents (agenda)
+        const agendaChanId = await sqlAgenda.getAgendaChannelId();
+        let agendaChan;
+        let agendaMessages;
+        let agendaMessagesCount;
+        if(agendaChanId[0] != null) {
+            agendaChan = guild.channels.cache.get(agendaChanId[0].id);
+            agendaMessages = await agendaChan.messages.fetch();
+            agendaMessagesCount = await getIrisChannelMessages(agendaMessages);
+        } else {
+            agendaMessagesCount = 0;
+        }
+        const agendaWaiting = await sqlAgenda.getAllWaiting();
+        //Refresh de tous les messages du channel et check si les messages sont bien présents (suivi)
+        const followChanId = await sqlFollow.getFollowChannelId();
+        const ppaThreadId = await sqlFollow.getFollowThreadPPAId();
+        const secoursThreadId = await sqlFollow.getFollowThreadSecoursId();
+        let followChan;
+        let followMessages;
+        let followMessagesCount = 11;
+        let ppaThread;
+        let ppaMessages;
+        let ppaMessagesCount = 11;
+        let secoursThread;
+        let secoursMessages;
+        let secoursMessagesCount = 13;
+        if(followChanId[0] != null) {
+            followChan = guild.channels.cache.get(followChanId[0].id);
+            followMessages = await followChan.messages.fetch();
+            followMessagesCount = await getIrisChannelMessages(followMessages);
+        }
+        if(followChanId[0] != null && ppaThreadId[0] != null) {
+            ppaThread = await followChan.threads.cache.get(ppaThreadId[0].id);
+            ppaMessages = await ppaThread.messages.fetch();
+            ppaMessagesCount = await getIrisChannelMessages(ppaMessages);
+        }
+        if(followChanId[0] != null && secoursThreadId[0] != null) {
+            secoursThread = await followChan.threads.cache.get(secoursThreadId[0].id);
+            secoursMessages = await secoursThread.messages.fetch();
+            secoursMessagesCount = await getIrisChannelMessages(secoursMessages);
+        }
+        //Si pas présent recréation du message
+        if(!found) {
+            setGen(true);
+            //Base de l'embed
+            const serviceEmb = emb.generate(null, null, `**Pour indiquer une prise/fin de service - Appuyez sur 🔴 \n\nPour prendre/relâcher le dispatch - Appuyez sur 🔵 \n\nPour indiquer un mal de tête - Appuyez sur ⚫**`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
+            //Envois
+            await serviceChan.send({ embeds: [serviceEmb], components: [btns] });
+            setGen(false);
+        }
+        if(radioFound != 2) {
+            setGen(true);
+            ws.askRadioInfo('lsms-lspd-lscs');
+            ws.askRadioInfo('lsms-bcms');
+            //Base de l'embed
+            const radioEmb = emb.generate(null, null, `**Note: Ctrl+R si vous ne voyez pas les radios actualisées !**\n\u200b`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
+            //Radios
+            var freqLSMS = await sqlRadio.getRadio('lsms');
+            freqLSMS = freqLSMS[0].radiofreq;
+            var freqFDO = await sqlRadio.getRadio('fdo');
+            freqFDO = freqFDO[0].radiofreq;
+            radioEmb.addFields([
+                {
+                    name: `<:IrisLSMS:1133116950357213355> Radio LSMS`,
+                    value: freqLSMS,
+                    inline: true
+                },
+                {
+                    name: `<:IrisLSPDCS:1133117105848471552> Radio FDO`,
+                    value: freqFDO,
+                    inline: true
+                }
+            ]);
+            //Check de si les radios optionnelles doivent être affichées
+            var genBCMS = await sqlRadio.isRadioDisplayed('bcms');
+            genBCMS = genBCMS[0].displayed;
+            var genEvent = await sqlRadio.isRadioDisplayed('event');
+            genEvent = genEvent[0].displayed;
+            var freqBCMS = await sqlRadio.getRadio('bcms');
+            freqBCMS = freqBCMS[0].radiofreq;
+            var freqEvent = await sqlRadio.getRadio('event');
+            freqEvent = freqEvent[0].radiofreq;
+            if(genBCMS == '1' && genEvent == '0') {
+                radioEmb.addFields([
+                    {
+                        name: `\u200b`,
+                        value: `\u200b`,
+                        inline: true
+                    },
+                    {
+                        name: `<:IrisBCMS:1133150717125853297> Radio BCMS`,
+                        value: freqBCMS,
+                        inline: true
+                    },
+                ]);
+            } else if(genBCMS == '0' && genEvent == '1') {
+                radioEmb.addFields([
+                    {
+                        name: `\u200b`,
+                        value: `\u200b`,
+                        inline: true
+                    },
+                    {
+                        name: `<:IrisEvent:1133705259596910624> Radio Event`,
+                        value: freqEvent,
+                        inline: true
+                    },
+                ]);
+            } else if(genBCMS == '1' && genEvent == '1') {
+                radioEmb.addFields([
+                    {
+                        name: `\u200b`,
+                        value: `\u200b`,
+                        inline: true
+                    },
+                    {
+                        name: `<:IrisBCMS:1133150717125853297> Radio BCMS`,
+                        value: freqBCMS,
+                        inline: true
+                    },
+                    {
+                        name: `<:IrisEvent:1133705259596910624> Radio Event`,
+                        value: freqEvent,
+                        inline: true
+                    },
+                    {
+                        name: `\u200b`,
+                        value: `\u200b`,
+                        inline: true
+                    }
+                ]);
+            }
+            let letters = await sqlBeds.getLetters();
+            //Envois
+            if(radioFound == 0) {
+                const radioMsg = await radioChan.send({ embeds: [radioEmb], components: [radioBtns] });
+                await sqlRadio.clearRadioMessageId();
+                await sqlRadio.setRadioMessageId(radioMsg.id);
+                await sendBedsImage(letters, radioChan, bedsImg);
+                radioMessages = await radioChan.messages.fetch();
+                radioFound = await getCentraleMessages(radioMessages, client);
+            } else if(radioFound.embeds != null) {
+                if(radioFound.embeds[0].url != null) {
+                    if(radioFound.embeds[0].url.includes('/lit.png')) {
+                        await radioFound.delete();
+                        const radioMsg = await radioChan.send({ embeds: [radioEmb], components: [radioBtns] });
+                        await sqlRadio.clearRadioMessageId();
+                        await sqlRadio.setRadioMessageId(radioMsg.id);
+                        await sendBedsImage(letters, radioChan, bedsImg);
+                        radioMessages = await radioChan.messages.fetch();
+                        radioFound = await getCentraleMessages(radioMessages, client);
+                    }
+                }
+                if(radioFound.embeds[0].author != null) {
+                    if(radioFound.embeds[0].author.name == 'Gestion des radios') {
+                        await sendBedsImage(letters, radioChan, bedsImg);
+                        radioMessages = await radioChan.messages.fetch();
+                        radioFound = await getCentraleMessages(radioMessages, client);
+                    }
+                }
+            }
+            setGen(false);
+        }
+        if(agendaMessagesCount != agendaWaiting.length) {
+            setGen(true);
+            agendaMessages.forEach(async msg => {
+                if(msg.author.id == process.env.IRIS_DISCORD_ID) {
+                    await msg.delete();
+                }
+            });
+            for(i=0;i<agendaWaiting.length;i++) {
+                const buttons = new ActionRowBuilder().addComponents(
+                    new ButtonBuilder().setLabel(`Définir la date`).setCustomId(`agEventDefine`).setStyle(ButtonStyle.Success).setEmoji(`📆`).setDisabled(false),
+                    new ButtonBuilder().setLabel(`Responsables contactés`).setCustomId(`agRespContact`).setStyle(ButtonStyle.Primary).setEmoji(`📱`).setDisabled(false),
+                    new ButtonBuilder().setLabel(`Supprimer`).setCustomId(`agDelete`).setStyle(ButtonStyle.Danger).setEmoji(`896393106633687040`).setDisabled(false)
+                );
+        
+                const date = new Date(agendaWaiting[i].date);
+                const year = date.getFullYear();
+                let month = date.getMonth() + 1;
+                if (month < 10) month = '0' + month;
+                let day = date.getDate();
+                if (day < 10) day = '0' + day;
+                const formatedDate = day + '/' + month + '/' + year;
+
+                let service;
+                if(agendaWaiting[i].by == 'LSMS') {
+                    service = '<:IrisLSMS:1133116950357213355> LSMS';
+                } else {
+                    service = '<:IrisBCMS:1133150717125853297> BCMS';
+                }
+                
+                let confi;
+                if(agendaWaiting[i].confidentiality == '1') {
+                    confi = `Décès publique`;
+                } else {
+                    confi = `Décès privé`;
+                }
+                
+                let don;
+                if(agendaWaiting[i].donor == '1') {
+                    don = 'Oui';
+                } else {
+                    don = 'Non';
+                }
+
+                const agendaEmbed = emb.generate(null, null, null, `#000001`, process.env.LSMS_DELTA_LOGO, null, `Gestion décès`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, agendaWaiting[i].writter, null, false);
+                agendaEmbed.addFields(
+                    {
+                        name: `**Identité**`,
+                        value: agendaWaiting[i].name,
+                        inline: true
+                    },
+                    {
+                        name: `**Date du décès**`,
+                        value: formatedDate,
+                        inline: true
+                    },
+                    {
+                        name: `**Traité par**`,
+                        value: service,
+                        inline: true
+                    },
+                    {
+                        name: `**Personnes responsables**`,
+                        value: agendaWaiting[i].responsibles,
+                        inline: false
+                    },
+                    {
+                        name: `**Personnes autorisées**`,
+                        value: agendaWaiting[i].allowed,
+                        inline: false
+                    },
+                    {
+                        name: `**Confidentialité**`,
+                        value: confi,
+                        inline: true
+                    },
+                    {
+                        name: `**Donneur·se**`,
+                        value: don,
+                        inline: true
+                    },
+                    {
+                        name: `**Traitement**`,
+                        value: agendaWaiting[i].management,
+                        inline: false
+                    },
+                );
+                if(agendaWaiting[i].other != null) {
+                    agendaEmbed.addFields(
+                        {
+                            name: `**Infos complémentaires**`,
+                            value: agendaWaiting[i].other,
+                            inline: false
+                        }
+                    );
+                }
+                if(agendaWaiting[i].contact != null) {
+                    agendaEmbed.addFields(
+                        {
+                            name: `**Responsables contactés**`,
+                            value: agendaWaiting[i].contact,
+                            inline: false
+                        }
+                    );
+                }
+                const newAgendaMsg = await agendaChan.send({ embeds: [agendaEmbed], components: [buttons] });
+                await sqlAgenda.updateMessageId(agendaWaiting[i].agendaID, newAgendaMsg.id);
+            }
+            setGen(false);
+        }
+        if(followMessagesCount + ppaMessagesCount + secoursMessagesCount != 35) {
+            setGen(true);
+            const ended = await follow.regen(client);
+            setGen(ended);
+        }
+        for(i=time;i>=0;i--) {
+            time = i;
+        }
+    }
 }
 
 async function sendBedsImage(letters, radioChan, bedsImg) {

@@ -8,9 +8,12 @@ const sql = require('../../sql/config/config');
 const emb = require('../../modules/embeds');
 //Récup des autorisations
 const { Rank, hasAuthorization } = require('../../modules/rankAuthorization');
+//Récupération de l'agenda
 const agenda = require('./agenda');
 //Fonction pour attendre
 const wait = require('node:timers/promises').setTimeout;
+//Récupération du nom du bot
+const sqlNickname = require('../../sql/rename/rename');
 
 module.exports = {
     //Création de la commande
@@ -68,6 +71,10 @@ module.exports = {
                 {
                     name: 'Salon de la liste des véhicules',
                     value: 'vehicule'
+                },
+                {
+                    name: 'Salon des mises à jour de la Centrale',
+                    value: 'IRIS_PATCHNOTE_CHANNEL_ID'
                 }
             )
             .setRequired(true)

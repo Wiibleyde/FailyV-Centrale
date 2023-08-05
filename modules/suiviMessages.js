@@ -574,8 +574,8 @@ function generateMessages(messages, channel, ppaThreadId, secoursThreadId, patie
         );
 
         const btnsSecoursForma = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setLabel('Mettre à jour le status d\'un formateur').setCustomId('followUpdateSecoursFora').setStyle(ButtonStyle.Primary).setEmoji('🔃').setDisabled(false),
-            new ButtonBuilder().setLabel('Retirer un/des formateur(s)').setCustomId('followRemoveSecoursFora').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false)
+            new ButtonBuilder().setLabel('Mettre à jour le status d\'un formateur').setCustomId('followUpdateSecoursForma').setStyle(ButtonStyle.Primary).setEmoji('🔃').setDisabled(false),
+            new ButtonBuilder().setLabel('Retirer un/des formateur(s)').setCustomId('followRemoveSecoursForma').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false)
         );
 
         const btnsSecoursPatient = new ActionRowBuilder().addComponents(
@@ -754,8 +754,8 @@ function generateSecoursMessages(channel, messages) {
         });
 
         const btnsSecoursForma = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setLabel('Mettre à jour le status d\'un formateur').setCustomId('followUpdateSecoursFora').setStyle(ButtonStyle.Primary).setEmoji('🔃').setDisabled(false),
-            new ButtonBuilder().setLabel('Retirer un/des formateur(s)').setCustomId('followRemoveSecoursFora').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false)
+            new ButtonBuilder().setLabel('Mettre à jour le status d\'un formateur').setCustomId('followUpdateSecoursForma').setStyle(ButtonStyle.Primary).setEmoji('🔃').setDisabled(false),
+            new ButtonBuilder().setLabel('Retirer un/des formateur(s)').setCustomId('followRemoveSecoursForma').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false)
         );
 
         const btnsSecoursPatient = new ActionRowBuilder().addComponents(
@@ -817,8 +817,8 @@ function editMessages(channel, ppaThreadId, secoursThreadId, patients) {
         );
 
         const btnsSecoursForma = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setLabel('Mettre à jour le status d\'un formateur').setCustomId('followUpdateSecoursFora').setStyle(ButtonStyle.Primary).setEmoji('🔃').setDisabled(false),
-            new ButtonBuilder().setLabel('Retirer un/des formateur(s)').setCustomId('followRemoveSecoursFora').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false)
+            new ButtonBuilder().setLabel('Mettre à jour le status d\'un formateur').setCustomId('followUpdateSecoursForma').setStyle(ButtonStyle.Primary).setEmoji('🔃').setDisabled(false),
+            new ButtonBuilder().setLabel('Retirer un/des formateur(s)').setCustomId('followRemoveSecoursForma').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false)
         );
 
         const btnsSecoursPatient = new ActionRowBuilder().addComponents(

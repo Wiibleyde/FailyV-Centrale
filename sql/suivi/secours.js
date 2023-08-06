@@ -153,24 +153,9 @@ module.exports = {
     update: (id, newRank) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "UPDATE `follow_secours` SET `forma_rank`=?, `is_selected`='0' WHERE id=?",
+                    sql: "UPDATE `follow_secours` SET `forma_rank`=? WHERE id=?",
                     timeout: 40000,
                     values: [newRank, id]
-                }, async (reqErr, result, fields) => {
-                if(reqErr) {
-                    logger.error(reqErr);
-                    reject(reqErr);
-                }
-                resolve(result);
-            });
-        });
-    },
-    setSelected: (id) => {
-        return new Promise((resolve, reject) => {
-            mysql.sql().query({
-                    sql: "UPDATE `follow_secours` SET `is_selected`='1' WHERE id=?",
-                    timeout: 40000,
-                    values: [id]
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     logger.error(reqErr);

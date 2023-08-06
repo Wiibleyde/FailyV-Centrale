@@ -97,21 +97,22 @@ module.exports = {
             //Pré-écriture d'un message d'erreur (pour éviter de l'écrire dans tout les fichers)
             const errEmb = emb.generate(`Oups! Une erreur s'est produite :(`, null, `Il semblerait qu'une erreur se soit produite lors de l'interaction avec le menu de séléction, si le problème persiste n'hésitez pas à faire une demande de débug via le </debug:${process.env.IRIS_DEBUG_COMMAND_ID}> avec le plus de détails possible ! (Merci d'avance 💙)`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true);
             //Appel du fichier spécifique pour chaques interactions
-            if(cID == 'serviceKickSingleSelect') { const serviceKickSingleSelect = require('../selectMenus/kick/serviceKickSingleSelect'); serviceKickSingleSelect.execute(interaction, errEmb); }
-            if(cID == 'centraleResetRadioSelect') { const centraleResetRadioSelect = require('../selectMenus/radio/centraleResetRadioSelect'); centraleResetRadioSelect.execute(interaction, errEmb); }
-            if(cID == 'vehiculeRemoveSelect') { const vehiculeRemoveSelect = require('../selectMenus/vehicule/vehiculeRemoveSelect'); vehiculeRemoveSelect.execute(interaction, errEmb); }
-            if(cID == 'followRemoveOrgansSelect') { const followRemoveOrgansSelect = require('../selectMenus/suivi/followRemoveOrgansSelect'); followRemoveOrgansSelect.execute(interaction, errEmb); }
-            if(cID == 'followRemoveOrgansPatientSelect') { const followRemoveOrgansPatientSelect = require('../selectMenus/suivi/followRemoveOrgansPatientSelect'); followRemoveOrgansPatientSelect.execute(interaction, errEmb); }
-            if(cID == 'followRemovePPAPatientSelect') { const followRemovePPAPatientSelect = require('../selectMenus/suivi/followRemovePPAPatientSelect'); followRemovePPAPatientSelect.execute(interaction, errEmb); }
+            if(cID == 'serviceKickSingleSelect') { const serviceKickSingleSelect = require('../buttons/service/serviceManage'); serviceKickSingleSelect.execute(interaction, errEmb); }
+            if(cID == 'centraleResetRadioSelect') { const centraleResetRadioSelect = require('../buttons/radio/serviceRadioReset'); centraleResetRadioSelect.execute(interaction, errEmb); }
+            if(cID == 'vehiculeRemoveSelect') { const vehiculeRemoveSelect = require('../commands/private/vehicule'); vehiculeRemoveSelect.execute(interaction, errEmb); }
+            if(cID == 'followRemoveOrgansSelect') { const followRemoveOrgansSelect = require('../buttons/suivi/followRemoveOrgans'); followRemoveOrgansSelect.execute(interaction, errEmb); }
+            if(cID == 'followRemoveOrgansPatientSelect') { const followRemoveOrgansPatientSelect = require('../buttons/suivi/followRemoveOrgansPatient'); followRemoveOrgansPatientSelect.execute(interaction, errEmb); }
+            if(cID == 'followRemovePPAPatientSelect') { const followRemovePPAPatientSelect = require('../buttons/suivi/followRemovePPAPatient'); followRemovePPAPatientSelect.execute(interaction, errEmb); }
             if(cID == 'followUpdateSecoursFormaSelect') { const followUpdateSecoursFormaSelect = require('../buttons/suivi/followUpdateSecoursForma'); followUpdateSecoursFormaSelect.execute(interaction, errEmb); }
             if(cID == 'followUpdateSecoursFormaSelectCat') { const followUpdateSecoursFormaSelectCat = require('../buttons/suivi/followUpdateSecoursForma'); followUpdateSecoursFormaSelectCat.execute(interaction, errEmb); }
-            if(cID == 'followUpdateSecoursPatientSelect') { const followUpdateSecoursPatientSelect = require('../selectMenus/suivi/followUpdateSecoursPatientSelect'); followUpdateSecoursPatientSelect.execute(interaction, errEmb); }
-            if(cID == 'followRemoveSecoursSelect') { const followRemoveSecoursSelect = require('../selectMenus/suivi/followRemoveSecoursSelect'); followRemoveSecoursSelect.execute(interaction, errEmb); }
-            if(cID == 'companyDeleteSelect') { const companyDeleteSelect = require('../selectMenus/inspection/companyDeleteSelect'); companyDeleteSelect.execute(interaction, errEmb); }
-            if(cID == 'featureDeleteSelect') { const featureDeleteSelect = require('../selectMenus/patchnote/featureDeleteSelect'); featureDeleteSelect.execute(interaction, errEmb); }
-            if(cID == 'featureUpdateSelect') { const featureUpdateSelect = require('../selectMenus/patchnote/featureUpdateSelect'); featureUpdateSelect.execute(interaction, errEmb); }
-            if(cID == 'addFeaturePatchnoteSelect') { const addFeaturePatchnoteSelect = require('../selectMenus/patchnote/addFeaturePatchnoteSelect'); addFeaturePatchnoteSelect.execute(interaction, errEmb); }
-            if(cID == 'removeFeaturePatchnoteSelect') { const removeFeaturePatchnoteSelect = require('../selectMenus/patchnote/removeFeaturePatchnoteSelect'); removeFeaturePatchnoteSelect.execute(interaction, errEmb); }
+            if(cID == 'followUpdateSecoursPatientSelect') { const followUpdateSecoursPatientSelect = require('../buttons/suivi/followUpdateSecoursPatient'); followUpdateSecoursPatientSelect.execute(interaction, errEmb); }
+            if(cID == 'followRemoveSecoursFormaSelect') { const followRemoveSecoursFormaSelect = require('../buttons/suivi/followRemoveSecoursForma'); followRemoveSecoursFormaSelect.execute(interaction, errEmb); }
+            if(cID == 'followRemoveSecoursPatientSelect') { const followRemoveSecoursPatientSelect = require('../buttons/suivi/followRemoveSecoursPatient'); followRemoveSecoursPatientSelect.execute(interaction, errEmb); }
+            if(cID == 'companyDeleteSelect') { const companyDeleteSelect = require('../commands/private/inspection'); companyDeleteSelect.execute(interaction, errEmb); }
+            if(cID == 'featureDeleteSelect') { const featureDeleteSelect = require('../commands/private/feature'); featureDeleteSelect.execute(interaction, errEmb); }
+            if(cID == 'featureUpdateSelect') { const featureUpdateSelect = require('../commands/private/feature'); featureUpdateSelect.execute(interaction, errEmb); }
+            if(cID == 'addFeaturePatchnoteSelect') { const addFeaturePatchnoteSelect = require('../commands/private/patchnote'); addFeaturePatchnoteSelect.execute(interaction, errEmb); }
+            if(cID == 'removeFeaturePatchnoteSelect') { const removeFeaturePatchnoteSelect = require('../commands/private/patchnote'); removeFeaturePatchnoteSelect.execute(interaction, errEmb); }
             //Logs de quel option du menu de selection à été utilisée
             logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) l'option "${interaction.values}" du menu de séléction "${interaction.customId}"`);
         }

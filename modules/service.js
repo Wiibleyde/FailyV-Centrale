@@ -104,14 +104,21 @@ module.exports = {
             }
         }
     },
-    resetSpecificRadio: async (client, interaction, radio) => {
+    resetSpecificRadio: async (client, interaction, reply, respContent, radio) => {
+        if(interaction != null && reply != null && respContent != null) {
+            try {
+                await reply.edit({ embeds: [emb.generate(null, null, `<a:loading:1137771560531398697> Mise à jour en cours...`, `Gold`, process.env.LSMS_LOGO_V2, null, `Gestion des Premiers Secours`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], components: [], ephemeral: true })
+            } catch (err) {
+                await interaction.deferReply({ ephemeral: true });
+            }
+        }
         //Récupération du serveur Discord LSMS
         const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
         //Récupération du channel des radios
         const radioChan = guild.channels.cache.get(IRIS_RADIO_CHANNEL_ID);
         //Refresh de tous les messages du channel et check si message bien présent
-        const radioMessageId = sqlRadio.getRadioMessageId();
-        const msg = radioChan.messages.fetch(radioMessageId[0].id);
+        const radioMessageId = await sqlRadio.getRadioMessageId();
+        const msg = await radioChan.messages.fetch(radioMessageId[0].id);
         var freqLSMS = await sqlRadio.getRadio('lsms');
         freqLSMS = freqLSMS[0].radiofreq;
         var freqFDO = await sqlRadio.getRadio('fdo');
@@ -186,6 +193,20 @@ module.exports = {
             //Envois du message
             await msg.edit({ embeds: [newRadioEmb], components: [radioBtns] });
             setGen(false);
+            if(interaction != null && reply != null && respContent != null) {
+                try {
+                    reply.edit({ embeds: [emb.generate(null, null, respContent + ` a/ont correctement été réinitialisée(s) !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true)], components: [], ephemeral: true });
+                    // Supprime la réponse après 5s
+                    await wait(5000);
+                    await reply.delete();
+                } catch (err) {
+                    logger.error(err);
+                    interaction.followUp({ embeds: [emb.generate(null, null, respContent + ` a/ont correctement été réinitialisée(s) !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true)], ephemeral: true });
+                    // Supprime la réponse après 5s
+                    await wait(5000);
+                    await interaction.deleteReply();
+                }
+            }
         }
     }
 

@@ -15,20 +15,14 @@ module.exports = {
         await interaction.deferReply({ ephemeral: true });
         //Récupération des features
         let oldFeatures = await patchnoteSQL.getLastPatchnote();
-        let features = `${oldFeatures.features_id};`
-        if(features == ";") {
-            features = ""
-        }
+        let features = oldFeatures.features_id.split(";")
         for (i=0;i<interaction.values.length;i++) {
-            logger.debug(interaction.values[i]);
-            if(i == interaction.values.length - 1) {
-                features = features + interaction.values[i]
-                featureSQL.updateState(interaction.values[i], 1)
-            } else {
-                features = features + interaction.values[i] + ";"
-                featureSQL.updateState(interaction.values[i], 1)
+            if(features.includes(interaction.values[i])) {
+                features.splice(features.indexOf(interaction.values[i]), 1)
+                featureSQL.updateState(interaction.values[i], 0)
             }
         }
+        features = features.join(";")
         await patchnoteSQL.addFeatureToLastPatchnote(features);
         interaction.followUp({ embeds: [emb.generate(null, null, `Les features ${features} sont présentes dans le dernier patchnote !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des features`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true)], ephemeral: true });
         // Supprime la réponse après 5s

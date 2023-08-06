@@ -167,7 +167,6 @@ module.exports = {
                 const startTxt = '```ansi\n';
                 const endTxt = '```';
                 if(members[0] != null) {
-                    logger.debug('Generating members')
                     if(i==0) {
                         for(let j=0;j<3;j++) {
                             let txt = '';
@@ -208,7 +207,6 @@ module.exports = {
                             } else {
                                 member = await sqlFollowSecours.getOthers();
                             }
-                            logger.debug(member);
                             if(member[0] != null) {
                                 count = member.length;
                                 for(let k=0;k<member.length;k++) {
@@ -232,7 +230,6 @@ module.exports = {
                         }
                     }
                 } else {
-                    logger.debug('Generating nothing')
                     if(i==0) {
                         let txt = '[2;34mPersonne[0m';
                         let count = 0;
@@ -288,8 +285,6 @@ module.exports = {
                 const ppaMessages = await ppaThread.messages.fetch();
                 const secoursThread = await channel.threads.cache.get(secoursThreadId[0].id);
                 const secoursMessages = await secoursThread.messages.fetch();
-                logger.debug(ppaMessages.size)
-                logger.debug(secoursMessages.size)
                 if(ppaMessages.size != 11) { await generatePPAMessages(ppaThread, ppaMessages); }
                 if(secoursMessages.size != 13) { await generateSecoursMessages(secoursThread, secoursMessages); }
                 if(ppaMessages.size == 11 && secoursMessages.size == 13) { await editMessages(channel, ppaThreadId, secoursThreadId, patients); }
@@ -550,6 +545,7 @@ function formatDate(timestamp) {
 
 function generateMessages(messages, channel, ppaThreadId, secoursThreadId, patients) {
     return new Promise(async (resolve, reject) => {
+        logger.log('Starting resend of all follow messages');
         messages.forEach(async msg => {
             await msg.delete();
         });
@@ -701,6 +697,7 @@ function generateMessages(messages, channel, ppaThreadId, secoursThreadId, patie
 
 function generatePPAMessages(channel, messages) {
     return new Promise(async (resolve, reject) => {
+        logger.log('Starting resend of all PPA messages');
         messages.forEach(async msg => {
             await msg.delete();
         });
@@ -749,6 +746,7 @@ function generatePPAMessages(channel, messages) {
 
 function generateSecoursMessages(channel, messages) {
     return new Promise(async (resolve, reject) => {
+        logger.log('Starting resend of all first aid messages');
         messages.forEach(async msg => {
             await msg.delete();
         });
@@ -807,6 +805,9 @@ function generateSecoursMessages(channel, messages) {
 
 function editMessages(channel, ppaThreadId, secoursThreadId, patients) {
     return new Promise(async (resolve, reject) => {
+        let editingOrgans = false;
+        let editingPPA = false;
+        let editingFirstAid = false;
         const btns = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setLabel('Retirer un/des organe(s)').setCustomId('followRemoveOrgans').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false),
             new ButtonBuilder().setLabel('Retirer un/des patient(s)').setCustomId('followRemoveOrgansPatient').setStyle(ButtonStyle.Secondary).setEmoji('➖').setDisabled(false)
@@ -879,27 +880,35 @@ function editMessages(channel, ppaThreadId, secoursThreadId, patients) {
 
             if(organMsg1.embeds[0].data.description != newOrganMsg1.data.description) {
                 await organMsg1.edit({ embeds: [newOrganMsg1] });
+                editingOrgans = true;
             }
             if(organMsg2.content != newOrganMsg2) {
                 await organMsg2.edit({ content: newOrganMsg2 });
+                editingOrgans = true;
             }
             if(organMsg3.embeds[0].data.description != newOrganMsg3.data.description) {
                 await organMsg3.edit({ embeds: [newOrganMsg3] });
+                editingOrgans = true;
             }
             if(organMsg4.content != newOrganMsg4) {
                 await organMsg4.edit({ content: newOrganMsg4 });
+                editingOrgans = true;
             }
             if(organMsg5.embeds[0].data.description != newOrganMsg5.data.description) {
                 await organMsg5.edit({ embeds: [newOrganMsg5] });
+                editingOrgans = true;
             }
             if(organMsg6.content != newOrganMsg6) {
                 await organMsg6.edit({ content: newOrganMsg6 });
+                editingOrgans = true;
             }
             if(organMsg7.embeds[0].data.description != newOrganMsg7.data.description) {
                 await organMsg7.edit({ embeds: [newOrganMsg7] });
+                editingOrgans = true;
             }
             if(organMsg8.content != newOrganMsg8) {
                 await organMsg8.edit({ content: newOrganMsg8, components: [btns] });
+                editingOrgans = true;
             }
 
             //PPA
@@ -928,33 +937,43 @@ function editMessages(channel, ppaThreadId, secoursThreadId, patients) {
 
             if(ppaMsg1.embeds[0].data.description != newPPAMsg1.data.description) {
                 await ppaMsg1.edit({ embeds: [newPPAMsg1] });
+                editingPPA = true;
             }
             if(ppaMsg2.content != newPPAMsg2) {
                 await ppaMsg2.edit({ content: newPPAMsg2 });
+                editingPPA = true;
             }
             if(ppaMsg3.embeds[0].data.description != newPPAMsg3.data.description) {
                 await ppaMsg3.edit({ embeds: [newPPAMsg3] });
+                editingPPA = true;
             }
             if(ppaMsg4.content != newPPAMsg4) {
                 await ppaMsg4.edit({ content: newPPAMsg4 });
+                editingPPA = true;
             }
             if(ppaMsg5.embeds[0].data.description != newPPAMsg5.data.description) {
                 await ppaMsg5.edit({ embeds: [newPPAMsg5] });
+                editingPPA = true;
             }
             if(ppaMsg6.content != newPPAMsg6) {
                 await ppaMsg6.edit({ content: newPPAMsg6 });
+                editingPPA = true;
             }
             if(ppaMsg7.embeds[0].data.description != newPPAMsg7.data.description) {
                 await ppaMsg7.edit({ embeds: [newPPAMsg7] });
+                editingPPA = true;
             }
             if(ppaMsg8.content != newPPAMsg8) {
                 await ppaMsg8.edit({ content: newPPAMsg8 });
+                editingPPA = true;
             }
             if(ppaMsg9.embeds[0].data.description != newPPAMsg9.data.description) {
                 await ppaMsg9.edit({ embeds: [newPPAMsg9] });
+                editingPPA = true;
             }
             if(ppaMsg10.content != newPPAMsg10) {
                 await ppaMsg10.edit({ content: newPPAMsg10, components: [btnsPPA] });
+                editingPPA = true;
             }
 
             //Secours
@@ -983,34 +1002,48 @@ function editMessages(channel, ppaThreadId, secoursThreadId, patients) {
 
             if(secoursMsg1.embeds[0].data.description != newSecoursMsg1.data.description) {
                 await secoursMsg1.edit({ embeds: [newSecoursMsg1] });
+                editingFirstAid = true;
             }
             if(secoursMsg2.content != newSecoursMsg2) {
                 await secoursMsg2.edit({ content: newSecoursMsg2 });
+                editingFirstAid = true;
             }
             if(secoursMsg3.embeds[0].data.description != newSecoursMsg3.data.description) {
                 await secoursMsg3.edit({ embeds: [newSecoursMsg3] });
+                editingFirstAid = true;
             }
             if(secoursMsg4.content != newSecoursMsg4) {
                 await secoursMsg4.edit({ content: newSecoursMsg4 });
+                editingFirstAid = true;
             }
             if(secoursMsg5.embeds[0].data.description != newSecoursMsg5.data.description) {
                 await secoursMsg5.edit({ embeds: [newSecoursMsg5] });
+                editingFirstAid = true;
             }
             if(secoursMsg6.content != newSecoursMsg6) {
                 await secoursMsg6.edit({ content: newSecoursMsg6, components: [btnsSecoursForma] });
+                editingFirstAid = true;
             }
             if(secoursMsg7.embeds[0].data.description != newSecoursMsg7.data.description) {
                 await secoursMsg7.edit({ embeds: [newSecoursMsg7] });
+                editingFirstAid = true;
             }
             if(secoursMsg8.content != newSecoursMsg8) {
                 await secoursMsg8.edit({ content: newSecoursMsg8 });
+                editingFirstAid = true;
             }
             if(secoursMsg9.embeds[0].data.description != newSecoursMsg9.data.description) {
                 await secoursMsg9.edit({ embeds: [newSecoursMsg9] });
+                editingFirstAid = true;
             }
             if(secoursMsg10.content != newSecoursMsg10) {
                 await secoursMsg10.edit({ content: newSecoursMsg10, components: [btnsSecoursPatient] });
+                editingFirstAid = true;
             }
+
+            if(editingOrgans) { logger.log('Starting editing of organs messages'); }
+            if(editingPPA) { logger.log('Starting editing of PPA messages'); }
+            if(editingFirstAid) { logger.log('Starting editing of first aid messages'); }
         } catch (err) {
             logger.error(err);
         }

@@ -12,7 +12,7 @@ const debugSQL = require('../../sql/debugMode/debugMode');
 module.exports = {
     //Création de la commande
     data: new SlashCommandBuilder()
-        .setName('debugmode')
+        .setName('debug')
         .setDescription('[DEV ONLY] Activer/Désactiver le mode debug'),
     async execute(interaction) {
         if(interaction.user.id == '461880599594926080' || interaction.user.id == '461807010086780930' || interaction.user.id == '368259650136571904') {

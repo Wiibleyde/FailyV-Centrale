@@ -482,6 +482,11 @@ async function testRegen(client) {
                         value: agendaWaiting[i].management,
                         inline: false
                     },
+                    {
+                        name: `**Cause du décès**`,
+                        value: agendaWaiting[i].cause,
+                        inline: false
+                    },
                 );
                 if(agendaWaiting[i].other != null) {
                     agendaEmbed.addFields(

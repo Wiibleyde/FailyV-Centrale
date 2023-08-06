@@ -59,6 +59,10 @@ module.exports = {
             .setDescription(`Traitement du corps de la personne`)
             .setRequired(true))
         .addStringOption(option =>
+            option.setName(`cause`)
+            .setDescription(`Cause du décès de la personne`)
+            .setRequired(true))
+        .addStringOption(option =>
             option.setName(`service`)
             .setDescription(`Service qui a géré la personne`)
             .addChoices(
@@ -208,6 +212,11 @@ module.exports = {
                 value: interaction.options.getString(`traitement`),
                 inline: false
             },
+            {
+                name: `**Cause du décès**`,
+                value: interaction.options.getString(`cause`),
+                inline: false
+            },
         );
         if(interaction.options.getString(`autre`) != null) {
             newEmbed.addFields(
@@ -219,7 +228,7 @@ module.exports = {
             );
         }
         const agendaID = await agendaChan.send({ embeds: [newEmbed], components: [buttons] });
-        newEmbed.spliceFields(3, 6);
+        newEmbed.spliceFields(3, 7);
         newEmbed.addFields(
             {
                 name: `**Confidentialité**`,
@@ -228,6 +237,14 @@ module.exports = {
             }
         );
         const mayorID = await mairieDécèsChan.send({ embeds: [newEmbed] });
+        newEmbed.spliceFields(3, 1);
+        newEmbed.addFields(
+            {
+                name: `**Cause du décès**`,
+                value: interaction.options.getString(`cause`),
+                inline: false
+            }
+        );
         const LSPDID = await lspdChan.send({ embeds: [newEmbed] });
 
         //Sauvegarde en DB
@@ -235,9 +252,9 @@ module.exports = {
         date = date[1] + '/' + date[0] + '/' + date[2];
         const sqlDate = new Date(`${date} UTC+0:00`).toISOString().slice(0, 19).replace('T', ' ');
         if(interaction.options.getString(`autre`) != null) {
-            sql.insert(firstname + ' ' + lastname, sqlDate, interaction.options.getString(`service`), interaction.options.getString(`responsables`), interaction.options.getString(`autorisées`), confiDB, donDB, interaction.options.getString(`traitement`), interaction.member.nickname, agendaID.id, mayorID.id, LSPDID.id);
+            sql.insert(firstname + ' ' + lastname, sqlDate, interaction.options.getString(`service`), interaction.options.getString(`responsables`), interaction.options.getString(`autorisées`), confiDB, donDB, interaction.options.getString(`traitement`), interaction.options.getString(`cause`), interaction.member.nickname, agendaID.id, mayorID.id, LSPDID.id);
         } else {
-            sql.insertWithDetails(firstname + ' ' + lastname, sqlDate, interaction.options.getString(`service`), interaction.options.getString(`responsables`), interaction.options.getString(`autorisées`), confiDB, donDB, interaction.options.getString(`traitement`), interaction.options.getString(`autre`), interaction.member.nickname, agendaID.id, mayorID.id, LSPDID.id);
+            sql.insertWithDetails(firstname + ' ' + lastname, sqlDate, interaction.options.getString(`service`), interaction.options.getString(`responsables`), interaction.options.getString(`autorisées`), confiDB, donDB, interaction.options.getString(`traitement`), interaction.options.getString(`cause`), interaction.options.getString(`autre`), interaction.member.nickname, agendaID.id, mayorID.id, LSPDID.id);
         }
 
         await interaction.followUp({ embeds: [emb.generate(null, null, `Agenda mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion décès`, serverIconURL, null, null, null, false)], ephemeral: true });

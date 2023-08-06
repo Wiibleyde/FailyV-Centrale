@@ -90,12 +90,12 @@ module.exports = {
             });
         });
     },
-    insert: (name, date, by, responsibles, allowed, confidentiality, donor, management, writter, agendaID, mayorID, LSPDID) => {
+    insert: (name, date, by, responsibles, allowed, confidentiality, donor, management, cause, writter, agendaID, mayorID, LSPDID) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "INSERT INTO `agenda` SET `name`=?, `date`=?, `by`=?, `responsibles`=?, `allowed`=?, `confidentiality`=?, `donor`=?, `management`=?, `writter`=?, `agendaID`=?, `mayorID`=?, `LSPDID`=?",
+                    sql: "INSERT INTO `agenda` SET `name`=?, `date`=?, `by`=?, `responsibles`=?, `allowed`=?, `confidentiality`=?, `donor`=?, `management`=?, `cause`=?, `writter`=?, `agendaID`=?, `mayorID`=?, `LSPDID`=?",
                     timeout: 40000,
-                    values: [name, date, by, responsibles, allowed, confidentiality, donor, management, writter, agendaID, mayorID, LSPDID]
+                    values: [name, date, by, responsibles, allowed, confidentiality, donor, management, cause, writter, agendaID, mayorID, LSPDID]
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     logger.error(reqErr);
@@ -105,12 +105,12 @@ module.exports = {
             });
         });
     },
-    insertWithDetails: (name, date, by, responsibles, allowed, confidentiality, donor, management, other, writter, agendaID, mayorID, LSPDID) => {
+    insertWithDetails: (name, date, by, responsibles, allowed, confidentiality, donor, management, cause, other, writter, agendaID, mayorID, LSPDID) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "INSERT INTO `agenda` SET `name`=?, `date`=?, `by`=?, `responsibles`=?, `allowed`=?, `confidentiality`=?, `donor`=?, `management`=?, `other`=?, `writter`=?, `agendaID`=?, `mayorID`=?, `LSPDID`=?",
+                    sql: "INSERT INTO `agenda` SET `name`=?, `date`=?, `by`=?, `responsibles`=?, `allowed`=?, `confidentiality`=?, `donor`=?, `management`=?, `cause`=?, `other`=?, `writter`=?, `agendaID`=?, `mayorID`=?, `LSPDID`=?",
                     timeout: 40000,
-                    values: [name, date, by, responsibles, allowed, confidentiality, donor, management, other, writter, agendaID, mayorID, LSPDID]
+                    values: [name, date, by, responsibles, allowed, confidentiality, donor, management, cause, other, writter, agendaID, mayorID, LSPDID]
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     logger.error(reqErr);

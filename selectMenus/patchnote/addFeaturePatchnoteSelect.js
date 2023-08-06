@@ -20,7 +20,6 @@ module.exports = {
             features = ""
         }
         for (i=0;i<interaction.values.length;i++) {
-            logger.debug(interaction.values[i]);
             if(i == interaction.values.length - 1) {
                 features = features + interaction.values[i]
                 featureSQL.updateState(interaction.values[i], 1)

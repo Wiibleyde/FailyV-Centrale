@@ -117,7 +117,6 @@ module.exports = {
                 case `remove`:
                     if (lastPatchnote.state != undefined) {
                         let features = lastPatchnote.features_id
-                        logger.debug(features)
                         if(features == '') {
                             let embed = emb.generate(`Gestion des patchnotes`, null, `Désolé :(\n\nIl n'y a pas de feature dans le patchnote en cours de création !\nAjoutez en avant d'en supprimer.`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
                             await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -236,7 +235,7 @@ module.exports = {
                         let channel = await channelSQL.getChannel(`IRIS_PATCHNOTE_CHANNEL_ID`)
                         const patchnoteChannel = interaction.client.channels.cache.get(channel[0].id)
                         await patchnoteChannel.send({ embeds: [embed] })
-                        // await patchnoteSQL.updateState(lastPatchnote.id, 1)
+                        await patchnoteSQL.updateState(lastPatchnote.id, 1)
                         await interaction.reply({ embeds: [emb.generate(`Gestion des patchnotes`, null, `Le patchnote a été envoyé.`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
                     } else {
                         let embed = emb.generate(`Gestion des patchnotes`, null, `Désolé :(\n\nIl n'y a pas de patchnote en cours de création !\nCréez en un avant de l'envoyer.`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)

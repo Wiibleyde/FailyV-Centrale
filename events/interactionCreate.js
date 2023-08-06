@@ -82,6 +82,10 @@ module.exports = {
             if(cID == 'followRemoveOrgans') { const followRemoveOrgans = require('./../buttons/suivi/followRemoveOrgans'); followRemoveOrgans.execute(interaction, errEmb); }
             if(cID == 'followRemoveOrgansPatient') { const followRemoveOrgansPatient = require('./../buttons/suivi/followRemoveOrgansPatient'); followRemoveOrgansPatient.execute(interaction, errEmb); }
             if(cID == 'followRemovePPAPatient') { const followRemovePPAPatient = require('./../buttons/suivi/followRemovePPAPatient'); followRemovePPAPatient.execute(interaction, errEmb); }
+            if(cID == 'followUpdateSecoursForma') { const followUpdateSecoursForma = require('./../buttons/suivi/followUpdateSecoursForma'); followUpdateSecoursForma.execute(interaction, errEmb); }
+            if(cID == 'followRemoveSecoursForma') { const followRemoveSecoursForma = require('./../buttons/suivi/followRemoveSecoursForma'); followRemoveSecoursForma.execute(interaction, errEmb); }
+            if(cID == 'followUpdateSecoursPatient') { const followUpdateSecoursPatient = require('./../buttons/suivi/followUpdateSecoursPatient'); followUpdateSecoursPatient.execute(interaction, errEmb); }
+            if(cID == 'followRemoveSecoursPatient') { const followRemoveSecoursPatient = require('./../buttons/suivi/followRemoveSecoursPatient'); followRemoveSecoursPatient.execute(interaction, errEmb); }
         }
         //Lorsqu'il s'agit d'un Select Menu
         if(interaction.isChannelSelectMenu() || interaction.isStringSelectMenu()) {
@@ -97,6 +101,9 @@ module.exports = {
             if(cID == 'followRemoveOrgansPatientSelect') { const followRemoveOrgansPatientSelect = require('../selectMenus/suivi/followRemoveOrgansPatientSelect'); followRemoveOrgansPatientSelect.execute(interaction, errEmb); }
             if(cID == 'followRemovePPAPatientSelect') { const followRemovePPAPatientSelect = require('../selectMenus/suivi/followRemovePPAPatientSelect'); followRemovePPAPatientSelect.execute(interaction, errEmb); }
             if(cID == 'companyDeleteSelect') { const companyDeleteSelect = require('../selectMenus/inspection/companyDeleteSelect'); companyDeleteSelect.execute(interaction, errEmb); }
+            if(cID == 'followUpdateSecoursFormaSelect') { const followUpdateSecoursFormaSelect = require('../selectMenus/suivi/followUpdateSecoursFormaSelect'); followUpdateSecoursFormaSelect.execute(interaction, errEmb); }
+            if(cID == 'followUpdateSecoursPatientSelect') { const followUpdateSecoursPatientSelect = require('../selectMenus/suivi/followUpdateSecoursPatientSelect'); followUpdateSecoursPatientSelect.execute(interaction, errEmb); }
+            if(cID == 'followRemoveSecoursSelect') { const followRemoveSecoursSelect = require('../selectMenus/suivi/followRemoveSecoursSelect'); followRemoveSecoursSelect.execute(interaction, errEmb); }
             //Logs de quel option du menu de selection à été utilisée
             logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) l'option "${interaction.values}" du menu de séléction "${interaction.customId}"`);
         }

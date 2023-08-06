@@ -211,7 +211,14 @@ module.exports = {
                                 count = member.length;
                                 for(let k=0;k<member.length;k++) {
                                     const memberName = format.name(member[k].name);
-                                    txt = txt + `[2;37m-[0m [2;34m${memberName}[0m [2;37m|[0m [2;35m${member[k].company}[0m [2;37m|[0m [2;32m${member[k].phone}[0m\n`;
+                                    const formaRank = member[k].forma_rank;
+                                    let state;
+                                    if(formaRank == 0) {
+                                        state = '🕑';
+                                    } else {
+                                        state = '✔️ ✅';
+                                    }
+                                    txt = txt + `[2;37m-[0m ${state} [2;34m${memberName}[0m [2;37m|[0m [2;35m${member[k].company}[0m [2;37m|[0m [2;32m${member[k].phone}[0m\n`;
                                 }
                             } else { txt = '[2;34mPersonne[0m'; }
                             txt = startTxt + txt + endTxt;

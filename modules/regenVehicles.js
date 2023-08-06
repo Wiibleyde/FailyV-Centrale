@@ -15,7 +15,7 @@ module.exports = {
                 message.delete();
             });
 
-            for(i=0; i<vehicles.length;i++) {
+            for(let i=0; i<vehicles.length;i++) {
                 const name = vehicles[i].name;
                 const plate = vehicles[i].plate;
                 const date = new Date(vehicles[i].ct);

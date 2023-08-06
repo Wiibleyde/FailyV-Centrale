@@ -156,9 +156,9 @@ module.exports = {
                     break;
                 case `view`:
                     if (lastPatchnote.state != undefined) {
-                        let embed = emb.generate(`Gestion des patchnotes`, null, `Dernière patchnote ${lastPatchnote.name} - ${lastPatchnote.version}`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
+                        let viewEmbed = emb.generate(`Gestion des patchnotes`, null, `Dernière patchnote : ${lastPatchnote.name} - ${lastPatchnote.version}`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
                         if (lastPatchnote.features_id == undefined) {
-                            embed.addFields(
+                            viewEmbed.addFields(
                                 {
                                     name: `Aucune feature`,
                                     value: `Aucune feature n'a été trouvée`
@@ -171,20 +171,16 @@ module.exports = {
                             break;
                         }
                         let features = lastPatchnote.features_id.split(`;`)
-                        let fields = []
-                        features.forEach(async feature => {
-                            let featureInfos = await featureSQL.getFeature(feature)
-                            let field = {
-                                name: `${typeEmojis[featureInfos.type]} : ${featureInfos.name}`,
-                                value: `${featureInfos.feature}`
-                            }
-                            logger.debug(field)
-                            fields.push(field)
-                            logger.debug(fields)
-                        })
-                        logger.debug(fields)
-                        embed.addFields(fields)
-                        await interaction.reply({ embeds: [embed], ephemeral: true })
+                        for (let i = 0; i < features.length; i++) {
+                            let featureInfos = await featureSQL.getFeature(features[i])
+                            viewEmbed.addFields(
+                                {
+                                    name: `${typeEmojis[featureInfos.type]} : ${featureInfos.name}`,
+                                    value: `${featureInfos.feature}`
+                                }
+                            )
+                        }
+                        await interaction.reply({ embeds: [viewEmbed], ephemeral: true })
                     } else {
                         let embed = emb.generate(`Gestion des patchnotes`, null, `Désolé :(\n\nIl n'y a pas de patchnote en cours de création !\nCréez en un avant de le voir.`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
                         await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -206,7 +202,7 @@ module.exports = {
                                 }
                             )
                         })
-                        let channel = channelSQL.getChannel(`IRIS_PATCHNOTE_CHANNEL_ID`)
+                        let channel = await channelSQL.getChannel(`IRIS_PATCHNOTE_CHANNEL_ID`)
                         let patchnoteChannel = interaction.guild.channels.cache.get(channel.value)
                         await patchnoteChannel.send({ embeds: [embed] })
                         await patchnoteSQL.updateState(lastPatchnote.id, 1)

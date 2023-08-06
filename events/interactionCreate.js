@@ -103,7 +103,8 @@ module.exports = {
             if(cID == 'followRemoveOrgansSelect') { const followRemoveOrgansSelect = require('../selectMenus/suivi/followRemoveOrgansSelect'); followRemoveOrgansSelect.execute(interaction, errEmb); }
             if(cID == 'followRemoveOrgansPatientSelect') { const followRemoveOrgansPatientSelect = require('../selectMenus/suivi/followRemoveOrgansPatientSelect'); followRemoveOrgansPatientSelect.execute(interaction, errEmb); }
             if(cID == 'followRemovePPAPatientSelect') { const followRemovePPAPatientSelect = require('../selectMenus/suivi/followRemovePPAPatientSelect'); followRemovePPAPatientSelect.execute(interaction, errEmb); }
-            if(cID == 'followUpdateSecoursFormaSelect') { const followUpdateSecoursFormaSelect = require('../selectMenus/suivi/followUpdateSecoursFormaSelect'); followUpdateSecoursFormaSelect.execute(interaction, errEmb); }
+            if(cID == 'followUpdateSecoursFormaSelect') { const followUpdateSecoursFormaSelect = require('../buttons/suivi/followUpdateSecoursForma'); followUpdateSecoursFormaSelect.execute(interaction, errEmb); }
+            if(cID == 'followUpdateSecoursFormaSelectCat') { const followUpdateSecoursFormaSelectCat = require('../buttons/suivi/followUpdateSecoursForma'); followUpdateSecoursFormaSelectCat.execute(interaction, errEmb); }
             if(cID == 'followUpdateSecoursPatientSelect') { const followUpdateSecoursPatientSelect = require('../selectMenus/suivi/followUpdateSecoursPatientSelect'); followUpdateSecoursPatientSelect.execute(interaction, errEmb); }
             if(cID == 'followRemoveSecoursSelect') { const followRemoveSecoursSelect = require('../selectMenus/suivi/followRemoveSecoursSelect'); followRemoveSecoursSelect.execute(interaction, errEmb); }
             if(cID == 'companyDeleteSelect') { const companyDeleteSelect = require('../selectMenus/inspection/companyDeleteSelect'); companyDeleteSelect.execute(interaction, errEmb); }

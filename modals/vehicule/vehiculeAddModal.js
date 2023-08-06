@@ -11,6 +11,8 @@ const sql = require('../../sql/objectsManagement/vehicule');
 //Récup du régénérateur de véhicules
 const regenVeh = require('../../modules/regenVehicles');
 
+const security = require('../../modules/service');
+
 module.exports = {
     //Création de la commande
     execute: async function (interaction, errEmb) {
@@ -64,6 +66,7 @@ module.exports = {
         const allVehicles = await sql.get();
         //Send embed with buttons
         await regenVeh.all(channelToSend, allVehicles);
+        security.setGen(false);
         //Send confirmation message
         await interaction.followUp({ embeds: [emb.generate(null, null, `Le véhicule immatriculé **${plate}** a bien été ajouté à la liste !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], ephemeral: true });
         // Supprime la réponse après 5s

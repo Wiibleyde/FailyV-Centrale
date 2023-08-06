@@ -185,6 +185,7 @@ module.exports = {
             }
             //Envois du message
             await msg.edit({ embeds: [newRadioEmb], components: [radioBtns] });
+            setGen(false);
         }
     }
 

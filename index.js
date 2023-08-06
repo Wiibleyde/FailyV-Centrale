@@ -48,25 +48,37 @@ for(const folder of commandsFolders) {
 //Init des events Discord
 client.on(Events.MessageCreate, async (message) => {
     let IRIS_SERVICE_CHANNEL_ID = await sql.getChannel('IRIS_SERVICE_CHANNEL_ID');
-    if (IRIS_SERVICE_CHANNEL_ID[0] == undefined) {
+    if (IRIS_SERVICE_CHANNEL_ID[0] == null) {
         IRIS_SERVICE_CHANNEL_ID = null;
     } else {
         IRIS_SERVICE_CHANNEL_ID = IRIS_SERVICE_CHANNEL_ID[0].id;
     }
     let IRIS_RADIO_CHANNEL_ID = await sql.getChannel('IRIS_RADIO_CHANNEL_ID');
-    if (IRIS_RADIO_CHANNEL_ID[0] == undefined) {
+    if (IRIS_RADIO_CHANNEL_ID[0] == null) {
         IRIS_RADIO_CHANNEL_ID = null;
     } else {
         IRIS_RADIO_CHANNEL_ID = IRIS_RADIO_CHANNEL_ID[0].id;
     }
     let IRIS_FOLLOW_CHANNEL_ID = await sql.getChannel('follow');
-    if (IRIS_FOLLOW_CHANNEL_ID[0] == undefined) {
+    if (IRIS_FOLLOW_CHANNEL_ID[0] == null) {
         IRIS_FOLLOW_CHANNEL_ID = null;
     } else {
         IRIS_FOLLOW_CHANNEL_ID = IRIS_FOLLOW_CHANNEL_ID[0].id;
     }
+    let IRIS_FOLLOW_THREAD_PPA_ID = await sql.getChannel('follow_thread_ppa');
+    if (IRIS_FOLLOW_THREAD_PPA_ID[0] == null) {
+        IRIS_FOLLOW_THREAD_PPA_ID = null;
+    } else {
+        IRIS_FOLLOW_THREAD_PPA_ID = IRIS_FOLLOW_THREAD_PPA_ID[0].id;
+    }
+    let IRIS_FOLLOW_THREAD_SECOURS_ID = await sql.getChannel('follow_thread_secours');
+    if (IRIS_FOLLOW_THREAD_SECOURS_ID[0] == null) {
+        IRIS_FOLLOW_THREAD_SECOURS_ID = null;
+    } else {
+        IRIS_FOLLOW_THREAD_SECOURS_ID = IRIS_FOLLOW_THREAD_SECOURS_ID[0].id;
+    }
     // if(message.channelId == IRIS_SERVICE_CHANNEL_ID || message.channelId == IRIS_RADIO_CHANNEL_ID || message.channelId == IRIS_FOLLOW_CHANNEL_ID) {
-    if (message.channelId == IRIS_SERVICE_CHANNEL_ID || message.channelId == IRIS_RADIO_CHANNEL_ID || message.channelId == IRIS_FOLLOW_CHANNEL_ID) {
+    if (message.channelId == IRIS_SERVICE_CHANNEL_ID || message.channelId == IRIS_RADIO_CHANNEL_ID || message.channelId == IRIS_FOLLOW_CHANNEL_ID || message.channelId == IRIS_FOLLOW_THREAD_PPA_ID || message.channelId == IRIS_FOLLOW_THREAD_SECOURS_ID) {
         if(message.author != process.env.IRIS_DISCORD_ID) {
             logger.warn(`${message.member.nickname} - ${message.author.username}#${message.author.discriminator} (<@${message.author.id}>)\n\nà envoyé un message dans le salon interdit "#${client.guilds.cache.get(message.guildId).channels.cache.get(message.channelId).name} <#${message.channelId}>"\n\nContenu: "${message.content}"`);
             await message.delete();

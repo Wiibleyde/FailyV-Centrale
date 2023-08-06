@@ -108,6 +108,20 @@ module.exports = {
             });
         });
     },
+    getAllPatientToValidate: () => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "SELECT * FROM `follow_secours` WHERE `cat`='1' AND `forma_rank`='0'",
+                    timeout: 40000
+                }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
     getPublicService: () => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
@@ -126,6 +140,50 @@ module.exports = {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
                     sql: "SELECT * FROM `follow_secours` WHERE `cat`='1' AND `company`!='BCMS' AND `company`!='FBI' AND `company`!='Gouv' AND `company`!='LSCS' AND `company`!='LSMS' AND `company`!='LSPD' AND `company`!='Mairie BC' AND `company`!='Mairie LS'",
+                    timeout: 40000
+                }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
+    update: (id, newRank) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "UPDATE `follow_secours` SET `forma_rank`=?, `is_selected`='0' WHERE id=?",
+                    timeout: 40000,
+                    values: [newRank, id]
+                }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
+    setSelected: (id) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "UPDATE `follow_secours` SET `is_selected`='1' WHERE id=?",
+                    timeout: 40000,
+                    values: [id]
+                }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
+    getSelected: () => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "SELECT * FROM `follow_secours` WHERE `is_selected`='1'",
                     timeout: 40000
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {

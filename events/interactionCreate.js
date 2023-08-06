@@ -9,13 +9,14 @@ module.exports = {
     once: false,
     async execute(interaction) {
         const cID = interaction.customId;
+        const cName = interaction.commandName;
         //Lorsqu'il s'agit d'une commande
-        if(interaction.isChatInputCommand()) {
+        if(interaction.isChatInputCommand() || interaction.isUserContextMenuCommand() || interaction.isMessageContextMenuCommand() || interaction.isChatInputContextMenuCommand()) {
             //Log dès l'utilisation de la commande
-            logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) la commande "/${interaction.commandName}"`);
-            const command = interaction.client.commands.get(interaction.commandName);
+            logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) la commande "/${cName}"`);
+            const command = interaction.client.commands.get(cName);
     
-            if(!command) { logger.error(`Aucune commande correspondante à ${interaction.commandName} n'a été trouvée !`); return; }
+            if(!command) { logger.error(`Aucune commande correspondante à ${cName} n'a été trouvée !`); return; }
     
             try {
                 //Execution de la commande
@@ -23,7 +24,7 @@ module.exports = {
             } catch(err) {
                 //Lors d'une erreur
                 logger.error(err);
-                const errEmb = emb.generate(`Oups! Une erreur s'est produite :(`, null, `Il semblerait qu'une erreur se soit produite lors de l'execution de la commande "**</${interaction.commandName}:${interaction.commandId}>**", si le problème persiste n'hésitez pas à faire une demande de débug via le </debug:${process.env.IRIS_DEBUG_COMMAND_ID}> avec le plus de détails possible ! (Merci d'avance 💙)`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true);
+                const errEmb = emb.generate(`Oups! Une erreur s'est produite :(`, null, `Il semblerait qu'une erreur se soit produite lors de l'execution de la commande "**</${cName}:${interaction.commandId}>**", si le problème persiste n'hésitez pas à faire une demande de débug via le </debug:${process.env.IRIS_DEBUG_COMMAND_ID}> avec le plus de détails possible ! (Merci d'avance 💙)`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true);
                 if(interaction.replied || interaction.deferred) {
                     await interaction.followUp({ embeds: [errEmb], ephemeral: true });
                 } else {
@@ -116,6 +117,5 @@ module.exports = {
             //Logs de quel option du menu de selection à été utilisée
             logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) l'option "${interaction.values}" du menu de séléction "${interaction.customId}"`);
         }
-
     },
 };

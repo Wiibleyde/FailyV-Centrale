@@ -87,7 +87,7 @@ module.exports = {
                     }
                     break;
                 case `list`:
-                    let features = await featureSQL.getFeatures()
+                    let features = await featureSQL.getFeaturesNotSent()
                     let embed = emb.generate(`Gestion des features`, null, `Supprimer des features`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
                     if(features.length <= 0) {
                         embed.addFields(

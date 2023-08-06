@@ -11,6 +11,8 @@ const sql = require('../../sql/objectsManagement/vehicule');
 //Récup du régénérateur de véhicules
 const regenVeh = require('../../modules/regenVehicles');
 
+const security = require('../../modules/service');
+
 module.exports = {
     //Création de la commande
     execute: async function (interaction, errEmb) {
@@ -42,6 +44,7 @@ module.exports = {
             let vehiculeChannelID = vehChanId[0].id;
             const vehChan = await interaction.guild.channels.cache.get(vehiculeChannelID);
             await regenVeh.all(vehChan, allVehicles);
+            security.setGen(false);
             await interaction.reply({ embeds: [emb.generate(null, null, `${respContent} a/ont bien été retiré(s) de la liste !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des véhicules`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], ephemeral: true });
             // Supprime la réponse après 5s
             await wait(5000);

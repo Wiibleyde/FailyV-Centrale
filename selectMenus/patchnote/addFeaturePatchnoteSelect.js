@@ -13,11 +13,16 @@ module.exports = {
     execute: async function (interaction, errEmb) {
         //Confirmation à Discord du succès de l'opération
         await interaction.deferReply({ ephemeral: true });
-        //Récupération des features
-        let features = await featureSQL.getFeatures();
+        let features = ""
         for (i=0;i<interaction.values.length;i++) {
-            features = features + interaction.values[i] + ";"
-            featureSQL.updateState(interaction.values[i], 1)
+            logger.debug(interaction.values[i]);
+            if(i == interaction.values.length - 1) {
+                features = features + interaction.values[i]
+                featureSQL.updateState(interaction.values[i], 1)
+            } else {
+                features = features + interaction.values[i] + ";"
+                featureSQL.updateState(interaction.values[i], 1)
+            }
         }
         await patchnoteSQL.addFeatureToLastPatchnote(features);
         interaction.followUp({ embeds: [emb.generate(null, null, `Les features ${features} ont bien été ajouté au dernier patchnote !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des features`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true)], ephemeral: true });

@@ -156,21 +156,22 @@ module.exports = {
                     break;
                 case `view`:
                     if (lastPatchnote.state != undefined) {
-                        let viewEmbed = emb.generate(`Gestion des patchnotes`, null, `Dernière patchnote : ${lastPatchnote.name} - ${lastPatchnote.version}`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
-                        if (lastPatchnote.features_id == undefined) {
+                        let viewEmbed = emb.generate(`Gestion des patchnotes`, null, `Dernier patchnote : ${lastPatchnote.name} - ${lastPatchnote.version}`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
+                        if (lastPatchnote.features_id == "") {
                             viewEmbed.addFields(
                                 {
                                     name: `Aucune feature`,
                                     value: `Aucune feature n'a été trouvée`
                                 }
                             )
-                            await interaction.reply({ embeds: [embed], ephemeral: true })
+                            await interaction.reply({ embeds: [viewEmbed], ephemeral: true })
                             // Supprime la réponse après 5s
                             await wait(5000);
                             await interaction.deleteReply();
                             break;
                         }
                         let features = lastPatchnote.features_id.split(`;`)
+                        logger.debug(features.length)
                         for (let i = 0; i < features.length; i++) {
                             let featureInfos = await featureSQL.getFeature(features[i])
                             viewEmbed.addFields(

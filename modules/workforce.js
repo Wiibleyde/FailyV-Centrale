@@ -43,15 +43,16 @@ module.exports = {
         for (const [_, value] of Object.entries(allDoctor)) {
             const embed = emb.generate(null, null, `**${guild.roles.cache.get(value.role_id).name}** - ${value.workforce.length}`, guild.roles.cache.get(value.role_id).hexColor, null, null, null, null, null, null, null, false);
             await channel.send({ embeds: [embed] });
-            let rankMessage = "```ansi";
+            let rankMessage = '```';
             if (value.workforce.length > 0) {
+                rankMessage = rankMessage + 'ansi';
                 for (const i in value.workforce) {
-                    rankMessage = rankMessage + `\n[2;32m${value.workforce[i].arrival_date}[0m - [2;34m${value.workforce[i].phone_number}[0m ${value.workforce[i].first_name} ${value.workforce[i].last_name}`;
+                    rankMessage = rankMessage + `\n[2;37m-[0m [2;34m${value.workforce[i].first_name} ${value.workforce[i].last_name}[0m [2;37m|[0m [2;32m${value.workforce[i].phone_number}[0m [2;37m|[0m [2;35m${value.workforce[i].arrival_date}[0m`;
                 }
             } else {
-                rankMessage = rankMessage + "\n ";
+                rankMessage = rankMessage + '\n ';
             }
-            rankMessage = rankMessage + "\n```";
+            rankMessage = rankMessage + '\n```';
             await channel.send(rankMessage);
         }
     }

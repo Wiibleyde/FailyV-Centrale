@@ -18,10 +18,10 @@ const sqlNickname = require('../../sql/rename/rename');
 module.exports = {
     //Création de la commande
     data: new SlashCommandBuilder()
-        .setName(`set_channel`)
+        .setName(`define`)
         .setDescription(`[Direction] Changer le'id d'un channel`)
         .addStringOption(option =>
-            option.setName('action')
+            option.setName('channel')
             .setDescription('Channel à modifier')
             .addChoices(
                 {
@@ -95,11 +95,11 @@ module.exports = {
             const channel = interaction.guild.channels.cache.get(channelID);
             if(channel) {
                 //Changement du channel
-                exist = await sql.checkIfExist(interaction.options.getString('action'));
+                exist = await sql.checkIfExist(interaction.options.getString('channel'));
                 if(exist) {
-                    await sql.updateChannel(interaction.options.getString('action'), channelID);
+                    await sql.updateChannel(interaction.options.getString('channel'), channelID);
                 } else {
-                    await sql.setChannel(interaction.options.getString('action'), channelID);
+                    await sql.setChannel(interaction.options.getString('channel'), channelID);
                 }
                 //Création de l'embed
                 const embed = emb.generate(null, null, `Le channel a bien été mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true);

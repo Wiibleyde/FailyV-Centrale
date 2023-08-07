@@ -22,51 +22,53 @@ const wait = require('node:timers/promises').setTimeout;
 module.exports = {
     //Création de la commande
     data: new SlashCommandBuilder()
-        .setName('add')
-        .setDescription("[Direction] Ajouter un membre à l'effectif")
+        .setName(`add`)
+        .setDescription(`[Direction] Ajouter un membre à l'effectif`)
         .addStringOption(option =>
-            option.setName("personne")
-                .setDescription("Prénom et Nom de la personne à ajouter")
+            option.setName(`personne`)
+                .setDescription(`Prénom et Nom de la personne à ajouter`)
                 .setRequired(true))
         .addStringOption(option =>
-            option.setName("telephone")
-                .setDescription("Numéro de la personne sous la forme : 555-XXXX")
+            option.setName(`téléphone`)
+                .setDescription(`Numéro téléphone de la personne à ajouter`)
                 .setMinLength(4)
                 .setMaxLength(8)
                 .setRequired(true))
         .addUserOption(option =>
-            option.setName("tag")
-                .setDescription("Tag de la personne")
+            option.setName(`tag`)
+                .setDescription(`Tag Discord de la personne à ajouter`)
                 .setRequired(true))
         .addStringOption(option =>
-            option.setName("grade")
-                .setDescription("Grade de la personne")
+            option.setName(`grade`)
+                .setDescription(`Grade auquel la personne doit être ajoutée`)
                 .addChoices(
-                    { name: "Interne", value: "intern" },
-                    { name: "Résident", value: "resident" },
-                    { name: "Titulaire", value: "incumbent" },
-                    { name: "Spécialiste", value: "specialist" },
-                    { name: "Chef de service", value: "departement_manager" },
-                    { name: "Directeur adjoint", value: "assistant_manager" },
-                    { name: "Directeur", value: "director" },
+                    { name: `Interne`, value: `intern` },
+                    { name: `Résident`, value: `resident` },
+                    { name: `Titulaire`, value: `incumbent` },
+                    { name: `Spécialiste`, value: `specialist` },
+                    { name: `Chef de service`, value: `departement_manager` },
+                    { name: `Directeur adjoint`, value: `assistant_manager` },
+                    { name: `Directeur`, value: `director` },
                 )),
     async execute(interaction) {
-        //Affichage du message "Iris réfléchis..."
+        //Affichage du message 'Iris réfléchis...'
         await interaction.deferReply({ ephemeral: true });
+
+        const serverIcon = `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`
 
         //Récupération du channel 
         let IRIS_ANNOUNCEMENT_CHANNEL_ID = await sql.getChannel('IRIS_ANNOUNCEMENT_CHANNEL_ID');
         if (IRIS_ANNOUNCEMENT_CHANNEL_ID[0] == undefined) {
-            const embed = emb.generate("Désolé :(", null, `Aucun channel n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
-            return await interaction.editReply({ embeds: [embed], ephemeral: true });
+            const embed = emb.generate(`Désolé :(`, null, `Aucun channel n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion des employés`, serverIcon, null, null, null, false);
+            return await interaction.followUp({ embeds: [embed], ephemeral: true });
         } else {
             IRIS_ANNOUNCEMENT_CHANNEL_ID = IRIS_ANNOUNCEMENT_CHANNEL_ID[0].id;
         }
         
         // Check si l'utilisateur est chef de service ou plus
         if (!hasAuthorization(Rank.DepartementManager, interaction.member.roles.cache)) {
-            const embed = emb.generate("Désolé :(", null, `Vous n'avez pas les permissions suffisantes pour utiliser cette commande. Il faut être <@&${process.env.IRIS_DEPARTEMENT_MANAGER_ROLE}> ou plus pour pouvoir vous en servir !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
-            await interaction.editReply({ embeds: [embed], ephemeral: true });
+            const embed = emb.generate(`Désolé :(`, null, `Vous n'avez pas les permissions suffisantes pour utiliser cette commande. Il faut être <@&${process.env.IRIS_DEPARTEMENT_MANAGER_ROLE}> ou plus pour pouvoir vous en servir !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion des employés`, serverIcon, null, null, null, false);
+            await interaction.followUp({ embeds: [embed], ephemeral: true });
             // Supprime la réponse après 5s
             await wait(5000);
             await interaction.deleteReply();
@@ -77,38 +79,39 @@ module.exports = {
         const doctorRankData = await doctorRankSql.getDoctorRank();
 
         if(doctorRankData == null) {
-            const embed = emb.generate("Désolé :(", null, `Aucun grade n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
-            return await interaction.editReply({ embeds: [embed], ephemeral: true });
+            const embed = emb.generate(`Désolé :(`, null, `Aucun grade n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion des employés`, serverIcon, null, null, null, false);
+            return await interaction.followUp({ embeds: [embed], ephemeral: true });
         }
 
-        const tag = interaction.options.getUser("tag");
+        const tag = interaction.options.getUser(`tag`);
 
         // Check si le tag discord pour le docteur n'est pas le bot
         if (tag.id === process.env.IRIS_DISCORD_ID) {
-            const embed = emb.generate("Erreur", null, `Vous ne pouvez pas utiliser le tag ${tag} pour ajouter un nouveau docteur`, "#FF0000", process.env.LSMS_LOGO_V2, null, null, null, null, null, null, false);
-            await interaction.editReply({ embeds: [embed], ephemeral: true });
+            const embed = emb.generate(`Désolé :(`, null, `Vous ne pouvez pas m'ajouter en tant que docteur, mon rôle de secrétaire me conviens très bien !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion des employés`, serverIcon, null, null, null, false);
+            await interaction.followUp({ embeds: [embed], ephemeral: true });
             // Supprime la réponse après 5s
             await wait(5000);
             await interaction.deleteReply();
             return;
         }
 
-        const phone = interaction.options.getString("telephone");
+        const phone = interaction.options.getString(`téléphone`);
         //Regex des numéros de téléphone
-        const regExpFull = new RegExp("^555-[0-9]{4}$");
-        const regExpMidFull = new RegExp("^555[0-9]{4}$");
-        const regExp = new RegExp("^[0-9]{4}$");
+        const regExpFull = new RegExp(`^555-[0-9]{4}$`);
+        const regExpMidFull = new RegExp(`^555[0-9]{4}$`);
+        const regExp = new RegExp(`^[0-9]{4}$`);
 
         // Check si le numéro de téléphone est bien sous le bon format
         if (!regExpFull.test(phone) && !regExpMidFull.test(phone) && !regExp.test(phone)) {
             try {
-                await interaction.reply({ content: `Le numéro de téléphone ${phone} est invalide. Veuillez entrer un numéro de téléphone valide (555-5420 ou 5555420 ou 5420).`, ephemeral: true });
+                const embed = emb.generate(`Oups :(`, null, `Il semblerait que le numéro de téléphone que vous avez entré n'est pas valide, vérifiez bien qu'il est au format **555-XXXX**, **555XXXX** ou **XXXX** !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion des employés`, serverIcon, null, null, null, false);
+                await interaction.followUp({ embeds: [embed], ephemeral: true });
             } catch (e) {
                 logger.error(e);
             }
             return;
         }
-        let phoneNumber = "";
+        let phoneNumber = ``;
         if (regExpFull.test(phone)) {
             phoneNumber = phone;
         } else if (regExpMidFull.test(phone)) {
@@ -123,16 +126,16 @@ module.exports = {
         const existChannelID = await doctorSql.getDoctorChannelID(phoneNumber);
 
         // Check si une fiche n'existe pas déjà pour le docteur
-        if (existChannelID !== "-1") {
-            const embed = emb.generate("Erreur", null, `Il existe déjà un docteur du nom de ${name} sa fiche se trouve ici : <#${existChannelID}>`, "#FF0000", process.env.LSMS_LOGO_V2, null, null, null, null, null, null, false);
-            await interaction.editReply({ embeds: [embed], ephemeral: true });
+        if (existChannelID !== `-1`) {
+            const embed = emb.generate(`Erreur`, null, `Il existe déjà un docteur du nom de ${name} sa fiche se trouve ici : <#${existChannelID}>`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion des employés`, serverIcon, null, null, null, false);
+            await interaction.followUp({ embeds: [embed], ephemeral: true });
             // Supprime la réponse après 5s
             await wait(5000);
             await interaction.deleteReply();
             return;
         }
 
-        const grade = interaction.options.getString("grade") ?? "intern";
+        const grade = interaction.options.getString(`grade`) ?? `intern`;
         const arrivalDate = new Date();
 
         // Renomage de l'utilisateur et ajout des rôles LSMS et correspondant au grade du docteur
@@ -145,7 +148,7 @@ module.exports = {
             name: `${name}`,
             type: ChannelType.GuildText,
             parent: doctorRankData[grade].parent_channel_id,
-            topic: `Rentré au LSMS le : ${arrivalDate.toLocaleDateString("fr-FR")}`
+            topic: `Rentré au LSMS le : ${arrivalDate.toLocaleDateString(`fr-FR`)}`
         });
 
         // Ajout des information du docteur en base de donnée
@@ -160,15 +163,15 @@ module.exports = {
             `:new: Bienvenue à **${name}** nous rejoint en tant que <@&${doctorRankData[grade].role_id}> :wave:`,
             interaction.guild.roles.cache.get(doctorRankData[grade].role_id).hexColor,
             process.env.LSMS_LOGO_V2, null,
-            "Annonce",
-            `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`,
+            `Annonce`,
+            serverIcon,
             null,
             `${interaction.member.nickname}`,
             null,
             true
         );
         const welcomeMessage = await interaction.client.channels.cache.get(IRIS_ANNOUNCEMENT_CHANNEL_ID).send({ content: `<@&${process.env.IRIS_LSMS_ROLE}>`, embeds: [welcomeEmbed] });
-        welcomeMessage.react("👋");
+        welcomeMessage.react(`👋`);
 
         // Création de la fiche d'interne
         let message;
@@ -194,8 +197,8 @@ module.exports = {
             .catch(logger.error);
 
         // Confirmation de la création
-        const validationEmbed = emb.generate("Succès", null, `La fiche de **${name}** a bien été créé (<#${channel.id}>) !`, "#0CE600", process.env.LSMS_LOGO_V2, null, null, null, null, null, null, false);
-        await interaction.editReply({ embeds: [validationEmbed], ephemeral: true });
+        const validationEmbed = emb.generate(`Succès`, null, `La fiche de **${name}** a bien été créé (<#${channel.id}>) !`, `#0CE600`, process.env.LSMS_LOGO_V2, null, `Gestion des employés`, serverIcon, null, null, null, false);
+        await interaction.followUp({ embeds: [validationEmbed], ephemeral: true });
         // Supprime la réponse après 5s
         await wait(5000);
         await interaction.deleteReply();

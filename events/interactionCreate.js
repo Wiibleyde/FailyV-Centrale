@@ -11,7 +11,7 @@ module.exports = {
         const cID = interaction.customId;
         const cName = interaction.commandName;
         //Lorsqu'il s'agit d'une commande
-        if(interaction.isChatInputCommand() || interaction.isUserContextMenuCommand() || interaction.isMessageContextMenuCommand() || interaction.isChatInputContextMenuCommand()) {
+        if(interaction.isChatInputCommand() || interaction.isUserContextMenuCommand() || interaction.isMessageContextMenuCommand() || interaction.isContextMenuCommand()) {
             //Log dès l'utilisation de la commande
             logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) la commande "/${cName}"`);
             const command = interaction.client.commands.get(cName);

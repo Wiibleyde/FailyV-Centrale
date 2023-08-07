@@ -54,7 +54,7 @@ module.exports = {
         //Affichage du message 'Iris réfléchis...'
         await interaction.deferReply({ ephemeral: true });
 
-        const serverIcon = `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`
+        const serverIcon = `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`;
 
         //Récupération du channel 
         let IRIS_ANNOUNCEMENT_CHANNEL_ID = await sql.getChannel('IRIS_ANNOUNCEMENT_CHANNEL_ID');
@@ -140,7 +140,11 @@ module.exports = {
 
         // Renomage de l'utilisateur et ajout des rôles LSMS et correspondant au grade du docteur
         const newMember = interaction.guild.members.cache.get(tag.id);
-        newMember.setNickname(`${name}`);
+        try {
+            await newMember.setNickname(`${name}`);
+        } catch (err) {
+            logger.error(err);
+        }
         await newMember.roles.add([process.env.IRIS_LSMS_ROLE, doctorRankData[grade].role_id]);
 
         // Creation de la fiche du docteur

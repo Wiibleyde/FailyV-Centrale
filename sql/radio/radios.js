@@ -26,9 +26,8 @@ module.exports = {
             mysql.sql().query({
                     sql: "SELECT `id` FROM `message` WHERE `correspond`='radio'",
                     timeout: 40000
-                }, async (reqErr, result, fields) => {
+                }, (reqErr, result, fields) => {
                 if(reqErr) {
-                    logger.error(reqErr);
                     reject(reqErr);
                 }
                 resolve(result);

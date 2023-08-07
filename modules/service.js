@@ -227,13 +227,23 @@ async function testRegen(client) {
         //Récupération du serveur Discord LSMS
         const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
         //Refresh de tous les messages du channel et check si les messages sont bien présents (service)
-        const serviceChan = guild.channels.cache.get(IRIS_SERVICE_CHANNEL_ID);
-        const messages = await serviceChan.messages.fetch();
-        const found = await getServiceMessages(messages, client);
+        let serviceChan;
+        let messages;
+        let found = true;
+        if(IRIS_SERVICE_CHANNEL_ID != null) {
+            serviceChan = guild.channels.cache.get(IRIS_SERVICE_CHANNEL_ID);
+            messages = await serviceChan.messages.fetch();
+            found = await getServiceMessages(messages, client);
+        }
         //Refresh de tous les messages du channel et check si les messages sont bien présents (radios)
-        const radioChan = guild.channels.cache.get(IRIS_RADIO_CHANNEL_ID);
-        let radioMessages = await radioChan.messages.fetch();
-        let radioFound = await getCentraleMessages(radioMessages, client);
+        let radioChan;
+        let radioMessages;
+        let radioFound = 2;
+        if(IRIS_RADIO_CHANNEL_ID != null) {
+            radioChan = guild.channels.cache.get(IRIS_RADIO_CHANNEL_ID);
+            radioMessages = await radioChan.messages.fetch();
+            radioFound = await getCentraleMessages(radioMessages, client);
+        }
         //Refresh de tous les messages du channel et check si les messages sont bien présents (agenda)
         const agendaChanId = await sqlAgenda.getAgendaChannelId();
         let agendaChan;

@@ -5,13 +5,12 @@ const mysql = require('../../modules/sql');
 
 module.exports = {
     // Création d'un docteur
-    addDoctor: (firstName, lastName, phone, grade, discord_id, arrivalDate, channel_id) => {
+    addDoctor: (name, phone, grade, discord_id, arrivalDate, channel_id) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                sql: `INSERT INTO doctor SET first_name = ?, last_name = ?, phone_number = ?, rank_id = ?, discord_id = ?, arrival_date = ?, channel_id = ?;`,
+                sql: `INSERT INTO doctor SET name = ?, phone_number = ?, rank_id = ?, discord_id = ?, arrival_date = ?, channel_id = ?;`,
                 values: [
-                    firstName,
-                    lastName,
+                    name,
                     phone,
                     grade,
                     discord_id,
@@ -70,7 +69,7 @@ module.exports = {
                 });
             });
             mysql.sql().query({
-                sql: `SELECT d.first_name, d.last_name, d.phone_number, d.rank_id, DATE_FORMAT(d.arrival_date, '%d/%m/%x') arrival_date
+                sql: `SELECT d.name, d.phone_number, d.rank_id, DATE_FORMAT(d.arrival_date, '%d/%m/%x') arrival_date
                     FROM doctor d
                     ORDER BY d.arrival_date;`
             }, async (reqErr, result, fields) => {
@@ -80,8 +79,7 @@ module.exports = {
                 }
                 result.forEach(element => {
                     returnResult[element.rank_id].workforce.push({
-                        first_name: element.first_name,
-                        last_name: element.last_name,
+                        name: element.name,
                         phone_number: element.phone_number,
                         arrival_date: element.arrival_date
                     });

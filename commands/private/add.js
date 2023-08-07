@@ -15,6 +15,8 @@ const doctorSql = require('../../sql/doctorManagement/doctor');
 //Récup du SQL pour les channels
 const sql = require('../../sql/config/config');
 
+const format = require('../../modules/formatName');
+
 const wait = require('node:timers/promises').setTimeout;
 
 module.exports = {
@@ -23,12 +25,8 @@ module.exports = {
         .setName('add')
         .setDescription("[Direction] Ajouter un membre à l'effectif")
         .addStringOption(option =>
-            option.setName("prenom")
-                .setDescription("Prénom de la personne")
-                .setRequired(true))
-        .addStringOption(option =>
-            option.setName("nom")
-                .setDescription("Nom de la personne")
+            option.setName("personne")
+                .setDescription("Prénom et Nom de la personne à ajouter")
                 .setRequired(true))
         .addStringOption(option =>
             option.setName("telephone")
@@ -120,14 +118,13 @@ module.exports = {
             phoneNumber = `555-${phone}`;
         }
 
-        const firstName = interaction.options.getString("prenom");
-        const lastName = interaction.options.getString("nom");
+        const name = format.name(interaction.options.getString('personne'))
 
         const existChannelID = await doctorSql.getDoctorChannelID(phoneNumber);
 
         // Check si une fiche n'existe pas déjà pour le docteur
         if (existChannelID !== "-1") {
-            const embed = emb.generate("Erreur", null, `Il existe déjà un docteur du nom de ${firstName} ${lastName} sa fiche se trouve ici : <#${existChannelID}>`, "#FF0000", process.env.LSMS_LOGO_V2, null, null, null, null, null, null, false);
+            const embed = emb.generate("Erreur", null, `Il existe déjà un docteur du nom de ${name} sa fiche se trouve ici : <#${existChannelID}>`, "#FF0000", process.env.LSMS_LOGO_V2, null, null, null, null, null, null, false);
             await interaction.editReply({ embeds: [embed], ephemeral: true });
             // Supprime la réponse après 5s
             await wait(5000);
@@ -140,19 +137,19 @@ module.exports = {
 
         // Renomage de l'utilisateur et ajout des rôles LSMS et correspondant au grade du docteur
         const newMember = interaction.guild.members.cache.get(tag.id);
-        newMember.setNickname(`${firstName} ${lastName}`);
+        newMember.setNickname(`${name}`);
         await newMember.roles.add([process.env.IRIS_LSMS_ROLE, doctorRankData[grade].role_id]);
 
         // Creation de la fiche du docteur
         const channel = await interaction.guild.channels.create({
-            name: `${firstName} ${lastName}`,
+            name: `${name}`,
             type: ChannelType.GuildText,
             parent: doctorRankData[grade].parent_channel_id,
             topic: `Rentré au LSMS le : ${arrivalDate.toLocaleDateString("fr-FR")}`
         });
 
         // Ajout des information du docteur en base de donnée
-        await doctorSql.addDoctor(firstName, lastName, phoneNumber, grade, tag.id, arrivalDate, channel.id);
+        await doctorSql.addDoctor(name, phoneNumber, grade, tag.id, arrivalDate, channel.id);
 
         workforce.generateWorkforce(interaction.guild);
 
@@ -160,7 +157,7 @@ module.exports = {
         const welcomeEmbed = emb.generate(
             null,
             null,
-            `:new: Bienvenue à **${firstName} ${lastName}** nous rejoint en tant que <@&${doctorRankData[grade].role_id}> :wave:`,
+            `:new: Bienvenue à **${name}** nous rejoint en tant que <@&${doctorRankData[grade].role_id}> :wave:`,
             interaction.guild.roles.cache.get(doctorRankData[grade].role_id).hexColor,
             process.env.LSMS_LOGO_V2, null,
             "Annonce",
@@ -197,7 +194,7 @@ module.exports = {
             .catch(logger.error);
 
         // Confirmation de la création
-        const validationEmbed = emb.generate("Succès", null, `La fiche pour ${firstName} ${lastName} a été créé ici : <#${channel.id}>`, "#0CE600", process.env.LSMS_LOGO_V2, null, null, null, null, null, null, false);
+        const validationEmbed = emb.generate("Succès", null, `La fiche de **${name}** a bien été créé (<#${channel.id}>) !`, "#0CE600", process.env.LSMS_LOGO_V2, null, null, null, null, null, null, false);
         await interaction.editReply({ embeds: [validationEmbed], ephemeral: true });
         // Supprime la réponse après 5s
         await wait(5000);

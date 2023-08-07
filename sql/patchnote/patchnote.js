@@ -109,12 +109,13 @@ module.exports = {
             });
         });
     },
-    addFeatureToLastPatchnote: (features) => {
+    addFeatureToLastPatchnote: (features,patchnote_id) => {
         return new Promise((resolve, reject) => {
             mysql.sql(). query({
-                sql: `UPDATE patchnote SET features_id = ? WHERE id = (SELECT id FROM patchnote ORDER BY id DESC LIMIT 1);`,
+                sql: `UPDATE patchnote SET features_id = ? WHERE id = ?;`,
                 values: [
-                    features
+                    features,
+                    patchnote_id
                 ]
             }, async (reqErr, result, fields) => {
                 if(reqErr) {

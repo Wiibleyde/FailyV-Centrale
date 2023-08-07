@@ -277,7 +277,7 @@ module.exports = {
                     featureSQL.updateState(interaction.values[i], 1)
                 }
             }
-            await patchnoteSQL.addFeatureToLastPatchnote(features);
+            await patchnoteSQL.addFeatureToLastPatchnote(features, oldFeatures.id)
             try {
                 await reply.edit({ embeds: [emb.generate(null, null, `Les features ${features} sont présentes dans le dernier patchnote !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des features`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true)], components: [], ephemeral: true });
                 // Supprime la réponse après 5s
@@ -306,7 +306,7 @@ module.exports = {
                 }
             }
             features = features.join(";")
-            await patchnoteSQL.addFeatureToLastPatchnote(features);
+            await patchnoteSQL.addFeatureToLastPatchnote(features,oldFeatures.id);
             try {
                 await reply.edit({ embeds: [emb.generate(null, null, `Les features ${features} sont présentes dans le dernier patchnote !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des features`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true)], components: [], ephemeral: true });
                 // Supprime la réponse après 5s

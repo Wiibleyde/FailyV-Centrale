@@ -1,5 +1,5 @@
 //Récup des activités Discord
-const { ActivityType, PermissionsBitField } = require('discord.js');
+const { ActivityType } = require('discord.js');
 //Récup du logger
 const logger = require('./../modules/logger');
 
@@ -23,6 +23,8 @@ const wait = require('node:timers/promises').setTimeout;
 //Récup des requêtes SQL du nom
 const sql = require('./../sql/init/initAllTables');
 
+const rolesCreator = require('../modules/rolesCreator');
+
 let isDebugMode = false;
 
 module.exports = {
@@ -34,21 +36,14 @@ module.exports = {
         logger.log(`Bot en ligne! Connecté avec le compte ${client.user.tag}`);
 
         //Récupération des personnes en service
-        const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
+        const guild = await client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
         await guild.members.fetch();
-        var serviceCount = guild.roles.cache.get(process.env.IRIS_SERVICE_ROLE_ID).members.size;
-        var dispatchCount = guild.roles.cache.get(process.env.IRIS_DISPATCH_ROLE_ID).members.size;
+        var serviceCount = await guild.roles.cache.get(process.env.IRIS_SERVICE_ROLE_ID).members.size;
+        var dispatchCount = await guild.roles.cache.get(process.env.IRIS_DISPATCH_ROLE_ID).members.size;
 
         const debugState = await debugSQL.getDebugState();
         if(debugState[0] == null) {
-            const role = await guild.roles.create({
-                name: `Debug Mode`,
-                permissions: [PermissionsBitField.Flags.Administrator],
-                reason: `Creation of an admin role for debbuging problems on the server`
-            });
-            const irisRolePos = await guild.roles.cache.get(process.env.IRIS_PRIVATE_ROLE_ID);
-            role.setPosition(irisRolePos.rawPosition - 1);
-            await debugSQL.setDebugRole(role.id);
+            await rolesCreator.createDebugRole(client);
         } else {
             if(debugState[0].state == '1') {
                 isDebugMode = true;

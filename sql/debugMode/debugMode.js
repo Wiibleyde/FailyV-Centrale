@@ -61,5 +61,19 @@ module.exports = {
                 resolve(result);
             });
         });
+    },
+    clearDebugRole: () => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "DELETE FROM `debug` WHERE 1",
+                    timeout: 40000
+                }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
     }
 }

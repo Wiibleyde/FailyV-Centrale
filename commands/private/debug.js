@@ -9,6 +9,8 @@ const wait = require('node:timers/promises').setTimeout;
 //Récup des requêtes SQL de debug
 const debugSQL = require('../../sql/debugMode/debugMode');
 
+const rolesCreator = require('../../modules/rolesCreator');
+
 module.exports = {
     //Création de la commande
     data: new SlashCommandBuilder()
@@ -18,11 +20,14 @@ module.exports = {
         if(interaction.user.id == '461880599594926080' || interaction.user.id == '461807010086780930' || interaction.user.id == '368259650136571904') {
             //Affichage du message "Iris réfléchis..."
             await interaction.deferReply({ ephemeral: true });
-            const guild = interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
+            const guild = await interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
             let alreadyEnabled = await debugSQL.getDebugState();
             alreadyEnabled = alreadyEnabled[0].state;
             const roleID = await debugSQL.getDebugRole();
-            const debugRole = guild.roles.cache.get(roleID[0].roleID);
+            let debugRole = guild.roles.cache.get(roleID[0].roleID);
+            if(debugRole == undefined) {
+                debugRole = await rolesCreator.createDebugRole(interaction.client);
+            }
             let text = '';
             let color = '';
             if(alreadyEnabled == '0') {

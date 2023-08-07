@@ -238,6 +238,14 @@ module.exports = {
                                 }
                             }
                             let channel = await channelSQL.getChannel(`IRIS_PATCHNOTE_CHANNEL_ID`)
+                            if (channel[0] == undefined) {
+                                let embed = emb.generate(`Gestion des patchnotes`, null, `Désolé :(\n\nLe channel de patchnote n'est pas configuré !\nConfigurez le avant d'envoyer un patchnote.`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
+                                await interaction.reply({ embeds: [embed], ephemeral: true });
+                                // Supprime la réponse après 5s
+                                await wait(5000);
+                                await interaction.deleteReply();
+                                break;
+                            }
                             const patchnoteChannel = interaction.client.channels.cache.get(channel[0].id)
                             await patchnoteChannel.send({ embeds: [embed] })
                             await patchnoteSQL.updateState(lastPatchnote.id, 1)

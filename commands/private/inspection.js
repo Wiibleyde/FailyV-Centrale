@@ -20,7 +20,7 @@ module.exports = {
             .setDescription(`Action à effectuer`)
             .addChoices(
                 {
-                    name: `Voir`,
+                    name: `Voir les inspections`,
                     value: `voir`
                 },
                 {

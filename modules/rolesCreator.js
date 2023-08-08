@@ -17,11 +17,13 @@ module.exports = {
             await guild.roles.fetch().then(d => d.map(roleFound => {
                 if(roleFound.id == process.env.IRIS_PRIVATE_ROLE_ID) { irisRolePos = roleFound.rawPosition; }
             }));
-            try {
-                await role.setPosition(irisRolePos - 1);
-            } catch (err) {
-                logger.error(err);
-                await role.setPosition(irisRolePos - 2);
+            for(let i=irisRolePos;i>0;i--) {
+                try {
+                    await role.setPosition(i);
+                    return;
+                } catch (err) {
+                    logger.error(err);
+                }
             }
             resolve(role);
         });

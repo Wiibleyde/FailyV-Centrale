@@ -168,3 +168,20 @@ Pour indiquer une date de cérémonie ou d'incinération, il suffit de cliquer s
 ### Supprimer un message
 
 Pour supprimer un message, il suffit de cliquer sur le bouton `Supprimer`, cela va supprimer le message.
+
+## Inspection
+
+### Ajouter une inspection
+
+Pour ajouter une inspection, il suffit de faire la commande `/inspection` et de choisir l'option "Ajouter ou mettre à jour une inspecrion". Vous aurez alors un formulaire à remplir pour ajouter l'inspection, il faudra renseigner :
+- Nom de l'entreprise
+- Les docteurs qui ont participé à l'inspection
+- La date de l'inspection (laisser vide pour mettre la date du jour)
+
+### Supprimer une inspection
+
+Pour supprimer une inspection, il suffit de faire la commande `/inspection` et de choisir l'option "Supprimer une inspection". Vous aurez alors un message avec un choix multiple, et il faudra sélectionner le nom de l'entreprise.
+
+### Voir les inspections
+
+Pour voir les inspections, il suffit de faire la commande `/inspection` et de choisir l'option "Voir les inspections". Vous aurez alors un message avec toutes les inspections.

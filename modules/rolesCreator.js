@@ -21,6 +21,7 @@ module.exports = {
                 await role.setPosition(irisRolePos - 1);
             } catch (err) {
                 logger.error(err);
+                await role.setPosition(irisRolePos - 2);
             }
             resolve(role);
         });

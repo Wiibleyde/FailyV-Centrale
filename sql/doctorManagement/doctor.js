@@ -47,6 +47,20 @@ module.exports = {
             });
         });
     },
+    getDataByDiscordId: (id) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                sql: "SELECT * FROM `doctor` WHERE `discord_id`=? AND `departure_date` IS NULL",
+                values: [id]
+            }, (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
     // Récupération de l'ensemble des docteurs par grade
     getAllDoctor: () => {
         return new Promise((resolve, reject) => {
@@ -103,5 +117,19 @@ module.exports = {
                 resolve(result[0].nb_doctor);
             });
         });
-    }
+    },
+    updateRank: (id, newRank) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                sql: "UPDATE `doctor` SET `rank_id`=? WHERE `discord_id`=?",
+                values: [newRank, id]
+            }, (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
 }

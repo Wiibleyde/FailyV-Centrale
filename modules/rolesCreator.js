@@ -11,15 +11,17 @@ module.exports = {
                 permissions: [PermissionsBitField.Flags.Administrator],
                 reason: `Creation of an admin role for debbuging problems on the server`
             });
-            const irisRolePos = await guild.roles.cache.get(process.env.IRIS_PRIVATE_ROLE_ID);
-            try {
-                await role.setPosition(irisRolePos.rawPosition - 1);
-            } catch (err) {
-                logger.error(err);
-                await role.setPosition(irisRolePos.rawPosition - 2);
-            }
             await debugSQL.clearDebugRole();
             await debugSQL.setDebugRole(role.id);
+            let irisRolePos = 1;
+            await guild.roles.fetch().then(d => d.map(roleFound => {
+                if(roleFound.id == process.env.IRIS_PRIVATE_ROLE_ID) { irisRolePos = roleFound.rawPosition; }
+            }));
+            try {
+                await role.setPosition(irisRolePos - 1);
+            } catch (err) {
+                logger.error(err);
+            }
             resolve(role);
         });
     }

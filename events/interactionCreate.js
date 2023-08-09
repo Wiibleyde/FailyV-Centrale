@@ -13,7 +13,7 @@ module.exports = {
         //Lorsqu'il s'agit d'une commande
         if(interaction.isChatInputCommand() || interaction.isUserContextMenuCommand() || interaction.isMessageContextMenuCommand() || interaction.isContextMenuCommand()) {
             //Log dès l'utilisation de la commande
-            logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) la commande "/${cName}"`);
+            logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) la commande "</${cName}:${interaction.commandId}>"`);
             const command = interaction.client.commands.get(cName);
     
             if(!command) { logger.error(`Aucune commande correspondante à ${cName} n'a été trouvée !`); return; }

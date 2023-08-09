@@ -99,6 +99,7 @@ module.exports = {
         let startPrivateText;
         let privateText;
         let promoType;
+        let contentText = null;
 
         if(type == 'spe') {
             let emote = ``;
@@ -171,6 +172,7 @@ module.exports = {
             text = `⬆️ Félicitation à ${user} qui devient ${role} !`;
             privateText = `Passage ${role}`;
             promoType = `**${user}** à bien été promu ${role} !`;
+            contentText = `<@&${process.env.IRIS_LSMS_ROLE}>`
 
         }
 
@@ -182,7 +184,7 @@ module.exports = {
             try {
                 const chan = await interaction.guild.channels.cache.get(announceChanId[0].id);
                 const respEmb = emb.generate(null, null, text, role.color, process.env.LSMS_LOGO_V2, null, `Annonce`, serverIcon, null, interaction.member.nickname, null, true);
-                const msg = await chan.send({ embeds: [respEmb] });
+                const msg = await chan.send({ content: contentText, embeds: [respEmb] });
                 msg.react('👏');
             } catch (err) {
                 logger.error(err);

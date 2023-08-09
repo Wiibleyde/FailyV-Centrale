@@ -8,7 +8,7 @@ module.exports = {
     addCompany: (name,acronym,side) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "INSERT INTO `companies` SET `name`=?, `acronym`=?, `side`=?",
+                    sql: "INSERT INTO `company` SET `name`=?, `acronym`=?, `side`=?",
                     timeout: 40000,
                     values: [name,acronym,side]
                 }, async (reqErr, result, fields) => {
@@ -21,10 +21,10 @@ module.exports = {
         });
     },
     //Récupération de toutes les entreprises
-    getAllCompanies: () => {
+    getAllcompany: () => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "SELECT * FROM `companies`",
+                    sql: "SELECT * FROM `company`",
                     timeout: 40000
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
@@ -39,7 +39,7 @@ module.exports = {
     getCompany: (id) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "SELECT * FROM `companies` WHERE `id`=?",
+                    sql: "SELECT * FROM `company` WHERE `id`=?",
                     timeout: 40000,
                     values: [id]
                 }, async (reqErr, result, fields) => {
@@ -55,7 +55,7 @@ module.exports = {
     updateCompany: (id,name,acronym,side) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "UPDATE `companies` SET `name`=?, `acronym`=?, `side`=? WHERE `id`=?",
+                    sql: "UPDATE `company` SET `name`=?, `acronym`=?, `side`=? WHERE `id`=?",
                     timeout: 40000,
                     values: [name,acronym,side,id]
                 }, async (reqErr, result, fields) => {
@@ -71,7 +71,7 @@ module.exports = {
     deleteCompany: (id) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "DELETE FROM `companies` WHERE `id`=?",
+                    sql: "DELETE FROM `company` WHERE `id`=?",
                     timeout: 40000,
                     values: [id]
                 }, async (reqErr, result, fields) => {
@@ -82,5 +82,27 @@ module.exports = {
                 resolve(result);
             });
         });
-    }
-}
+    },
+    testIfExist: (name,acronym) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql(). query({
+                sql: `SELECT * FROM company WHERE name = ? AND acronym = ?;`,
+                values: [
+                    name,
+                    acronym
+                ]
+            }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                logger.debug(result);
+                if (result.length > 0) {
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
+            });
+        });
+    },
+};

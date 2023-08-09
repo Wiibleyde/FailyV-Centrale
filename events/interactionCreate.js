@@ -54,6 +54,8 @@ module.exports = {
             if(cID == 'addFeatureModal') { const addFeatureModal = require('./../modals/patchnote/addFeatureModal'); addFeatureModal.execute(interaction, errEmb); }
             if(cID == 'updateFeatureModal') { const updateFeatureModal = require('./../modals/patchnote/updateFeatureModal'); updateFeatureModal.execute(interaction, errEmb); }
             if(cID == 'addPatchnoteModal') { const addPatchnoteModal = require('./../modals/patchnote/addPatchnoteModal'); addPatchnoteModal.execute(interaction, errEmb); }
+            if(cID == 'addCompanyModal') { const addCompanyModal = require('./../modals/company/addCompanyModal'); addCompanyModal.execute(interaction, errEmb); }
+            if(cID == 'updateCompanyModal') { const updateCompanyModal = require('./../modals/company/updateCompanyModal'); updateCompanyModal.execute(interaction, errEmb); }
         }
         //Lorsqu'il s'agit d'un bouton
         if(interaction.isButton()) {
@@ -114,6 +116,9 @@ module.exports = {
             if(cID == 'featureUpdateSelect') { const featureUpdateSelect = require('../commands/private/feature'); featureUpdateSelect.execute(interaction, errEmb); }
             if(cID == 'addFeaturePatchnoteSelect') { const addFeaturePatchnoteSelect = require('../commands/private/patchnote'); addFeaturePatchnoteSelect.execute(interaction, errEmb); }
             if(cID == 'removeFeaturePatchnoteSelect') { const removeFeaturePatchnoteSelect = require('../commands/private/patchnote'); removeFeaturePatchnoteSelect.execute(interaction, errEmb); }
+            if(cID == 'companyGlobalUpdateSelect') { const companyGlobalUpdateSelect = require('../commands/private/entrprise'); companyGlobalUpdateSelect.execute(interaction, errEmb); }
+            if(cID == 'companyGlobalDeleteSelect') { const companyGlobalDeleteSelect = require('../commands/private/entrprise'); companyGlobalDeleteSelect.execute(interaction, errEmb); }
+
             //Logs de quel option du menu de selection à été utilisée
             logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) l'option "${interaction.values}" du menu de séléction "${interaction.customId}"`);
         }

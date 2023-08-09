@@ -157,7 +157,13 @@ module.exports = {
                 return await interaction.deleteReply();
             }
 
-            await memberChannel.setParent(rank[0].parent_channel_id);
+            try {
+                await memberChannel.setParent(rank[0].parent_channel_id);
+            } catch (err) {
+                logger.error(err);
+                const embed = emb.generate(`Oups :(`, null, `Il semblerait que la catégorie pour les fiches de suivi des ${role} n'ait pas été définie/n'existe plus, si le problème persiste merci de bien vouloir le signaler à l'aide de la commande </report:${process.env.IRIS_DEBUG_COMMAND_ID}> !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+                return await interaction.followUp({ embeds: [embed], ephemeral: true });
+            }
             await member.roles.remove(currentRank[0].role_id);
             await member.roles.add(role.id);
             await doctor.updateRank(user.id, rank[0].id);

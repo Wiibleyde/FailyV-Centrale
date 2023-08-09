@@ -17,7 +17,7 @@ module.exports = {
     //Création de la commande
     data: new SlashCommandBuilder()
         .setName('vacances')
-        .setDescription('Mettre un docteur en vacances ou retirer les accès')
+        .setDescription('[Direction] Mettre un docteur en vacances ou retirer les accès')
         .addUserOption(option => option.setName('docteur').setDescription('Mentionnez le docteur à mettre en vacances').setRequired(true)),
     async execute(interaction) {
         if (!hasAuthorization(Rank.DepartementManager, interaction.member.roles.cache)) {

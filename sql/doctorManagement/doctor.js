@@ -85,6 +85,7 @@ module.exports = {
             mysql.sql().query({
                 sql: `SELECT d.name, d.phone_number, d.rank_id, DATE_FORMAT(d.arrival_date, '%d/%m/%x') arrival_date
                     FROM doctor d
+                    WHERE d.departure_date IS NULL
                     ORDER BY d.arrival_date;`
             }, async (reqErr, result, fields) => {
                 if(reqErr) {
@@ -132,4 +133,47 @@ module.exports = {
             });
         });
     },
+    removeDoctor: (id, departureDate) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                sql: "UPDATE `doctor` SET `departure_date`=? WHERE `discord_id`=?",
+                values: [departureDate, id]
+            }, (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
+    getDoctorsToRemove: () => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                sql: "SELECT * FROM `doctor` WHERE `departure_date` IS NOT NULL AND `removed`='0'",
+                timeout: 40000
+            }, (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
+    setDeleted: (id) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                sql: "UPDATE `doctor` SET `removed`='1' WHERE `id`=?",
+                timeout: 40000,
+                values: [id]
+            }, (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    }
 }

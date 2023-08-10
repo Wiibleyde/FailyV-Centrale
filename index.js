@@ -212,6 +212,73 @@ async function updateRadios(client, ws, wsData, sqlRadio) {
                 service.resetRadios(client, freqLSMS, data.radioFreq, null);
                 const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
                 userservice.kick(guild, guild.members.cache.get(process.env.IRIS_DISCORD_ID), false);
+
+                //Remove doctors
+                const doctor = require('./sql/doctorManagement/doctor');
+                const doctorsToRemove = await doctor.getDoctorsToRemove();
+                if(doctorsToRemove[0] != null) {
+                    for(let i=0;i<doctorsToRemove.length;i++) {
+                        const currentDate = new Date();
+                        const departureDate = new Date(doctorsToRemove[i].departure_date);
+                        const member = guild.members.cache.get(doctorsToRemove[i].discord_id);
+                        let yearToCheck;
+                        let monthToCheck = currentDate.getMonth();
+                        if(departureDate.getMonth() == 11) {
+                            monthToCheck = 0;
+                        }
+                        const thirtyDaysMonth = [3,5,8,10];
+                        if(doctorsToRemove[i].discord_id != '461880599594926080' && doctorsToRemove[i].discord_id != '461807010086780930' && doctorsToRemove[i].discord_id != '368259650136571904') {
+                            if(departureDate.getHours() >= 6 && departureDate.getHours() <= 23) {
+                                if(currentDate.getDate() == 1 && departureDate.getDate() + 1 == 31 && currentDate.getMonth() == 0 && departureDate.getMonth() == 11 && currentDate.getFullYear() == departureDate.getFullYear() + 1) {
+                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
+                                } else if(currentDate.getDate() == 1 && departureDate.getDate() + 1 == 31 && currentDate.getMonth() == departureDate.getMonth() + 1 && currentDate.getFullYear() == departureDate.getFullYear()) {
+                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
+                                } else if(currentDate.getDate() == 1 && departureDate.getDate() + 1 == 29 && currentDate.getMonth() == 2 && departureDate.getMonth() == 1 && currentDate.getFullYear() == departureDate.getFullYear()) {
+                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
+                                } else if(currentDate.getDate() == 1 && departureDate.getDate() + 1 == 28 && currentDate.getMonth() == 2 && departureDate.getMonth() == 1 && currentDate.getFullYear() == departureDate.getFullYear() && !isLeapYear(currentDate.getFullYear())) {
+                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
+                                } else if(currentDate.getDate() == 1 && departureDate.getDate() + 1 == 30 && thirtyDaysMonth.contains(departureDate.getMonth()) && currentDate.getMonth() == departureDate.getMonth() + 1 && currentDate.getFullYear() == departureDate.getFullYear()) {
+                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
+                                } else if(currentDate.getDate() > departureDate.getDate() + 1 && currentDate.getDate() < departureDate.getDate() + 3 && currentDate.getMonth() == departureDate.getMonth() && currentDate.getFullYear() == departureDate.getFullYear()) {
+                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
+                                }
+                            } else {
+                                if(currentDate.getDate() == 1 && departureDate.getDate() == 31 && currentDate.getMonth() == 0 && departureDate.getMonth() == 11 && currentDate.getFullYear() == departureDate.getFullYear() + 1) {
+                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
+                                } else if(currentDate.getDate() == 1 && departureDate.getDate() == 31 && currentDate.getMonth() == departureDate.getMonth() + 1 && currentDate.getFullYear() == departureDate.getFullYear()) {
+                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
+                                } else if(currentDate.getDate() == 1 && departureDate.getDate() == 29 && currentDate.getMonth() == 2 && departureDate.getMonth() == 1 && currentDate.getFullYear() == departureDate.getFullYear()) {
+                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
+                                } else if(currentDate.getDate() == 1 && departureDate.getDate() == 28 && currentDate.getMonth() == 2 && departureDate.getMonth() == 1 && currentDate.getFullYear() == departureDate.getFullYear() && !isLeapYear(currentDate.getFullYear())) {
+                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
+                                } else if(currentDate.getDate() == 1 && departureDate.getDate() == 30 && thirtyDaysMonth.contains(departureDate.getMonth()) && currentDate.getMonth() == departureDate.getMonth() + 1 && currentDate.getFullYear() == departureDate.getFullYear()) {
+                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
+                                } else if(currentDate.getDate() > departureDate.getDate() && currentDate.getDate() < departureDate.getDate() + 3 && currentDate.getMonth() == departureDate.getMonth() && currentDate.getFullYear() == departureDate.getFullYear()) {
+                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
+                                }
+                            }
+                        }
+                        let timeToRemove = false;
+                        if(departureDate.getMonth() == 11 && currentDate.getMonth() == 0 && currentDate.getFullYear() == departureDate.getFullYear() + 1 && currentDate.getDate() == departureDate.getDate()) {
+                            timeToRemove = true;
+                        } else if(departureDate.getMonth() == 0 && currentDate.getMonth() == 1 && currentDate.getFullYear() == departureDate.getFullYear() && currentDate.getDate() == departureDate.getDate()) {
+                            timeToRemove = true
+                        } else if(currentDate.getFullYear() == departureDate.getFullYear()) {
+                            if(departureDate.getMonth() == 0 && currentDate.getMonth() == 2 && departureDate.getDate() > 28 && currentDate.getDate() == 1) {
+                                timeToRemove = true;
+                            } else if(departureDate.getMonth() == 1 || departureDate.getMonth() == 3 || departureDate.getMonth() == 5 || departureDate.getMonth() == 8 || departureDate.getMonth() == 10) {
+                                if(currentDate.getDate() == departureDate.getDate() + 1) { timeToRemove = true; }
+                            } else { if(currentDate.getDate() == departureDate.getDate()) { timeToRemove = true; } }
+                        }
+                        if(timeToRemove) {
+                            try {
+                                await guild.channels.cache.get(doctorsToRemove[i].channel_id).delete();
+                            } catch (err) {}
+                            await doctor.setDeleted(doctorsToRemove[i].id);
+                        }
+                    }
+                }
+
                 logger.log(`Reset de 06h00 effectué !`);
             }
         } else if (data.type === "radio_info") {
@@ -233,4 +300,12 @@ async function updateRadios(client, ws, wsData, sqlRadio) {
             logger.error(data);
         }
     } catch {}
+}
+
+function isLeapYear(year) {
+    if ((0 == year % 4) && (0 != year % 100) || (0 == year % 400)) {
+        return true;
+    } else {
+        return false;
+    }
 }

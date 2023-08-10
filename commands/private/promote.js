@@ -172,7 +172,7 @@ module.exports = {
             text = `⬆️ Félicitation à ${user} qui devient ${role} !`;
             privateText = `Passage ${role}`;
             promoType = `**${user}** à bien été promu ${role} !`;
-            contentText = `<@&${process.env.IRIS_LSMS_ROLE}>`
+            contentText = `<@&${process.env.IRIS_LSMS_ROLE}>`;
 
         }
 

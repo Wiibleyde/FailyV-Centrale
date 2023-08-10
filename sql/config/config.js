@@ -37,7 +37,7 @@ module.exports = {
     getChannel: (name) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "SELECT `id` FROM `channels` WHERE `name`=?",
+                    sql: "SELECT * FROM `channels` WHERE `name`=?",
                     timeout: 40000,
                     values: [name]
                 }, async (reqErr, result, fields) => {
@@ -101,7 +101,52 @@ module.exports = {
     getMessage: (name) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "SELECT `id` FROM `message` WHERE `correspond`=?",
+                    sql: "SELECT * FROM `message` WHERE `correspond`=?",
+                    timeout: 40000,
+                    values: [name]
+                }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
+    deleteCategory: (name) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "DELETE FROM `category` WHERE `name`=?",
+                    timeout: 40000,
+                    values: [name]
+                }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
+    setCategory: (name, value) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "INSERT INTO `category` (`name`, `id`) VALUES (?, ?)",
+                    timeout: 40000,
+                    values: [name, value]
+                }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
+    getCategory: (name) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "SELECT * FROM `category` WHERE `name`=?",
                     timeout: 40000,
                     values: [name]
                 }, async (reqErr, result, fields) => {

@@ -1,5 +1,5 @@
 // Récupération des fonctions pour créer une commande
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
 // Récupération du logger
 const logger = require('../../modules/logger');
 // Récupération du créateur d'embed
@@ -128,6 +128,47 @@ module.exports = {
 
         try {
             await memberChannel.setParent(archivesCatId[0].id);
+            if(memberData[0].rank_id == 'intern') {
+                await memberChannel.permissionOverwrites.set([
+                    { id: process.env.IRIS_PRIVATE_GUILD_ID, allow: [PermissionsBitField.Flags.ReadMessageHistory], deny: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.SendMessagesInThreads, PermissionsBitField.Flags.CreatePublicThreads, PermissionsBitField.Flags.CreatePrivateThreads, PermissionsBitField.Flags.AddReactions, PermissionsBitField.Flags.ManageMessages, PermissionsBitField.Flags.ManageThreads] },
+                    { id: process.env.IRIS_RESIDENT_ROLE, allow: [PermissionsBitField.Flags.ViewChannel]},
+                    { id: process.env.IRIS_INCUMBENT_ROLE, allow: [PermissionsBitField.Flags.ViewChannel] },
+                    { id: process.env.IRIS_SPECIALIST_ROLE, allow: [PermissionsBitField.Flags.ViewChannel] },
+                    { id: process.env.IRIS_DEPARTEMENT_MANAGER_ROLE, allow: [PermissionsBitField.Flags.ViewChannel] },
+                    { id: process.env.IRIS_ASSISTANT_MANAGER_ROLE, allow: [PermissionsBitField.Flags.ViewChannel] },
+                    { id: process.env.IRIS_DIRECTOR_ROLE, allow: [PermissionsBitField.Flags.ViewChannel] }
+                ]);
+            } else if(memberData[0].rank_id == 'resident') {
+                await memberChannel.permissionOverwrites.set([
+                    { id: process.env.IRIS_PRIVATE_GUILD_ID, allow: [PermissionsBitField.Flags.ReadMessageHistory], deny: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.SendMessagesInThreads, PermissionsBitField.Flags.CreatePublicThreads, PermissionsBitField.Flags.CreatePrivateThreads, PermissionsBitField.Flags.AddReactions, PermissionsBitField.Flags.ManageMessages, PermissionsBitField.Flags.ManageThreads] },
+                    { id: process.env.IRIS_INCUMBENT_ROLE, allow: [PermissionsBitField.Flags.ViewChannel] },
+                    { id: process.env.IRIS_SPECIALIST_ROLE, allow: [PermissionsBitField.Flags.ViewChannel] },
+                    { id: process.env.IRIS_DEPARTEMENT_MANAGER_ROLE, allow: [PermissionsBitField.Flags.ViewChannel] },
+                    { id: process.env.IRIS_ASSISTANT_MANAGER_ROLE, allow: [PermissionsBitField.Flags.ViewChannel] },
+                    { id: process.env.IRIS_DIRECTOR_ROLE, allow: [PermissionsBitField.Flags.ViewChannel] }
+                ]);
+            } else if(memberData[0].rank_id == 'incumbent') {
+                await memberChannel.permissionOverwrites.set([
+                    { id: process.env.IRIS_PRIVATE_GUILD_ID, allow: [PermissionsBitField.Flags.ReadMessageHistory], deny: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.SendMessagesInThreads, PermissionsBitField.Flags.CreatePublicThreads, PermissionsBitField.Flags.CreatePrivateThreads, PermissionsBitField.Flags.AddReactions, PermissionsBitField.Flags.ManageMessages, PermissionsBitField.Flags.ManageThreads] },
+                    { id: process.env.IRIS_SPECIALIST_ROLE, allow: [PermissionsBitField.Flags.ViewChannel] },
+                    { id: process.env.IRIS_DEPARTEMENT_MANAGER_ROLE, allow: [PermissionsBitField.Flags.ViewChannel] },
+                    { id: process.env.IRIS_ASSISTANT_MANAGER_ROLE, allow: [PermissionsBitField.Flags.ViewChannel] },
+                    { id: process.env.IRIS_DIRECTOR_ROLE, allow: [PermissionsBitField.Flags.ViewChannel] }
+                ]);
+            } else if(memberData[0].rank_id == 'specialist') {
+                await memberChannel.permissionOverwrites.set([
+                    { id: process.env.IRIS_PRIVATE_GUILD_ID, allow: [PermissionsBitField.Flags.ReadMessageHistory], deny: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.SendMessagesInThreads, PermissionsBitField.Flags.CreatePublicThreads, PermissionsBitField.Flags.CreatePrivateThreads, PermissionsBitField.Flags.AddReactions, PermissionsBitField.Flags.ManageMessages, PermissionsBitField.Flags.ManageThreads] },
+                    { id: process.env.IRIS_DEPARTEMENT_MANAGER_ROLE, allow: [PermissionsBitField.Flags.ViewChannel] },
+                    { id: process.env.IRIS_ASSISTANT_MANAGER_ROLE, allow: [PermissionsBitField.Flags.ViewChannel] },
+                    { id: process.env.IRIS_DIRECTOR_ROLE, allow: [PermissionsBitField.Flags.ViewChannel] }
+                ]);
+            } else {
+                await memberChannel.permissionOverwrites.set([
+                    { id: process.env.IRIS_PRIVATE_GUILD_ID, allow: [PermissionsBitField.Flags.ReadMessageHistory], deny: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.SendMessagesInThreads, PermissionsBitField.Flags.CreatePublicThreads, PermissionsBitField.Flags.CreatePrivateThreads, PermissionsBitField.Flags.AddReactions, PermissionsBitField.Flags.ManageMessages, PermissionsBitField.Flags.ManageThreads] },
+                    { id: process.env.IRIS_ASSISTANT_MANAGER_ROLE, allow: [PermissionsBitField.Flags.ViewChannel] },
+                    { id: process.env.IRIS_DIRECTOR_ROLE, allow: [PermissionsBitField.Flags.ViewChannel] }
+                ]);
+            }
         } catch (err) {
             logger.error(err);
             const embed = emb.generate(`Oups :(`, null, `Il semblerait que la catégorie pour les **archives** n'existe plus, si le problème persiste merci de bien vouloir le signaler à l'aide de la commande </report:${process.env.IRIS_DEBUG_COMMAND_ID}> !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);

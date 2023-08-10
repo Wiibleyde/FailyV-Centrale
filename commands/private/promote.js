@@ -106,7 +106,7 @@ module.exports = {
             if(spe[0].emote != '') {
                 emote = `${spe[0].emote} `;
             }
-            const start = emote + `Félicitation à ${member.nickname} qui valide `;
+            const start = emote + `Félicitation à ${memberData[0].name} qui valide `;
             text = start + `sa formation ${role} !`;
             startPrivateText = emote + `Passage `;
             privateText = startPrivateText + `la spécialitée ${role}`;
@@ -169,7 +169,7 @@ module.exports = {
             await member.roles.add(role.id);
             await doctor.updateRank(user.id, rank[0].id);
             workforce.generateWorkforce(interaction.guild);
-            text = `⬆️ Félicitation à ${member.nickname} qui devient ${role} !`;
+            text = `⬆️ Félicitation à ${memberData[0].name} qui devient ${role} !`;
             privateText = `Passage ${role}`;
             promoType = `**${user}** à bien été promu ${role} !`;
             contentText = `<@&${process.env.IRIS_LSMS_ROLE}>`;

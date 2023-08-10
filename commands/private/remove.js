@@ -204,7 +204,7 @@ module.exports = {
         }
 
         privateEmbed.addFields({name: '**Type**', value: privateText, inline: false}, { name: '**Motif**', value: textReason, inline: false });
-        respEmb.setDescription(text + ` de **${member.nickname}**`);
+        respEmb.setDescription(text + ` de **${memberData[0].name}**`);
         respEmb.addFields({ name: '**Motif**', value: textReason, inline: false });
 
         await memberChannel.send({ embeds: [privateEmbed] });

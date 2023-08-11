@@ -194,13 +194,13 @@ module.exports = {
                 const embed = emb.generate(`Attention`, null, `La promotion à bien été effectuée mais il semblerait que le salon d'annonce ne soit pas à jour, pour corriger se problème veuillez le redéfinir via la commande </define:> !`, `Gold`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
                 await interaction.followUp({ embeds: [embed], ephemeral: true });
                 await wait(5000);
-                await interaction.deleteReply();
+                return await interaction.deleteReply();
             }
         } else {
             const embed = emb.generate(`Attention`, null, `La promotion à bien été effectuée mais aucun salon d'annonce n'a été trouvé en base de donnée, pour corriger se problème veuillez le définir via la commande </define:> !`, `Gold`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
             await interaction.followUp({ embeds: [embed], ephemeral: true });
             await wait(5000);
-            await interaction.deleteReply();
+            return await interaction.deleteReply();
         }
         
         const embed = emb.generate(null, null, promoType, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);

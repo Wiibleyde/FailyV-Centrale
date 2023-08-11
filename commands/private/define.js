@@ -29,51 +29,55 @@ module.exports = {
                     value: 'IRIS_SERVICE_CHANNEL_ID'
                 },
                 {
-                    name: 'Gestion des radios',
+                    name: 'Centrale',
                     value: 'IRIS_RADIO_CHANNEL_ID'
                 },
                 {
-                    name: 'Salon des annonces',
-                    value: 'IRIS_ANNOUNCEMENT_CHANNEL_ID'
-                },
-                {
-                    name: 'Salon de l\'effectif',
+                    name: 'Effectif',
                     value: 'IRIS_WORKFORCE_CHANNEL_ID'
                 },
                 {
-                    name: 'Salon des rdv psychologiques',
-                    value: 'IRIS_PSYCHO_CHANNEL_ID'
-                },
-                {
-                    name: 'Salon des rdv chirurgicaux',
-                    value: 'IRIS_SURGERY_CHANNEL_ID'
-                },
-                {
-                    name: 'Salon des rdv généraux',
-                    value: 'IRIS_GENERAL_CHANNEL_ID'
-                },
-                {
-                    name: 'Salon des suivis',
-                    value: 'follow'
-                },
-                {
-                    name: 'Salon de l\'agenda',
-                    value: 'agenda'
-                },
-                {
-                    name: 'Salon des décès (Mairie)',
-                    value: 'mairie_décès'
-                },
-                {
-                    name: 'Salon des décès (LSPD)',
-                    value: 'lspd'
-                },
-                {
-                    name: 'Salon de la liste des véhicules',
+                    name: 'Liste des véhicules',
                     value: 'vehicule'
                 },
                 {
-                    name: 'Salon des mises à jour de la Centrale',
+                    name: 'Annonces',
+                    value: 'IRIS_ANNOUNCEMENT_CHANNEL_ID'
+                },
+                {
+                    name: 'Délégué du personnel',
+                    value: 'staff_representative'
+                },
+                {
+                    name: 'Agenda',
+                    value: 'agenda'
+                },
+                {
+                    name: 'Rendez-vous généraux',
+                    value: 'IRIS_GENERAL_CHANNEL_ID'
+                },
+                {
+                    name: 'Rendez-vous chirurgicaux',
+                    value: 'IRIS_SURGERY_CHANNEL_ID'
+                },
+                {
+                    name: 'Rendez-vous psychologiques',
+                    value: 'IRIS_PSYCHO_CHANNEL_ID'
+                },
+                {
+                    name: 'Suivis',
+                    value: 'follow'
+                },
+                {
+                    name: 'Annonce des décès à la Mairie',
+                    value: 'mairie_décès'
+                },
+                {
+                    name: 'Annonce des décès au LSPD',
+                    value: 'lspd'
+                },
+                {
+                    name: 'Mises à jour de la Centrale',
                     value: 'IRIS_PATCHNOTE_CHANNEL_ID'
                 }
             )
@@ -102,18 +106,18 @@ module.exports = {
                     await sql.setChannel(interaction.options.getString('channel'), channelID);
                 }
                 //Création de l'embed
-                const embed = emb.generate(null, null, `Le channel a bien été mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true);
+                const embed = emb.generate(null, null, `Le channel a bien été mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des salons`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true);
                 //Envoi de la réponse
                 interaction.reply({ embeds: [embed], ephemeral: true });
             } else {
                 //Création de l'embed
-                const embed = emb.generate(null, null, `Le channel n'existe pas !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true);
+                const embed = emb.generate(null, null, `Le channel n'existe pas !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion des salons`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true);
                 //Envoi de la réponse
                 interaction.reply({ embeds: [embed], ephemeral: true });
             }
         } else {
             //Création de l'embed
-            const embed = emb.generate(null, null, `Vous n'avez pas la permission d'utiliser cette commande !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true);
+            const embed = emb.generate(null, null, `Vous n'avez pas la permission d'utiliser cette commande !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion des salons`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true);
             //Envoi de la réponse
             interaction.reply({ embeds: [embed], ephemeral: true });
         }

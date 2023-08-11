@@ -19,7 +19,7 @@ module.exports = {
     // Création de la commande
     data: new SlashCommandBuilder()
         .setName('promote')
-        .setDescription('Promouvoir/Ajouter un rôle à la personne sélectionnée')
+        .setDescription('Promouvoir/Ajouter un(e) grade/spé/formation à la personne sélectionnée')
         .addUserOption(option =>
             option.setName('membre')
             .setDescription('La personne à promouvoir')

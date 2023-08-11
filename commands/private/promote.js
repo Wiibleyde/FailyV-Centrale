@@ -123,9 +123,12 @@ module.exports = {
             if(spe[0].id == 'helico2') {
                 const helico1Id = await roles.getSpeRankByName('helico1');
                 if(member.roles.cache.has(helico1Id[0].role_id)) {
-                    await member.roles.remove(helico1Id[0].role_id);
                     privateText = startPrivateText + `de la formation ${role}`;
-                } else { text = start + `ses formations <@&${helico1Id[0].role_id}> et ${role} !`; privateText = startPrivateText + `des formations <@&${helico1Id[0].role_id}> et ${role}`; }
+                } else {
+                    text = start + `ses formations <@&${helico1Id[0].role_id}> et ${role} !`;
+                    privateText = startPrivateText + `des formations <@&${helico1Id[0].role_id}> et ${role}`;
+                    await member.roles.add(helico1Id[0].role_id);
+                }
             }
             if(spe[0].id == 'psychology') {
                 const ppaId = await roles.getSpeRankByName('ppa');

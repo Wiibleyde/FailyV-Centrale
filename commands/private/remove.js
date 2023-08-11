@@ -101,12 +101,12 @@ module.exports = {
         let textReason;
 
         if(type == 0) {
-            text = `<:no:1138856467848507452> Démission`;
+            text = `⬅️ Démission`;
             privateText = 'Démission';
             textReason = 'Motif personnel';
         }
         if(type == 1) {
-            text = `<:no:1138856467848507452> Licenciement`;
+            text = `⬅️ Licenciement`;
             privateText = 'Licenciement';
             if(reason == null) {
                 const embed = emb.generate(`Désolé :(`, null, `Vous devez obligatoirement spécifier un motif de licenciement !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);

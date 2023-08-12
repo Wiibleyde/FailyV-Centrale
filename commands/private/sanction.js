@@ -39,7 +39,7 @@ module.exports = {
             option.setName('motif')
             .setDescription('Motif de la sanction')
             .setRequired(true)
-        )/*.addStringOption(option => 
+        ).addStringOption(option => 
             option.setName('visibilité')
             .setDescription('Visibilité de la sanction')
             .addChoices(
@@ -53,7 +53,7 @@ module.exports = {
                 }
             )
             .setRequired(false)
-        )*/,
+        ),
     async execute(interaction) {
         await interaction.deferReply({ ephemeral: true });
         const serverIcon = `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`;
@@ -121,6 +121,34 @@ module.exports = {
         privateEmbed.addFields({ name: '**Membre:**', value: memberData[0].name, inline: false });
         privateEmbed.addFields({ name: '**Motif:**', value: reason, inline: false });
         await staffRepresentativeChannel.send({ embeds: [privateEmbed] });
+
+        if(visibility != null && visibility == 'public') {
+            const announceChanId = await channels.getChannel('IRIS_ANNOUNCEMENT_CHANNEL_ID');
+            if(announceChanId[0] != null) {
+                try {
+                    const chan = await interaction.guild.channels.cache.get(announceChanId[0].id);
+                    const respEmb = emb.generate(null, null, `${type} **${memberData[0].name}**\n\n**Motif:** ${reason}\n\n*Merci de ne faire aucun commentaire et/ou moquerie s'il vous plaît ❤️*`, `Gold`, process.env.LSMS_LOGO_V2, null, `Annonce`, serverIcon, null, interaction.member.nickname, null, true);
+                    const msg = await chan.send({ embeds: [respEmb] });
+                    try {
+                        await msg.react('<:yes:1139625753181433998>');
+                    } catch (err2) {
+                        logger.error(err2);
+                        await msg.react('✅');
+                    }
+                } catch (err) {
+                    logger.error(err);
+                    const embed = emb.generate(`Attention`, null, `La sanction à bien été effectuée mais il semblerait que le salon d'annonce ne soit pas à jour, pour corriger se problème veuillez le redéfinir via la commande </define:> !`, `Gold`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+                    await interaction.followUp({ embeds: [embed], ephemeral: true });
+                    await wait(5000);
+                    return await interaction.deleteReply();
+                }
+            } else {
+                const embed = emb.generate(`Attention`, null, `La sanction à bien été effectuée mais aucun salon d'annonce n'a été trouvé en base de donnée, pour corriger se problème veuillez le définir via la commande </define:> !`, `Gold`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+                await interaction.followUp({ embeds: [embed], ephemeral: true });
+                await wait(5000);
+                return await interaction.deleteReply();
+            }
+        }
 
         const embed = emb.generate(null, null, `${user} à bien été sanctionné !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
         await interaction.followUp({ embeds: [embed], ephemeral: true });

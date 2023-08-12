@@ -12,7 +12,7 @@ module.exports = {
             let roles = member.roles.cache;
 
             //Check si le docteur est déjà en vacances
-            if(member.roles.cache.has(process.env.IRIS_VACANCES_ROLE_ID)) {
+            if(roles.has(process.env.IRIS_VACANCES_ROLE_ID)) {
                 //Remove le rôle
                 await member.roles.remove(process.env.IRIS_VACANCES_ROLE_ID);
                 //Réassigne les rôles de l'utilisateur dans le DB
@@ -35,7 +35,7 @@ module.exports = {
                     reject(error);
                 }
             } else {
-                if(member.roles.cache.has(process.env.IRIS_SERVICE_ROLE_ID)) {
+                if(roles.has(process.env.IRIS_SERVICE_ROLE_ID)) {
                     //Kick le docteur du service
                     await kickservice.kickSomeone(member, guild, interactionMember, false);
                     //Refresh la liste des rôles

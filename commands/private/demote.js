@@ -71,12 +71,12 @@ module.exports = {
             return await interaction.deleteReply();
         }
 
-        /*if(user.id == interaction.user.id) {
+        if(user.id == interaction.user.id) {
             const embed = emb.generate(`Désolé :(`, null, `Je n'ai pas l'autorisation de vous laisser vous rétrograder vous même !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
             await interaction.followUp({ embeds: [embed], ephemeral: true });
             await wait(5000);
             return await interaction.deleteReply();
-        }*/
+        }
 
         if(memberData[0] == null) {
             const embed = emb.generate(`Désolé :(`, null, `La personne que vous avez sélectionnée ne fait pas partie de l'effectif du LSMS, veuillez vérifier la personne que vous souhaitez promouvoir puis réessayez !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);

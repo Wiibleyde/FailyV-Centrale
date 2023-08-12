@@ -9,6 +9,7 @@ const { Rank, hasAuthorization } = require('../../modules/rankAuthorization');
 
 const channels = require('../../sql/config/config');
 const doctor = require('../../sql/doctorManagement/doctor');
+const doctorRoles = require('../../sql/doctorManagement/doctorRoles');
 
 const rolesManager = require('../../modules/rolesManager');
 
@@ -43,7 +44,7 @@ module.exports = {
             .setRequired(true)
         ).addNumberOption(option => 
             option.setName('temps')
-            .setDescription('Temps de la mise à pied')
+            .setDescription('Temps en heure de la mise à pied')
             .setRequired(false)
         ).addStringOption(option => 
             option.setName('visibilité')
@@ -69,6 +70,7 @@ module.exports = {
         const member = interaction.guild.members.cache.get(user.id);
         const type = interaction.options.getString('type');
         const reason = interaction.options.getString('motif');
+        const time = interaction.options.getNumber('temps');
         const visibility = interaction.options.getString('visibilité');
         const memberData = await doctor.getDataByDiscordId(user.id);
         const staffRepresentativeChannelId = await channels.getChannel('staff_representative');
@@ -87,15 +89,24 @@ module.exports = {
             return await interaction.deleteReply();
         }
 
-        /*if(user.id == interaction.user.id) {
+        if(user.id == interaction.user.id) {
             const embed = emb.generate(`Désolé :(`, null, `Je n'ai pas l'autorisation de vous laisser vous mettre à pied vous même !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
             await interaction.followUp({ embeds: [embed], ephemeral: true });
             await wait(5000);
             return await interaction.deleteReply();
-        }*/
+        }
 
         if(memberData[0] == null) {
             const embed = emb.generate(`Désolé :(`, null, `La personne que vous avez sélectionnée ne fait pas partie de l'effectif du LSMS, veuillez vérifier la personne que vous souhaitez mettre à pied puis réessayez !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+            await interaction.followUp({ embeds: [embed], ephemeral: true });
+            await wait(5000);
+            return await interaction.deleteReply();
+        }
+
+        const memberRoles = await doctorRoles.getRoles(user.id);
+
+        if(memberRoles[0] != null) {
+            const embed = emb.generate(`Désolé :(`, null, `La personne que vous avez sélectionnée est encore en vacances, veuillez lui remettre ses accès avec la commande </vacances:> puis réessayez !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
             await interaction.followUp({ embeds: [embed], ephemeral: true });
             await wait(5000);
             return await interaction.deleteReply();
@@ -112,24 +123,29 @@ module.exports = {
         const staffRepresentativeChannel = interaction.guild.channels.cache.get(staffRepresentativeChannelId[0].id);
         
         let sanctionText;
+        let publicTime = '';
         if(type == 'classique') {
+            if(time == null) {
+                const embed = emb.generate(`Désolé :(`, null, `Vous devez spécifier un temps en **heure** pour une mise à pied classique !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+                await interaction.followUp({ embeds: [embed], ephemeral: true });
+                await wait(5000);
+                return await interaction.deleteReply();
+            }
             sanctionText = 'Mise à pied';
         } else {
             sanctionText = 'Mise à pied à titre ' + type;
         }
 
-        const switchRole = await rolesManager.switchVacacionMode(user, member, interaction.guild, interaction.member);
-
-        if(switchRole == 'returned') {
-            await rolesManager.switchVacacionMode(user, member, interaction.guild, interaction.member);
-        }
+        await rolesManager.switchVacacionMode(user, member, interaction.guild, interaction.member);
 
         const privateEmbed = emb.generate(null, null, sanctionText, `Gold`, null, null, `Sanction`, serverIcon, null, interaction.member.nickname, null, true);
+        if(time != null) { publicTime = `\n\n**Durée:** ${time}h`; privateEmbed.addFields({ name: '**Durée:**', value: time + 'h', inline: false }); }
         privateEmbed.addFields({ name: '**Motif:**', value: reason, inline: false });
         await memberChannel.send({ embeds: [privateEmbed] });
-        privateEmbed.spliceFields(0, 1);
+        privateEmbed.spliceFields(0, 2);
         privateEmbed.setThumbnail(process.env.LSMS_LOGO_V2);
         privateEmbed.addFields({ name: '**Membre:**', value: memberData[0].name, inline: false });
+        if(time != null) { privateEmbed.addFields({ name: '**Durée:**', value: time + 'h', inline: false }); }
         privateEmbed.addFields({ name: '**Motif:**', value: reason, inline: false });
         await staffRepresentativeChannel.send({ embeds: [privateEmbed] });
 
@@ -138,7 +154,7 @@ module.exports = {
             if(announceChanId[0] != null) {
                 try {
                     const chan = await interaction.guild.channels.cache.get(announceChanId[0].id);
-                    const respEmb = emb.generate(null, null, `${sanctionText} de **${memberData[0].name}**\n\n**Motif:** ${reason}\n\n*Merci de ne faire aucun commentaire et/ou moquerie s'il vous plaît ❤️*`, `Gold`, process.env.LSMS_LOGO_V2, null, `Annonce`, serverIcon, null, interaction.member.nickname, null, true);
+                    const respEmb = emb.generate(null, null, `${sanctionText} de **${memberData[0].name}**${publicTime}\n\n**Motif:** ${reason}\n\n*Merci de ne faire aucun commentaire et/ou moquerie s'il vous plaît ❤️*`, `Gold`, process.env.LSMS_LOGO_V2, null, `Annonce`, serverIcon, null, interaction.member.nickname, null, true);
                     const msg = await chan.send({ embeds: [respEmb] });
                     try {
                         await msg.react('<:yes:1139625753181433998>');

@@ -4,6 +4,13 @@ const { SlashCommandBuilder } = require('discord.js');
 const logger = require('../../modules/logger');
 // Récupération du créateur d'embed
 const emb = require('../../modules/embeds');
+// Récup du gestionnaire d'autoriasation
+const { Rank, hasAuthorization } = require('../../modules/rankAuthorization');
+
+const channels = require('../../sql/config/config');
+const doctor = require('../../sql/doctorManagement/doctor');
+
+const wait = require('node:timers/promises').setTimeout;
 
 module.exports = {
     // Création de la commande
@@ -20,29 +27,105 @@ module.exports = {
             .addChoices(
                 {
                     name: 'Avertissement',
-                    value: '0'
+                    value: 'Avertissement'
                 },
                 {
                     name: 'Blâme',
-                    value: '1'
+                    value: 'Blâme'
                 }
             )
             .setRequired(true)
         ).addStringOption(option => 
+            option.setName('motif')
+            .setDescription('Motif de la sanction')
+            .setRequired(true)
+        )/*.addStringOption(option => 
             option.setName('visibilité')
             .setDescription('Visibilité de la sanction')
             .addChoices(
                 {
                     name: 'Privé',
-                    value: '0'
+                    value: 'private'
                 },
                 {
                     name: 'Publique',
-                    value: '1'
+                    value: 'public'
                 }
             )
             .setRequired(false)
-        ),
+        )*/,
     async execute(interaction) {
+        await interaction.deferReply({ ephemeral: true });
+        const serverIcon = `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`;
+        const title = `Gestion des employés`;
+
+        const user = interaction.options.getUser('membre');
+        const type = interaction.options.getString('sanction');
+        const reason = interaction.options.getString('motif');
+        const visibility = interaction.options.getString('visibilité');
+        const memberData = await doctor.getDataByDiscordId(user.id);
+        const staffRepresentativeChannelId = await channels.getChannel('staff_representative');
+
+        if(type == 'Blâme') {
+            if(!hasAuthorization(Rank.AssistantManager, interaction.member.roles.cache)) {
+                const embed = emb.generate(`Désolé :(`, null, `Vous n'avez pas les permissions suffisantes pour utiliser cette commande. Il faut être <@&${process.env.IRIS_ASSISTANT_MANAGER_ROLE}> ou plus pour pouvoir vous en servir !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+                await interaction.followUp({ embeds: [embed], ephemeral: true });
+                await wait(5000);
+                return await interaction.deleteReply();
+            }
+        }
+
+        if(!hasAuthorization(Rank.DepartementManager, interaction.member.roles.cache)) {
+            const embed = emb.generate(`Désolé :(`, null, `Vous n'avez pas les permissions suffisantes pour utiliser cette commande. Il faut être <@&${process.env.IRIS_DEPARTEMENT_MANAGER_ROLE}> ou plus pour pouvoir vous en servir !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+            await interaction.followUp({ embeds: [embed], ephemeral: true });
+            await wait(5000);
+            return await interaction.deleteReply();
+        }
+
+        if(user.id == process.env.IRIS_DISCORD_ID) {
+            const embed = emb.generate(`Désolé :(`, null, `Pourquoi voulez-vous me sanctionner ??? Je n'ai rien fait de mal pourtant, je suis un·e secrétaire exemplaire voyons !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+            await interaction.followUp({ embeds: [embed], ephemeral: true });
+            await wait(5000);
+            return await interaction.deleteReply();
+        }
+
+        if(user.id == interaction.user.id) {
+            const embed = emb.generate(`Désolé :(`, null, `Je n'ai pas l'autorisation de vous laisser vous sanctionner vous même !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+            await interaction.followUp({ embeds: [embed], ephemeral: true });
+            await wait(5000);
+            return await interaction.deleteReply();
+        }
+
+        if(memberData[0] == null) {
+            const embed = emb.generate(`Désolé :(`, null, `La personne que vous avez sélectionnée ne fait pas partie de l'effectif du LSMS, veuillez vérifier la personne que vous souhaitez sanctionner puis réessayez !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+            await interaction.followUp({ embeds: [embed], ephemeral: true });
+            await wait(5000);
+            return await interaction.deleteReply();
+        }
+
+        if(staffRepresentativeChannelId[0] == null) {
+            const embed = emb.generate(`Désolé :(`, null, `Il semblerait que le salon du/des délégué(s) du personnel n'est pas défini hors il doit l'être pour effectuer une sanction !\nPour le définir veuillez utiliser la commande </define:>`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+            await interaction.followUp({ embeds: [embed], ephemeral: true });
+            await wait(5000);
+            return await interaction.deleteReply();
+        }
+
+        const memberChannel = interaction.guild.channels.cache.get(memberData[0].channel_id);
+        const staffRepresentativeChannel = interaction.guild.channels.cache.get(staffRepresentativeChannelId[0].id);
+        
+        const privateEmbed = emb.generate(null, null, `**${type}**`, `Gold`, null, null, `Sanction`, serverIcon, null, interaction.member.nickname, null, true);
+        privateEmbed.addFields({ name: '**Motif:**', value: reason, inline: false });
+        await memberChannel.send({ embeds: [privateEmbed] });
+        privateEmbed.spliceFields(0, 1);
+        privateEmbed.setThumbnail(process.env.LSMS_LOGO_V2);
+        privateEmbed.addFields({ name: '**Membre:**', value: memberData[0].name, inline: false });
+        privateEmbed.addFields({ name: '**Motif:**', value: reason, inline: false });
+        await staffRepresentativeChannel.send({ embeds: [privateEmbed] });
+
+        const embed = emb.generate(null, null, `${user} à bien été sanctionné !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+        await interaction.followUp({ embeds: [embed], ephemeral: true });
+        await wait(5000);
+        await interaction.deleteReply();
+
     },
 };

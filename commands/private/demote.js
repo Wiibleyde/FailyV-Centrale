@@ -125,7 +125,6 @@ module.exports = {
         let emote = `<:no:1138856467848507452> `;
         let authorText;
         let text;
-        let startPrivateText;
         let privateText;
         let demoteType;
         let contentText = null;
@@ -192,6 +191,7 @@ module.exports = {
         const privateEmbed = emb.generate(null, null, privateText, `#FF0000`, null, null, authorText, serverIcon, null, interaction.member.nickname, null, true);
         privateEmbed.addFields({ name: '**Motif:**', value: reason, inline: false });
         await memberChannel.send({ embeds: [privateEmbed] });
+        privateEmbed.setThumbnail(process.env.LSMS_LOGO_V2);
         await staffRepresentativeChannel.send({ embeds: [privateEmbed] });
 
         const announceChanId = await channels.getChannel('IRIS_ANNOUNCEMENT_CHANNEL_ID');

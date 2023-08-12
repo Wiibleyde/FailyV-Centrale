@@ -113,7 +113,7 @@ module.exports = {
             if(spe[0].id == 'helico1') {
                 const helico2Id = await roles.getSpeRankByName('helico2');
                 if(member.roles.cache.has(helico2Id[0].role_id)) {
-                    const embed = emb.generate(`Désolé :(`, null, `${user} est déjà <@&${helico2Id[0].role_id}>, si vous souhaitez vraiment le rétrograder merci de faire un </demote:> !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+                    const embed = emb.generate(`Désolé :(`, null, `${user} est déjà <@&${helico2Id[0].role_id}>, si vous souhaitez vraiment le rétrograder merci de faire un </demote:${process.env.IRIS_DEMOTE_COMMAND_ID}> !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
                     await interaction.followUp({ embeds: [embed], ephemeral: true });
                     await wait(5000);
                     return await interaction.deleteReply();
@@ -155,7 +155,7 @@ module.exports = {
             const currentRank = await roles.getDoctorRankByName(memberData[0].rank_id);
             const currentRole = await interaction.guild.roles.cache.get(currentRank[0].role_id);
             if(rank[0].position>currentRank[0].position) {
-                const embed = emb.generate(`Désolé :(`, null, `Le grade ${role} est en dessous du grade ${currentRole} ce qui signifie qu'il s'agit d'une rétrogradation, si c'est réellement ce que vous souhaitez faire merci d'utiliser la commande dédiée à cela (</demote:>) !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+                const embed = emb.generate(`Désolé :(`, null, `Le grade ${role} est en dessous du grade ${currentRole} ce qui signifie qu'il s'agit d'une rétrogradation, si c'est réellement ce que vous souhaitez faire merci d'utiliser la commande dédiée à cela (</demote:${process.env.IRIS_DEMOTE_COMMAND_ID}>) !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
                 await interaction.followUp({ embeds: [embed], ephemeral: true });
                 await wait(5000);
                 return await interaction.deleteReply();
@@ -191,13 +191,13 @@ module.exports = {
                 msg.react('👏');
             } catch (err) {
                 logger.error(err);
-                const embed = emb.generate(`Attention`, null, `La promotion à bien été effectuée mais il semblerait que le salon d'annonce ne soit pas à jour, pour corriger se problème veuillez le redéfinir via la commande </define:> !`, `Gold`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+                const embed = emb.generate(`Attention`, null, `La promotion à bien été effectuée mais il semblerait que le salon d'annonce ne soit pas à jour, pour corriger se problème veuillez le redéfinir via la commande </define:${process.env.IRIS_DEFINE_COMMAND_ID}> !`, `Gold`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
                 await interaction.followUp({ embeds: [embed], ephemeral: true });
                 await wait(5000);
                 return await interaction.deleteReply();
             }
         } else {
-            const embed = emb.generate(`Attention`, null, `La promotion à bien été effectuée mais aucun salon d'annonce n'a été trouvé en base de donnée, pour corriger se problème veuillez le définir via la commande </define:> !`, `Gold`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+            const embed = emb.generate(`Attention`, null, `La promotion à bien été effectuée mais aucun salon d'annonce n'a été trouvé en base de donnée, pour corriger se problème veuillez le définir via la commande </define:${process.env.IRIS_DEFINE_COMMAND_ID}> !`, `Gold`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
             await interaction.followUp({ embeds: [embed], ephemeral: true });
             await wait(5000);
             return await interaction.deleteReply();

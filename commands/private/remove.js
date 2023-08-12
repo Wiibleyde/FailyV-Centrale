@@ -217,13 +217,13 @@ module.exports = {
                 msg.react('❤️');
             } catch (err) {
                 logger.error(err);
-                const embed = emb.generate(`Attention`, null, `Le retrait de l'effectif à bien été effectuée mais il semblerait que le salon d'annonce ne soit pas à jour, pour corriger se problème veuillez le redéfinir via la commande </define:> !`, `Gold`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+                const embed = emb.generate(`Attention`, null, `Le retrait de l'effectif à bien été effectuée mais il semblerait que le salon d'annonce ne soit pas à jour, pour corriger se problème veuillez le redéfinir via la commande </define:${process.env.IRIS_DEFINE_COMMAND_ID}> !`, `Gold`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
                 await interaction.followUp({ embeds: [embed], ephemeral: true });
                 await wait(5000);
                 await interaction.deleteReply();
             }
         } else {
-            const embed = emb.generate(`Attention`, null, `Le retrait de l'effectif à bien été effectuée mais aucun salon d'annonce n'a été trouvé en base de donnée, pour corriger se problème veuillez le définir via la commande </define:> !`, `Gold`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+            const embed = emb.generate(`Attention`, null, `Le retrait de l'effectif à bien été effectuée mais aucun salon d'annonce n'a été trouvé en base de donnée, pour corriger se problème veuillez le définir via la commande </define:${process.env.IRIS_DEFINE_COMMAND_ID}> !`, `Gold`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
             await interaction.followUp({ embeds: [embed], ephemeral: true });
             await wait(5000);
             await interaction.deleteReply();

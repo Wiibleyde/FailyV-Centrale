@@ -116,7 +116,7 @@ module.exports = {
         const memberChannel = interaction.guild.channels.cache.get(memberData[0].channel_id);
         const staffRepresentativeChannelId = await channels.getChannel('staff_representative');
         if(staffRepresentativeChannelId[0] == null) {
-            const embed = emb.generate(`Désolé :(`, null, `Il semblerait que le salon du/des délégué(s) du personnel n'est pas défini hors il doit l'être pour effectuer une sanction !\nPour le définir veuillez utiliser la commande </define:>`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+            const embed = emb.generate(`Désolé :(`, null, `Il semblerait que le salon du/des délégué(s) du personnel n'est pas défini hors il doit l'être pour effectuer une sanction !\nPour le définir veuillez utiliser la commande </define:${process.env.IRIS_DEFINE_COMMAND_ID}>`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
             await interaction.followUp({ embeds: [embed], ephemeral: true });
             await wait(5000);
             return await interaction.deleteReply();
@@ -156,7 +156,7 @@ module.exports = {
             const currentRank = await roles.getDoctorRankByName(memberData[0].rank_id);
             const currentRole = await interaction.guild.roles.cache.get(currentRank[0].role_id);
             if(rank[0].position<currentRank[0].position) {
-                const embed = emb.generate(`Désolé :(`, null, `Le grade ${role} est au dessus du grade ${currentRole} ce qui signifie qu'il s'agit d'une promotion, si c'est réellement ce que vous souhaitez faire merci d'utiliser la commande dédiée à cela (</promote:>) !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+                const embed = emb.generate(`Désolé :(`, null, `Le grade ${role} est au dessus du grade ${currentRole} ce qui signifie qu'il s'agit d'une promotion, si c'est réellement ce que vous souhaitez faire merci d'utiliser la commande dédiée à cela (</promote:${process.env.IRIS_PROMOTE_COMMAND_ID}>) !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
                 await interaction.followUp({ embeds: [embed], ephemeral: true });
                 await wait(5000);
                 return await interaction.deleteReply();
@@ -208,13 +208,13 @@ module.exports = {
                 }
             } catch (err) {
                 logger.error(err);
-                const embed = emb.generate(`Attention`, null, `La rétrogradation à bien été effectuée mais il semblerait que le salon d'annonce ne soit pas à jour, pour corriger se problème veuillez le redéfinir via la commande </define:> !`, `Gold`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+                const embed = emb.generate(`Attention`, null, `La rétrogradation à bien été effectuée mais il semblerait que le salon d'annonce ne soit pas à jour, pour corriger se problème veuillez le redéfinir via la commande </define:${process.env.IRIS_DEFINE_COMMAND_ID}> !`, `Gold`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
                 await interaction.followUp({ embeds: [embed], ephemeral: true });
                 await wait(5000);
                 return await interaction.deleteReply();
             }
         } else {
-            const embed = emb.generate(`Attention`, null, `La rétrogradation à bien été effectuée mais aucun salon d'annonce n'a été trouvé en base de donnée, pour corriger se problème veuillez le définir via la commande </define:> !`, `Gold`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+            const embed = emb.generate(`Attention`, null, `La rétrogradation à bien été effectuée mais aucun salon d'annonce n'a été trouvé en base de donnée, pour corriger se problème veuillez le définir via la commande </define:${process.env.IRIS_DEFINE_COMMAND_ID}> !`, `Gold`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
             await interaction.followUp({ embeds: [embed], ephemeral: true });
             await wait(5000);
             return await interaction.deleteReply();

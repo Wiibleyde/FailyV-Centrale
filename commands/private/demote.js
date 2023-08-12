@@ -201,14 +201,10 @@ module.exports = {
                 const respEmb = emb.generate(null, null, text + `\n\n*Merci de ne faire aucun commentaire et/ou moquerie s'il vous plaît ❤️*`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Annonce`, serverIcon, null, interaction.member.nickname, null, true);
                 const msg = await chan.send({ content: contentText, embeds: [respEmb] });
                 try {
-                    //await msg.react('<:yes:1139625753181433998>');
-                    await msg.react('✅');
+                    await msg.react('<:yes:1139625753181433998>');
                 } catch (err2) {
                     logger.error(err2);
-                    const embed = emb.generate(`Attention`, null, `La rétrogradation à bien été effectuée mais il semblerait qu'il y ait eu un petit soucis lors de l'ajout de la réaction, si le problème persiste merci de bien vouloir le signaler avec la commande </report:${process.env.IRIS_DEBUG_COMMAND_ID}>`, `Gold`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
-                    await interaction.followUp({ embeds: [embed], ephemeral: true });
-                    await wait(5000);
-                    return await interaction.deleteReply();
+                    await msg.react('✅');
                 }
             } catch (err) {
                 logger.error(err);

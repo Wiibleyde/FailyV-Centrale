@@ -243,17 +243,17 @@ async function updateRadios(client, ws, wsData, sqlRadio) {
                                     try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
                                 }
                             } else {
-                                if(currentDate.getDate() == 1 && departureDate.getDate() == 31 && currentDate.getMonth() == 0 && departureDate.getMonth() == 11 && currentDate.getFullYear() == departureDate.getFullYear() + 1) {
+                                if(currentDate.getDate() == 1 && departureDate.getDate() + 2 == 31 && currentDate.getMonth() == 0 && departureDate.getMonth() == 11 && currentDate.getFullYear() == departureDate.getFullYear() + 1) {
                                     try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
-                                } else if(currentDate.getDate() == 1 && departureDate.getDate() == 31 && currentDate.getMonth() == departureDate.getMonth() + 1 && currentDate.getFullYear() == departureDate.getFullYear()) {
+                                } else if(currentDate.getDate() == 1 && departureDate.getDate() + 2 == 31 && currentDate.getMonth() == departureDate.getMonth() + 1 && currentDate.getFullYear() == departureDate.getFullYear()) {
                                     try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
-                                } else if(currentDate.getDate() == 1 && departureDate.getDate() == 29 && currentDate.getMonth() == 2 && departureDate.getMonth() == 1 && currentDate.getFullYear() == departureDate.getFullYear()) {
+                                } else if(currentDate.getDate() == 1 && departureDate.getDate() + 2 == 29 && currentDate.getMonth() == 2 && departureDate.getMonth() == 1 && currentDate.getFullYear() == departureDate.getFullYear()) {
                                     try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
-                                } else if(currentDate.getDate() == 1 && departureDate.getDate() == 28 && currentDate.getMonth() == 2 && departureDate.getMonth() == 1 && currentDate.getFullYear() == departureDate.getFullYear() && !isLeapYear(currentDate.getFullYear())) {
+                                } else if(currentDate.getDate() == 1 && departureDate.getDate() + 2 == 28 && currentDate.getMonth() == 2 && departureDate.getMonth() == 1 && currentDate.getFullYear() == departureDate.getFullYear() && !isLeapYear(currentDate.getFullYear())) {
                                     try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
-                                } else if(currentDate.getDate() == 1 && departureDate.getDate() == 30 && thirtyDaysMonth.contains(departureDate.getMonth()) && currentDate.getMonth() == departureDate.getMonth() + 1 && currentDate.getFullYear() == departureDate.getFullYear()) {
+                                } else if(currentDate.getDate() == 1 && departureDate.getDate() + 2 == 30 && thirtyDaysMonth.contains(departureDate.getMonth()) && currentDate.getMonth() == departureDate.getMonth() + 1 && currentDate.getFullYear() == departureDate.getFullYear()) {
                                     try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
-                                } else if(currentDate.getDate() > departureDate.getDate() && currentDate.getDate() < departureDate.getDate() + 3 && currentDate.getMonth() == departureDate.getMonth() && currentDate.getFullYear() == departureDate.getFullYear()) {
+                                } else if(currentDate.getDate() > departureDate.getDate() + 2 && currentDate.getDate() < departureDate.getDate() + 3 && currentDate.getMonth() == departureDate.getMonth() && currentDate.getFullYear() == departureDate.getFullYear()) {
                                     try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
                                 }
                             }

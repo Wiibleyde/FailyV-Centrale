@@ -100,6 +100,7 @@ module.exports = {
             //Pré-écriture d'un message d'erreur (pour éviter de l'écrire dans tout les fichers)
             const errEmb = emb.generate(`Oups! Une erreur s'est produite :(`, null, `Il semblerait qu'une erreur se soit produite lors de l'interaction avec le menu de séléction, si le problème persiste n'hésitez pas à faire une demande de débug via le </report:${process.env.IRIS_DEBUG_COMMAND_ID}> avec le plus de détails possible ! (Merci d'avance 💙)`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true);
             //Appel du fichier spécifique pour chaques interactions
+            if(cID == 'serviceManageSelect') { const serviceManageSelect = require('../buttons/service/serviceManage'); serviceManageSelect.execute(interaction, errEmb); }
             if(cID == 'serviceKickSingleSelect') { const serviceKickSingleSelect = require('../buttons/service/serviceManage'); serviceKickSingleSelect.execute(interaction, errEmb); }
             if(cID == 'centraleResetRadioSelect') { const centraleResetRadioSelect = require('../buttons/radio/serviceRadioReset'); centraleResetRadioSelect.execute(interaction, errEmb); }
             if(cID == 'vehiculeRemoveSelect') { const vehiculeRemoveSelect = require('../commands/private/vehicule'); vehiculeRemoveSelect.execute(interaction, errEmb); }

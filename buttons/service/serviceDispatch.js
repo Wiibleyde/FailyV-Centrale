@@ -19,11 +19,11 @@ module.exports = {
                 if(interaction.member.roles.cache.has(dispatchID)) {
                     interaction.member.roles.remove(switchRole);
                     embed = emb.generate(`Dispatch relâché`, null, `Vous avez relâché votre rôle de dispatcheur\n*À bientôt !*`, `#FFF1D0`, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
-                    logRP.fdd(interaction.guild, interaction.member.nickname, null);
+                    await logRP.fdd(interaction.guild, interaction.member.nickname, null);
                 } else {
                     interaction.member.roles.add(switchRole);
                     embed = emb.generate(`Prise de dispatch`, null, `Vous êtes maintenant un dispatcheur\n*Bon courage pour votre gestion !*`, `#FFF1D0`, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
-                    logRP.pdd(interaction.guild, interaction.member.nickname, null);
+                    await logRP.pdd(interaction.guild, interaction.member.nickname, null);
                 }
                 //Confirmation à l'utilisateur du succès de l'opération
                 await interaction.reply({ embeds: [embed], ephemeral: true });

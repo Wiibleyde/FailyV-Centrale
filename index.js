@@ -211,7 +211,7 @@ async function updateRadios(client, ws, wsData, sqlRadio) {
                 const freqLSMS = freqUnit + '.' + freqDeci;
                 service.resetRadios(client, freqLSMS, data.radioFreq, null);
                 const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
-                userservice.kick(guild, guild.members.cache.get(process.env.IRIS_DISCORD_ID), false);
+                await userservice.kick(guild, guild.members.cache.get(process.env.IRIS_DISCORD_ID), false);
 
                 //Remove doctors
                 const doctor = require('./sql/doctorManagement/doctor');

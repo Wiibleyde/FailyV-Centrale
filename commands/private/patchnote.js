@@ -25,7 +25,7 @@ const typeEmojis = {
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('patchnote')
-        .setDescription('Gestion des patchnotes')
+        .setDescription('[DEV ONLY] Gestion des patchnotes')
         .addStringOption(option =>
             option.setName('action')
                 .setDescription('Action à effectuer')

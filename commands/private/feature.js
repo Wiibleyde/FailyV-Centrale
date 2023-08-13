@@ -21,7 +21,7 @@ const typeEmojis = {
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('feature')
-        .setDescription('[ADMIN] Gestion des features')
+        .setDescription('[DEV ONLY] Gestion des features')
         .addStringOption(option =>
             option.setName('action')
                 .setDescription('Action à effectuer')

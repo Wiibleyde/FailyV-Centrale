@@ -2,6 +2,10 @@
 const logger = require('./../modules/logger');
 //Récup du créateur d'embed
 const emb = require('./../modules/embeds');
+// Récup du gestionnaire d'autoriasation
+const { Rank, hasAuthorization } = require('../modules/rankAuthorization');
+
+const wait = require('node:timers/promises').setTimeout;
 
 module.exports = {
     //Dès qu'une interaction Discord avec le bot est executée
@@ -10,6 +14,18 @@ module.exports = {
     async execute(interaction) {
         const cID = interaction.customId;
         const cName = interaction.commandName;
+        const serverIcon = `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`;
+        // Check si l'utilisateur est chef de service ou plus
+        if (!hasAuthorization(Rank.LSMS, interaction.member.roles.cache)) {
+            if(cName != 'ping' && cName != 'report' && cName != 'debug' && cName != 'feature' && cName != 'patchnote') {
+                const embed = emb.generate(`Désolé :(`, null, `Vous devez être un membre du <@&${process.env.IRIS_LSMS_ROLE}> pour pouvoir vous servir de mes commandes !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Interaction`, serverIcon, null, null, null, false);
+                await interaction.reply({ embeds: [embed], ephemeral: true });
+                // Supprime la réponse après 5s
+                await wait(5000);
+                return await interaction.deleteReply();
+            }
+        }
+
         //Lorsqu'il s'agit d'une commande
         if(interaction.isChatInputCommand() || interaction.isUserContextMenuCommand() || interaction.isMessageContextMenuCommand() || interaction.isContextMenuCommand()) {
             //Log dès l'utilisation de la commande

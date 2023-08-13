@@ -5,7 +5,8 @@ const Rank = Object.freeze({
     Specialist: Symbol("specialist"),
     Incumbent: Symbol("incumbent"),
     Resident: Symbol("resident"),
-    Intern: Symbol("intern")
+    Intern: Symbol("intern"),
+    LSMS: Symbol("lsms")
 });
 
 module.exports = {
@@ -14,6 +15,8 @@ module.exports = {
         let hasAuthorization = false;
 
         switch (minRank) {
+            case Rank.LSMS:
+                hasAuthorization = hasAuthorization || memberRoleCache.has(process.env.IRIS_LSMS_ROLE);
             case Rank.Intern:
                 hasAuthorization = hasAuthorization || memberRoleCache.has(process.env.IRIS_INTERN_ROLE);
             case Rank.Resident:

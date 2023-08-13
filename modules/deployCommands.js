@@ -5,6 +5,8 @@ const logger = require('./logger');
 //Récup de fonctions node pour accéder aux fichiers
 const fs = require('node:fs');
 const path = require('node:path');
+//Récup de la connection SQL
+const mysql = require('./sql');
 
 module.exports = {
     init: async (client) => {
@@ -23,6 +25,8 @@ module.exports = {
                 for(const file of commandFiles) {
                     const filePath = path.join(commandsPath, file);
                     const command = require(filePath);
+                    await initCommandStatColumn(command.data.name);
+                    await initCommandStatRow(command.data.name);
                     if('data' in command && 'execute' in command) {
                         privateCommands.push(command.data.toJSON());
                     } else {
@@ -35,6 +39,8 @@ module.exports = {
                 for(const file of commandFiles) {
                     const filePath = path.join(commandsPath, file);
                     const command = require(filePath);
+                    await initCommandStatColumn(command.data.name);
+                    await initCommandStatRow(command.data.name);
                     if('data' in command && 'execute' in command) {
                         publicCommands.push(command.data.toJSON());
                     } else {
@@ -60,4 +66,57 @@ module.exports = {
             }
         })();
     }
+}
+
+function initCommandStatColumn(command) {
+    return new Promise(async (resolve, reject) => {
+        mysql.sql().query({
+                sql: "SELECT `" + command + "` FROM `user_statistic`",
+                timeout: 40000
+            }, (reqErr, result, fields) => {
+            if(reqErr) {
+                mysql.sql().query({
+                        sql: "ALTER TABLE `user_statistic` ADD (`" + command + "` VARCHAR(255) NOT NULL DEFAULT '0')",
+                        timeout: 40000
+                    }, (reqErr2, result2, fields) => {
+                    if(reqErr2) {
+                        logger.error(reqErr2);
+                    }
+                    resolve(result2);
+                });
+            }
+            resolve(result);
+        });
+    });
+}
+
+async function initCommandStatRow(command) {
+    const commandRow = await getCommandRow(command);
+    if(commandRow[0] == null) {
+        mysql.sql().query({
+                sql: "INSERT INTO `command_statistic` SET `command_name`=?, `used`=?",
+                timeout: 40000,
+                values: [command, 0]
+            }, (reqErr, result, fields) => {
+            if(reqErr) {
+                logger.error(reqErr);
+            }
+        });
+    }
+}
+
+function getCommandRow(command) {
+    return new Promise(async (resolve, reject) => {
+        mysql.sql().query({
+                sql: "SELECT * FROM `command_statistic` WHERE `command_name`=?",
+                timeout: 40000,
+                values: [command]
+            }, (reqErr, result, fields) => {
+            if(reqErr) {
+                logger.error(reqErr);
+                reject(reqErr);
+            }
+            resolve(result);
+        });
+    });
 }

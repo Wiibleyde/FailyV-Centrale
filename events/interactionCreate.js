@@ -5,6 +5,8 @@ const emb = require('./../modules/embeds');
 // Récup du gestionnaire d'autoriasation
 const { Rank, hasAuthorization } = require('../modules/rankAuthorization');
 
+const sql = require('../sql/statistics/stats');
+
 const wait = require('node:timers/promises').setTimeout;
 
 module.exports = {
@@ -30,6 +32,21 @@ module.exports = {
         if(interaction.isChatInputCommand() || interaction.isUserContextMenuCommand() || interaction.isMessageContextMenuCommand() || interaction.isContextMenuCommand()) {
             //Log dès l'utilisation de la commande
             logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) la commande "</${cName}:${interaction.commandId}>"`);
+            const used = await sql.getCommandCount(cName);
+            let usedCount = parseInt(used[0].used) + 1;
+            const userUsed = await sql.getUserCount(interaction.user.id, cName);
+            if(userUsed[0] == null) {
+                sql.createUserCount(interaction.user.id, interaction.member.nickname, cName);
+            } else {
+                let userUsedCount;
+                for(let key in userUsed[0]) {
+                    logger.debug("Key: " + key);
+                    logger.debug("Value: " + userUsed[0][key]);
+                    userUsedCount = parseInt(userUsed[0][key]) + 1;
+                }
+                sql.addUserCount(interaction.user.id, cName, userUsedCount);
+            }
+            sql.addCommandCount(cName, usedCount)
             const command = interaction.client.commands.get(cName);
     
             if(!command) { logger.error(`Aucune commande correspondante à ${cName} n'a été trouvée !`); return; }

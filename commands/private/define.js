@@ -19,7 +19,7 @@ module.exports = {
     //Création de la commande
     data: new SlashCommandBuilder()
         .setName(`define`)
-        .setDescription(`[Direction] Changer le'id d'un channel`)
+        .setDescription(`[Direction] Définir un nouveau salon pour la fonction sélectionnée`)
         .addStringOption(option =>
             option.setName('channel')
             .setDescription('Channel à modifier')
@@ -90,11 +90,13 @@ module.exports = {
             .setRequired(true)
         ),
     async execute(interaction) {
+        const serverIcon = `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`;
+        const title = `Gestion des salons`;
         //Vérification de l'autorisation si il est directeur ou si il est le créateur du bot
-        if(hasAuthorization(interaction.member, Rank.MANAGER) || interaction.user.id == '461880599594926080' || interaction.user.id == '461807010086780930' || interaction.user.id == '368259650136571904') {
+        if(hasAuthorization(Rank.DepartementManager, interaction.member.roles.cache) || interaction.user.id == '461880599594926080' || interaction.user.id == '461807010086780930' || interaction.user.id == '368259650136571904') {
+            await interaction.deferReply({ ephemeral: true });
             //Récupération des infos
             const channelID = interaction.options.getChannel('salon').id;
-            const channelName = interaction.options.getString('channel_name');
             //Vérification si le channel existe
             const channel = interaction.guild.channels.cache.get(channelID);
             if(channel) {
@@ -106,20 +108,18 @@ module.exports = {
                     await sql.setChannel(interaction.options.getString('channel'), channelID);
                 }
                 //Création de l'embed
-                const embed = emb.generate(null, null, `Le channel a bien été mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des salons`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true);
+                const embed = emb.generate(null, null, `Le salon a bien été mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, true);
                 //Envoi de la réponse
-                interaction.reply({ embeds: [embed], ephemeral: true });
+                await interaction.followUp({ embeds: [embed], ephemeral: true });
             } else {
                 //Création de l'embed
-                const embed = emb.generate(null, null, `Le channel n'existe pas !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion des salons`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true);
+                const embed = emb.generate(null, null, `Le salon n'existe pas !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, true);
                 //Envoi de la réponse
-                interaction.reply({ embeds: [embed], ephemeral: true });
+                await interaction.followUp({ embeds: [embed], ephemeral: true });
             }
         } else {
-            //Création de l'embed
-            const embed = emb.generate(null, null, `Vous n'avez pas la permission d'utiliser cette commande !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion des salons`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true);
-            //Envoi de la réponse
-            interaction.reply({ embeds: [embed], ephemeral: true });
+            const embed = emb.generate(`Désolé :(`, null, `Vous n'avez pas les permissions suffisantes pour utiliser cette commande. Il faut être <@&${process.env.IRIS_DEPARTEMENT_MANAGER_ROLE}> ou plus pour pouvoir vous en servir !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+            await interaction.reply({ embeds: [embed], ephemeral: true });
         }
         await wait(5000);
         await interaction.deleteReply();

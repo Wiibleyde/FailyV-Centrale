@@ -65,7 +65,7 @@ module.exports = {
     getOldDataByPhone: (phone) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                sql: "SELECT * FROM `doctor` WHERE `phone`=? AND `departure_date` IS NOT NULL AND `removed`='0'",
+                sql: "SELECT * FROM `doctor` WHERE `phone_number`=? AND `departure_date` IS NOT NULL AND `removed`='0'",
                 values: [phone]
             }, (reqErr, result, fields) => {
                 if(reqErr) {

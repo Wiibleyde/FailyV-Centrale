@@ -56,15 +56,6 @@ module.exports = {
 
         const title = `Gestion des employés`;
         const serverIcon = `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`;
-
-        //Récupération du channel 
-        let IRIS_ANNOUNCEMENT_CHANNEL_ID = await sql.getChannel('IRIS_ANNOUNCEMENT_CHANNEL_ID');
-        if (IRIS_ANNOUNCEMENT_CHANNEL_ID[0] == undefined) {
-            const embed = emb.generate(`Désolé :(`, null, `Aucun channel n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
-            return await interaction.followUp({ embeds: [embed], ephemeral: true });
-        } else {
-            IRIS_ANNOUNCEMENT_CHANNEL_ID = IRIS_ANNOUNCEMENT_CHANNEL_ID[0].id;
-        }
         
         // Check si l'utilisateur est chef de service ou plus
         if (!hasAuthorization(Rank.DepartementManager, interaction.member.roles.cache)) {
@@ -74,6 +65,15 @@ module.exports = {
             await wait(5000);
             await interaction.deleteReply();
             return;
+        }
+
+        //Récupération du channel 
+        let IRIS_ANNOUNCEMENT_CHANNEL_ID = await sql.getChannel('IRIS_ANNOUNCEMENT_CHANNEL_ID');
+        if (IRIS_ANNOUNCEMENT_CHANNEL_ID[0] == undefined) {
+            const embed = emb.generate(`Désolé :(`, null, `Aucun channel n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+            return await interaction.followUp({ embeds: [embed], ephemeral: true });
+        } else {
+            IRIS_ANNOUNCEMENT_CHANNEL_ID = IRIS_ANNOUNCEMENT_CHANNEL_ID[0].id;
         }
 
         const doctorCardData = await doctorCardSql.getDoctorCard();
@@ -137,22 +137,30 @@ module.exports = {
         }
 
         const grade = interaction.options.getString(`grade`) ?? `intern`;
+        let channel;
+        let welcomeEmbedText;
         const arrivalDate = new Date();
 
-        let channel;
-
-        // Creation de la fiche du docteur
-        try {
-            channel = await interaction.guild.channels.create({
-                name: `${name}`,
-                type: ChannelType.GuildText,
-                parent: doctorRankData[grade].parent_channel_id,
-                topic: `Rentré au LSMS le : ${arrivalDate.toLocaleDateString(`fr-FR`)}`
-            });
-        } catch (err) {
-            logger.error(err);
-            const embed = emb.generate(`Oups :(`, null, `Il semblerait que la catégorie pour les fiches de suivi du grade **${doctorRankData[grade].name}** n'ait pas été définie/n'existe plus, si le problème persiste merci de bien vouloir le signaler à l'aide de la commande </report:${process.env.IRIS_DEBUG_COMMAND_ID}> !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
-            return await interaction.followUp({ embeds: [embed], ephemeral: true });
+        const isDocteurExists = await doctorSql.getOldDataByPhone(phoneNumber);
+        if(isDocteurExists[0] == null) {
+            // Creation de la fiche du docteur
+            try {
+                channel = await interaction.guild.channels.create({
+                    name: `${name}`,
+                    type: ChannelType.GuildText,
+                    parent: doctorRankData[grade].parent_channel_id,
+                    topic: `Rentré au LSMS le : ${arrivalDate.toLocaleDateString(`fr-FR`)}`
+                });
+            } catch (err) {
+                logger.error(err);
+                const embed = emb.generate(`Oups :(`, null, `Il semblerait que la catégorie pour les fiches de suivi du grade **${doctorRankData[grade].name}** n'ait pas été définie/n'existe plus, si le problème persiste merci de bien vouloir le signaler à l'aide de la commande </report:${process.env.IRIS_DEBUG_COMMAND_ID}> !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+                return await interaction.followUp({ embeds: [embed], ephemeral: true });
+            }
+            welcomeEmbedText = `🆕 Bienvenue à **${name}** nous rejoint en tant que <@&${doctorRankData[grade].role_id}> !`;
+        } else {
+            channel = interaction.guild.channels.cache.get(isDocteurExists[0].channel_id);
+            await channel.setTopic(channel.topic + `, puis le : ${arrivalDate.toLocaleDateString(`fr-FR`)}`);
+            welcomeEmbedText = `🆕 Re-bienvenue à **${name}** nous re-rejoint en tant que <@&${doctorRankData[grade].role_id}> !`;
         }
         
         // Renomage de l'utilisateur et ajout des rôles LSMS et correspondant au grade du docteur
@@ -165,7 +173,11 @@ module.exports = {
         await newMember.roles.add([process.env.IRIS_LSMS_ROLE, doctorRankData[grade].role_id]);
 
         // Ajout des information du docteur en base de donnée
-        await doctorSql.addDoctor(name, phoneNumber, grade, tag.id, arrivalDate, channel.id);
+        if(isDocteurExists[0] == null) {
+            await doctorSql.addDoctor(name, phoneNumber, grade, tag.id, arrivalDate, channel.id);
+        } else {
+            await doctorSql.reAddDoctor(tag.id, name, grade, arrivalDate, phoneNumber);
+        }
 
         workforce.generateWorkforce(interaction.guild);
 
@@ -173,7 +185,7 @@ module.exports = {
         const welcomeEmbed = emb.generate(
             null,
             null,
-            `:new: Bienvenue à **${name}** nous rejoint en tant que <@&${doctorRankData[grade].role_id}> !`,
+            welcomeEmbedText,
             interaction.guild.roles.cache.get(doctorRankData[grade].role_id).hexColor,
             process.env.LSMS_LOGO_V2, null,
             `Annonce`,
@@ -186,21 +198,22 @@ module.exports = {
         const welcomeMessage = await interaction.client.channels.cache.get(IRIS_ANNOUNCEMENT_CHANNEL_ID).send({ content: `<@&${process.env.IRIS_LSMS_ROLE}>`, embeds: [welcomeEmbed] });
         welcomeMessage.react(`👋`);
 
-        // Création de la fiche d'interne
-        let message;
-        for (const [_, value] of Object.entries(doctorCardData)) {
-            const embed = emb.generate(value.name, null, null, value.color, null, null, null, null, null, null, null, false);
-            if (value.position === 0) {
-                message = await channel.send({ embeds: [embed] });
-            } else {
-                await channel.send({ embeds: [embed] });
+        if(isDocteurExists[0] == null || grade == 'intern') {
+            // Création de la fiche d'interne
+            let message;
+            for (const [_, value] of Object.entries(doctorCardData)) {
+                const embed = emb.generate(value.name, null, null, value.color, null, null, null, null, null, null, null, false);
+                if (value.position === 0) {
+                    message = await channel.send({ embeds: [embed] });
+                } else {
+                    await channel.send({ embeds: [embed] });
+                }
+                for (const i in value.elements) {
+                    await channel.send(`- ${value.elements[i]}`);
+                }
             }
-            for (const i in value.elements) {
-                await channel.send(`- ${value.elements[i]}`);
-            }
-        }
-        await message.pin();
-        channel.messages.fetch({ limit: 1 }).then(messages => {
+            await message.pin();
+            channel.messages.fetch({ limit: 1 }).then(messages => {
                 let lastMessage = messages.first();
                 
                 if (lastMessage.author.bot) {
@@ -208,6 +221,7 @@ module.exports = {
                 }
             })
             .catch(logger.error);
+        }
 
         // Confirmation de la création
         const validationEmbed = emb.generate(`Succès`, null, `La fiche de **${name}** a bien été créé (<#${channel.id}>) !`, `#0CE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);

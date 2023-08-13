@@ -26,6 +26,21 @@ module.exports = {
             });
         });
     },
+    reAddDoctor: (id, name, grade, arrivalDate, phone) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                sql: "UPDATE `doctor` SET `discord_id`=?, `name`=?, `rank_id`=?, `arrival_date`=? WHERE `phone_number`=?",
+                timeout: 40000,
+                values: [id, name, grade, arrivalDate, phone]
+            }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
     // Recupération de l'ID de la fiche du docteur
     getDoctorChannelID: (phoneNumber) => {
         return new Promise((resolve, reject) => {
@@ -44,6 +59,20 @@ module.exports = {
                 } else {
                     resolve("-1");
                 }
+            });
+        });
+    },
+    getOldDataByPhone: (phone) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                sql: "SELECT * FROM `doctor` WHERE `phone`=? AND `departure_date` IS NOT NULL AND `removed`='0'",
+                values: [phone]
+            }, (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
             });
         });
     },

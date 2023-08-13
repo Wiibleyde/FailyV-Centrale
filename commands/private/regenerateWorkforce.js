@@ -17,14 +17,23 @@ module.exports = {
     //Création de la commande
     data: new SlashCommandBuilder()
         .setName('regenerate_workforce')
-        .setDescription("[Direction] Regénération de l'effectif"),
+        .setDescription("[DEV ONLY] Regénération de l'effectif"),
     async execute(interaction) {
+        const serverIcon = `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}webp`;
+        const title = `Gestion de l'effectif`;
+        if(interaction.user.id != '461880599594926080' && interaction.user.id != '461807010086780930' && interaction.user.id != '368259650136571904') {
+            const embed = emb.generate(`Désolé :(`, null, `Cette commande est réservé à mes développeurs (<@461880599594926080>, <@461807010086780930> et <@368259650136571904>) !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+            await interaction.followUp({ embeds: [embed], ephemeral: true });
+            await wait(5000);
+            return await interaction.deleteReply();
+        }
+
         //Affichage du message "Iris réfléchis..."
         await interaction.deferReply({ ephemeral: true });
         let IRIS_WORKFORCE_CHANNEL_ID = await sql.getChannel('IRIS_WORKFORCE_CHANNEL_ID')
         if (IRIS_WORKFORCE_CHANNEL_ID[0] == undefined) {
             IRIS_WORKFORCE_CHANNEL_ID = null;
-            await interaction.followUp({ embeds: [emb.generate(null, null, `Désolé, le channel de l'effectif n'est pas configuré !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion de l'effectif`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true)], ephemeral: true });
+            await interaction.followUp({ embeds: [emb.generate(null, null, `Désolé, le channel de l'effectif n'est pas configuré !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, true)], ephemeral: true });
             // Supprime la réponse après 5s
             await wait(5000);
             await interaction.deleteReply();

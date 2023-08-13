@@ -20,7 +20,7 @@ module.exports = {
     // Création de la commande
     data: new SlashCommandBuilder()
         .setName('remove')
-        .setDescription(`Retirer une personne de l'effectif du LSMS`)
+        .setDescription(`[Direction] Retirer une personne de l'effectif du LSMS`)
         .addUserOption(option =>
             option.setName('membre')
             .setDescription('La personne à retirer')

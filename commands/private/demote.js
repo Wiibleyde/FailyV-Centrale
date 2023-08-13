@@ -19,7 +19,7 @@ module.exports = {
     // Création de la commande
     data: new SlashCommandBuilder()
         .setName('demote')
-        .setDescription('Rétrograder/Retirer un(e) grade/spé/formation à la personne sélectionnée')
+        .setDescription('[Direction] Rétrograder/Retirer un(e) grade/spé/formation à la personne sélectionnée')
         .addUserOption(option =>
             option.setName('membre')
             .setDescription('La personne à rétrograder')

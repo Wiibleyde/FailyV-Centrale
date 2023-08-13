@@ -19,7 +19,7 @@ module.exports = {
     // Création de la commande
     data: new SlashCommandBuilder()
         .setName('map')
-        .setDescription('Mettre à pied une personne')
+        .setDescription('[Directeur Adjoint +] Mettre à pied une personne')
         .addUserOption(option =>
             option.setName('membre')
             .setDescription('La personne à mettre à pied')

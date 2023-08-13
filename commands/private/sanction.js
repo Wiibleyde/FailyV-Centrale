@@ -16,7 +16,7 @@ module.exports = {
     // Création de la commande
     data: new SlashCommandBuilder()
         .setName('sanction')
-        .setDescription('Sanctionner une personne')
+        .setDescription('[Direction] Sanctionner une personne')
         .addUserOption(option =>
             option.setName('membre')
             .setDescription('La personne à sanctionner')

@@ -155,7 +155,7 @@ module.exports = {
             }
         } else if(interaction.customId == 'featureDeleteSelect') {
             try {
-                await reply.edit({ embeds: [emb.generate(null, null, `<a:loading:1137771560531398697> Mise à jour en cours...`, `Gold`, process.env.LSMS_LOGO_V2, null, `Gestion des features`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], components: [], ephemeral: true });
+                await reply.edit({ embeds: [emb.generate(null, null, `<a:loading:1140500830672392283> Mise à jour en cours...`, `Gold`, process.env.LSMS_LOGO_V2, null, `Gestion des features`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], components: [], ephemeral: true });
             } catch (err) {
                 await interaction.deferReply({ ephemeral: true });
             }
@@ -191,7 +191,7 @@ module.exports = {
                 await interaction.deleteReply();
             }
         } else if(interaction.customId == 'featureUpdateSelect') {
-            try { await reply.edit({ embeds: [emb.generate(null, null, `<a:loading:1137771560531398697> Récupération des informations...`, `Gold`, process.env.LSMS_LOGO_V2, null, `Gestion des features`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], components: [], ephemeral: true }); } catch (err) {}
+            try { await reply.edit({ embeds: [emb.generate(null, null, `<a:loading:1140500830672392283> Récupération des informations...`, `Gold`, process.env.LSMS_LOGO_V2, null, `Gestion des features`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], components: [], ephemeral: true }); } catch (err) {}
             let featureVar = await featureSQL.getFeature(interaction.values[0]);
             const updateFeatureModal = new ModalBuilder().setCustomId('updateFeatureModal').setTitle('Mise à jour d\'une feature');
             const type = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('type').setLabel('Type de feature').setStyle(TextInputStyle.Short).setPlaceholder('0 = Fix, 1 = Update, 2 = New, 3 = Delete').setValue(`${featureVar.type}`).setRequired(true))

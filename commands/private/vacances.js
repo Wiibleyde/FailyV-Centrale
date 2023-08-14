@@ -26,7 +26,7 @@ module.exports = {
         await interaction.deferReply({ ephemeral: true });
         const serverIcon = `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`;
         const title = `Gestion des employés`;
-        if(!hasAuthorization(Rank.DepartementManager, interaction.member.roles.cache)) {
+        if(!hasAuthorization(Rank.Specialist, interaction.member.roles.cache)) {
             const embed = emb.generate("Désolé :(", null, `Vous n'avez pas les permissions suffisantes pour utiliser cette commande. Il faut être <@&${process.env.IRIS_DEPARTEMENT_MANAGER_ROLE}> ou plus pour pouvoir vous en servir !`, "#FF0000", process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
             await interaction.followUp({ embeds: [embed], ephemeral: true });
             await wait(5000);

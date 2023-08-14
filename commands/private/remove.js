@@ -87,6 +87,14 @@ module.exports = {
             return await interaction.deleteReply();
         }
         const memberChannel = interaction.guild.channels.cache.get(memberData[0].channel_id);
+        const staffRepresentativeChannelId = await config.getChannel('staff_representative');
+        if(staffRepresentativeChannelId[0] == null) {
+            const embed = emb.generate(`Désolé :(`, null, `Il semblerait que le salon du/des délégué(s) du personnel n'est pas défini hors il doit l'être pour effectuer une sanction !\nPour le définir veuillez utiliser la commande </define:${process.env.IRIS_DEFINE_COMMAND_ID}>`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+            await interaction.followUp({ embeds: [embed], ephemeral: true });
+            await wait(5000);
+            return await interaction.deleteReply();
+        }
+
         const archivesCatId = await config.getCategory('archives');
 
         if(archivesCatId[0] == null) {
@@ -208,6 +216,13 @@ module.exports = {
         respEmb.addFields({ name: '**Motif**', value: textReason, inline: false });
 
         await memberChannel.send({ embeds: [privateEmbed] });
+
+        if(privateText == 'Licenciement') {
+            privateEmbed.setAuthor(privateText);
+            privateEmbed.spliceFields(0,2);
+            privateEmbed.addFields({name: '**Membre**', value: memberData[0].name, inline: false}, { name: '**Motif**', value: textReason, inline: false });
+            await staffRepresentativeChannelId.send({ embeds: [privateEmbed] });
+        }
 
         const announceChanId = await config.getChannel('IRIS_ANNOUNCEMENT_CHANNEL_ID');
         if(announceChanId[0] != null) {

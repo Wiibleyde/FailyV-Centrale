@@ -53,7 +53,6 @@ module.exports = {
                 const allOptions = new ActionRowBuilder().addComponents(options);
                 try {
                     //Confirmation à Discord du succès de l'opération
-                    security.setGen(true);
                     reply = await interaction.reply({ components: [allOptions], ephemeral: true });
                 } catch (err) {
                     logger.error(err);

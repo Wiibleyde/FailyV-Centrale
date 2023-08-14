@@ -42,6 +42,6 @@ module.exports = {
             IRIS_WORKFORCE_CHANNEL_ID = IRIS_WORKFORCE_CHANNEL_ID[0].id;
         }
         await interaction.deleteReply();
-        await workforce.generateWorkforce(interaction.guild);
+        await workforce.generateWorkforce(interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID));
     },
 };

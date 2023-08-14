@@ -144,10 +144,10 @@ module.exports = {
             if(cID == 'followRemoveSecoursFormaSelect') { const followRemoveSecoursFormaSelect = require('../buttons/suivi/followRemoveSecoursForma'); followRemoveSecoursFormaSelect.execute(interaction, errEmb); }
             if(cID == 'followRemoveSecoursPatientSelect') { const followRemoveSecoursPatientSelect = require('../buttons/suivi/followRemoveSecoursPatient'); followRemoveSecoursPatientSelect.execute(interaction, errEmb); }
             if(cID == 'companyDeleteSelect') { const companyDeleteSelect = require('../commands/private/inspection'); companyDeleteSelect.execute(interaction, errEmb); }
-            if(cID == 'featureDeleteSelect') { const featureDeleteSelect = require('../commands/private/feature'); featureDeleteSelect.execute(interaction, errEmb); }
-            if(cID == 'featureUpdateSelect') { const featureUpdateSelect = require('../commands/private/feature'); featureUpdateSelect.execute(interaction, errEmb); }
-            if(cID == 'addFeaturePatchnoteSelect') { const addFeaturePatchnoteSelect = require('../commands/private/patchnote'); addFeaturePatchnoteSelect.execute(interaction, errEmb); }
-            if(cID == 'removeFeaturePatchnoteSelect') { const removeFeaturePatchnoteSelect = require('../commands/private/patchnote'); removeFeaturePatchnoteSelect.execute(interaction, errEmb); }
+            if(cID == 'featureDeleteSelect') { const featureDeleteSelect = require('../commands/dev/feature'); featureDeleteSelect.execute(interaction, errEmb); }
+            if(cID == 'featureUpdateSelect') { const featureUpdateSelect = require('../commands/dev/feature'); featureUpdateSelect.execute(interaction, errEmb); }
+            if(cID == 'addFeaturePatchnoteSelect') { const addFeaturePatchnoteSelect = require('../commands/dev/patchnote'); addFeaturePatchnoteSelect.execute(interaction, errEmb); }
+            if(cID == 'removeFeaturePatchnoteSelect') { const removeFeaturePatchnoteSelect = require('../commands/dev/patchnote'); removeFeaturePatchnoteSelect.execute(interaction, errEmb); }
             if(cID == 'companyGlobalUpdateSelect') { const companyGlobalUpdateSelect = require('../commands/private/entrprise'); companyGlobalUpdateSelect.execute(interaction, errEmb); }
             if(cID == 'companyGlobalDeleteSelect') { const companyGlobalDeleteSelect = require('../commands/private/entrprise'); companyGlobalDeleteSelect.execute(interaction, errEmb); }
 

@@ -81,7 +81,7 @@ module.exports = {
             .setRequired(false))
         .addStringOption(option =>
             option.setName(`date`)
-            .setDescription(`Spécifier une date de décès autre qu'aujourd'hui`)
+            .setDescription(`Spécifier une date de décès autre qu'aujourd'hui (format : JJ/MM/AAAA)`)
             .setRequired(false)),
     async execute(interaction) {
         await interaction.deferReply({ ephemeral: true });

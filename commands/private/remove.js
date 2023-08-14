@@ -229,7 +229,16 @@ module.exports = {
             try {
                 const chan = await interaction.guild.channels.cache.get(announceChanId[0].id);
                 const msg = await chan.send({ content: `<@&${process.env.IRIS_LSMS_ROLE}>`, embeds: [respEmb] });
-                msg.react('❤️');
+                if(privateText == 'Licenciement') {
+                    try {
+                        await msg.react('<:yes:1139625753181433998>');
+                    } catch (err2) {
+                        logger.error(err2);
+                        await msg.react('✅');
+                    }
+                } else {
+                    msg.react('❤️');
+                }
             } catch (err) {
                 logger.error(err);
                 const embed = emb.generate(`Attention`, null, `Le retrait de l'effectif à bien été effectuée mais il semblerait que le salon d'annonce ne soit pas à jour, pour corriger se problème veuillez le redéfinir via la commande </define:${process.env.IRIS_DEFINE_COMMAND_ID}> !`, `Gold`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);

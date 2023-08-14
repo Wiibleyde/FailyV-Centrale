@@ -32,11 +32,15 @@ module.exports = {
         if(interaction.isChatInputCommand() || interaction.isUserContextMenuCommand() || interaction.isMessageContextMenuCommand() || interaction.isContextMenuCommand()) {
             //Log dès l'utilisation de la commande
             logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) la commande "</${cName}:${interaction.commandId}>"`);
+            let memberName = interaction.member.nickname;
+            if(memberName == null) {
+                memberName = interaction.user.username;
+            }
             const used = await sql.getCommandCount(cName);
             let usedCount = parseInt(used[0].used) + 1;
             const userUsed = await sql.getUserCount(interaction.user.id, cName);
             if(userUsed[0] == null) {
-                sql.createUserCount(interaction.user.id, interaction.member.nickname, cName);
+                sql.createUserCount(interaction.user.id, memberName, cName);
             } else {
                 let userUsedCount;
                 for(let key in userUsed[0]) {

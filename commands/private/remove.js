@@ -221,7 +221,8 @@ module.exports = {
             privateEmbed.setAuthor({ name: privateText, iconURL: serverIcon });
             privateEmbed.spliceFields(0,2);
             privateEmbed.addFields({name: '**Membre**', value: memberData[0].name, inline: false}, { name: '**Motif**', value: textReason, inline: false });
-            await staffRepresentativeChannelId.send({ embeds: [privateEmbed] });
+            const staffRepresentativeChannel = interaction.guild.channels.cache.get(staffRepresentativeChannelId[0].id);
+            await staffRepresentativeChannel.send({ embeds: [privateEmbed] });
         }
 
         const announceChanId = await config.getChannel('IRIS_ANNOUNCEMENT_CHANNEL_ID');

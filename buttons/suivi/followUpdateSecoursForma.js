@@ -107,7 +107,6 @@ module.exports = {
             }
         } else if(interaction.customId == 'followUpdateSecoursFormaSelectCat') {
             if(!security.isGen()) {
-                security.setGen(true);
                 let respContent = '';
                 let isPatientNull = false;
                 for(i=0;i<formaToUpdate.length;i++) {

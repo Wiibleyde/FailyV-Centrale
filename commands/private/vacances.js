@@ -15,7 +15,7 @@ module.exports = {
     //Création de la commande
     data: new SlashCommandBuilder()
         .setName('vacances')
-        .setDescription('[Direction] Mettre un docteur en vacances ou retirer les accès')
+        .setDescription('[Spécialistes +] Mettre un docteur en vacances ou retirer les accès')
         .addUserOption(option =>
             option.setName('membre')
             .setDescription('Le docteur que vous souhaitez mettre en vacances')

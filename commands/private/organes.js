@@ -70,7 +70,7 @@ module.exports = {
             .setRequired(false)
         ).addStringOption(option =>
             option.setName(`date`)
-            .setDescription(`Définir une date de validité diférente`)
+            .setDescription(`Définir une date de péremption pour l'organe (format: JJ/MM/AAAA)`)
             .setMinLength(5)
             .setMaxLength(5)
             .setRequired(false)

@@ -29,7 +29,7 @@ module.exports = {
     reAddDoctor: (id, name, grade, arrivalDate, phone) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                sql: "UPDATE `doctor` SET `discord_id`=?, `name`=?, `rank_id`=?, `arrival_date`=? WHERE `phone_number`=?",
+                sql: "UPDATE `doctor` SET `discord_id`=?, `name`=?, `rank_id`=?, `arrival_date`=?, `departure_date`=NULL, `removed`='0' WHERE `phone_number`=?",
                 timeout: 40000,
                 values: [id, name, grade, arrivalDate, phone]
             }, async (reqErr, result, fields) => {

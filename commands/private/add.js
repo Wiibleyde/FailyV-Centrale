@@ -159,7 +159,10 @@ module.exports = {
             welcomeEmbedText = `🆕 Bienvenue à **${name}** nous rejoint en tant que <@&${doctorRankData[grade].role_id}> !`;
         } else {
             channel = interaction.guild.channels.cache.get(isDocteurExists[0].channel_id);
+            await channel.setParent(doctorRankData[grade].parent_channel_id);
             await channel.setTopic(channel.topic + `, puis le : ${arrivalDate.toLocaleDateString(`fr-FR`)}`);
+            const embed = emb.generate(null, null, `Re-recrutement le **${arrivalDate.toLocaleDateString(`fr-FR`)}** au grade de <@&${doctorRankData[grade].role_id}>`, interaction.guild.roles.cache.get(doctorRankData[grade].role_id).hexColor, null, null, `Recrutement`, serverIcon, null, null, null, false);
+            await channel.send({ embeds: [embed] });
             welcomeEmbedText = `🆕 Re-bienvenue à **${name}** nous re-rejoint en tant que <@&${doctorRankData[grade].role_id}> !`;
         }
         

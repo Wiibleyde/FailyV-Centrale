@@ -180,7 +180,7 @@ module.exports = {
                 new ButtonBuilder().setCustomId('rendezVousContacte').setLabel("Personne contactée").setStyle(ButtonStyle.Primary).setEmoji("📱").setDisabled(false),
                 new ButtonBuilder().setCustomId('rendezVousPris').setLabel("Rendez-vous pris").setStyle(ButtonStyle.Danger).setEmoji("📆").setDisabled(false)
             );
-            for(i=0;i<numInG.length;i++) {
+            for(let i=0;i<numInG.length;i++) {
                 //Create embed
                 const rendezVousEmb = emb.generate(null, null, null, numInG[i].color, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, numInG[i].writter, null, false);
                 rendezVousEmb.addFields(
@@ -217,7 +217,7 @@ module.exports = {
                 const newMsg = await generalChannelId.send({ embeds: [rendezVousEmb], components: [rendezVousActionRow] });
                 await rdv.updateRDVMessageId(numInG[i].messageID, newMsg.id);
             }
-            for(i=0;i<numInChir.length;i++) {
+            for(let i=0;i<numInChir.length;i++) {
                 //Create embed
                 const rendezVousEmb = emb.generate(null, null, null, numInChir[i].color, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, numInChir[i].writter, null, false);
                 rendezVousEmb.addFields(
@@ -254,7 +254,7 @@ module.exports = {
                 const newMsg = await surgeryChannelId.send({ embeds: [rendezVousEmb], components: [rendezVousActionRow] });
                 await rdv.updateRDVMessageId(numInChir[i].messageID, newMsg.id);
             }
-            for(i=0;i<numInPsy.length;i++) {
+            for(let i=0;i<numInPsy.length;i++) {
                 //Create embed
                 const rendezVousEmb = emb.generate(null, null, null, numInPsy[i].color, process.env.LSMS_LOGO_V2, null, `Prise de rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, numInPsy[i].writter, null, false);
                 rendezVousEmb.addFields(

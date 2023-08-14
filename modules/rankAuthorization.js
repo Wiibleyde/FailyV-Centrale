@@ -1,4 +1,5 @@
 const Rank = Object.freeze({
+    BotManager: Symbol("bot_manager"),
     Director: Symbol("director"),
     AssistantManager: Symbol("assistant_manager"),
     DepartementManager: Symbol("departement_manager"),
@@ -31,6 +32,8 @@ module.exports = {
                 hasAuthorization = hasAuthorization || memberRoleCache.has(process.env.IRIS_ASSISTANT_MANAGER_ROLE);
             case Rank.Director:
                 hasAuthorization = hasAuthorization || memberRoleCache.has(process.env.IRIS_DIRECTOR_ROLE);
+            case Rank.BotManager:
+                hasAuthorization = hasAuthorization || memberRoleCache.has(process.env.IRIS_BOT_MANAGER_ROLE);
                 break;
             default:
                 hasAuthorization = false;

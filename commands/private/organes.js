@@ -36,7 +36,7 @@ module.exports = {
             ).setRequired(true)
         ).addStringOption(option =>
             option.setName(`côté`)
-            .setDescription(`Le côté de l'organe à ajouter`)
+            .setDescription(`Le côté de l'organe à ajouter (ne pas utiliser pour le foie)`)
             .addChoices(
                 {
                     name: `Gauche`,
@@ -70,7 +70,7 @@ module.exports = {
             .setRequired(false)
         ).addStringOption(option =>
             option.setName(`date`)
-            .setDescription(`Définir une date de validité diférente`)
+            .setDescription(`Définir une date de péremption pour l'organe (format: JJ/MM/AAAA) (Laisser vide la date du jour)`)
             .setMinLength(5)
             .setMaxLength(5)
             .setRequired(false)

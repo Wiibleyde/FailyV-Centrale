@@ -18,7 +18,7 @@ module.exports = {
     //Création de la commande
     execute: async function(interaction, errEmb) {
         // IRIS_PSYCHO_CHANNEL_ID
-        const IRIS_PSYCHO_CHANNEL_ID = chanSql.getChannel('IRIS_PSYCHO_CHANNEL_ID');
+        const IRIS_PSYCHO_CHANNEL_ID = await chanSql.getChannel('IRIS_PSYCHO_CHANNEL_ID');
         const channelToSend = interaction.guild.channels.cache.get(IRIS_PSYCHO_CHANNEL_ID[0].id);
         //Regex des numéros de téléphone
         const regExpFull = new RegExp("^555-[0-9]{4}$");

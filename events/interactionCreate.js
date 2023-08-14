@@ -16,10 +16,10 @@ module.exports = {
     async execute(interaction) {
         const cID = interaction.customId;
         const cName = interaction.commandName;
-        const serverIcon = `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`;
+        const serverIcon = `https://cdn.discordapp.com/icons/${interaction.guild.id}/${interaction.guild.icon}.webp`;
         // Check si l'utilisateur est chef de service ou plus
-        if (!hasAuthorization(Rank.LSMS, interaction.member.roles.cache)) {
-            if(cName != 'ping' && cName != 'report' && cName != 'debug' && cName != 'feature' && cName != 'patchnote') {
+        if (!hasAuthorization(Rank.LSMS, interaction.member.roles.cache) && interaction.user.id != '461880599594926080' && interaction.user.id != '461807010086780930' && interaction.user.id != '368259650136571904') {
+            if(cName != 'ping' && cName != 'report' && cName != 'debug' && cName != 'feature' && cName != 'patchnote' && cName != 'regenerate_workforce') {
                 const embed = emb.generate(`Désolé :(`, null, `Vous devez être un membre du <@&${process.env.IRIS_LSMS_ROLE}> pour pouvoir vous servir de mes commandes !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Interaction`, serverIcon, null, null, null, false);
                 await interaction.reply({ embeds: [embed], ephemeral: true });
                 // Supprime la réponse après 5s

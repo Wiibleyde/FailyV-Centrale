@@ -84,7 +84,7 @@ module.exports = {
                 logger.log(`Rechargement de ${publicCommands.length} commandes slash (/) publiques.`);
                 if(!isDevServerSameAsProd) {
                     logger.log(`Rechargement de ${devCommands.length} commandes slash (/) de dev.`);
-                    devData = await rest.put(Routes.applicationCommands(process.env.IRIS_DISCORD_ID, process.env.IRIS_DEBUG_GUILD_ID), { body: devCommands });
+                    devData = await rest.put(Routes.applicationGuildCommands(process.env.IRIS_DISCORD_ID, process.env.IRIS_DEBUG_GUILD_ID), { body: devCommands });
                 }
                 //Envois des commandes sur un serveur spécifique
                 const privateData = await rest.put(Routes.applicationGuildCommands(process.env.IRIS_DISCORD_ID, process.env.IRIS_PRIVATE_GUILD_ID), { body: privateCommands });

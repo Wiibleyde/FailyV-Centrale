@@ -24,8 +24,6 @@ module.exports = {
         const formatedDate = date[1] + '/' + date[0] + '/' + hour[0] + ':' + hour[1];
         const testDate = new Date();
         const dateToTest = new Date(formatedDate);
-        logger.debug(testDate);
-        logger.debug(dateToTest);
         if(dateToTest <= testDate) {
             await interaction.reply({ embeds: [emb.generate(`Erreur :(`, null, `Attention, la date de cérémonie que vous avez entrée n'est pas valide !\nVérifiez bien qu'elle n'est pas déjà passée !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion décès`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], ephemeral: true });
             await wait(5000);

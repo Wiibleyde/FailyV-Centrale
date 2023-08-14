@@ -88,7 +88,6 @@ module.exports = {
             const { exec } = require('node:child_process');
             exec('git pull && npm i', async (err, output) => {
                 if(err) return await logger.error(err);
-                await logger.debug(output);
             });
             await wait(30000);
             await logger.log(`Redémarrage dans **30s** pour la MAJ du jour !`);

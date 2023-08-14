@@ -40,8 +40,6 @@ module.exports = {
             } else {
                 let userUsedCount;
                 for(let key in userUsed[0]) {
-                    logger.debug("Key: " + key);
-                    logger.debug("Value: " + userUsed[0][key]);
                     userUsedCount = parseInt(userUsed[0][key]) + 1;
                 }
                 sql.addUserCount(interaction.user.id, cName, userUsedCount);

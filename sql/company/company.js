@@ -96,7 +96,6 @@ module.exports = {
                     logger.error(reqErr);
                     reject(reqErr);
                 }
-                logger.debug(result);
                 if (result.length > 0) {
                     resolve(true);
                 } else {

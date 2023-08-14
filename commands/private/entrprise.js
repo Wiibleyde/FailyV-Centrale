@@ -149,7 +149,6 @@ module.exports = {
             } else {
                 companySide = "Nord"
             }
-            logger.debug(companyToUpdate)
             const updateCompanyModal = new ModalBuilder().setCustomId('updateCompanyModal').setTitle('Modifier une entreprise')
             const name = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('name').setLabel('Nom de l\'entreprise').setPlaceholder('Ex : Los Santos Medical Service').setStyle(TextInputStyle.Short).setRequired(true).setValue(`${companyToUpdate[0].name}`))
             const acronym = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('acronym').setLabel('Acronyme de l\'entreprise').setPlaceholder('Ex : LSMS').setStyle(TextInputStyle.Short).setRequired(true).setValue(`${companyToUpdate[0].acronym}`))

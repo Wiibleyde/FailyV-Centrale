@@ -218,7 +218,7 @@ module.exports = {
         await memberChannel.send({ embeds: [privateEmbed] });
 
         if(privateText == 'Licenciement') {
-            privateEmbed.setAuthor(privateText);
+            privateEmbed.setAuthor({ name: privateText, iconURL: serverIcon });
             privateEmbed.spliceFields(0,2);
             privateEmbed.addFields({name: '**Membre**', value: memberData[0].name, inline: false}, { name: '**Motif**', value: textReason, inline: false });
             await staffRepresentativeChannelId.send({ embeds: [privateEmbed] });

@@ -25,7 +25,7 @@ module.exports = {
             await interaction.deferReply({ ephemeral: true });
             const guild = interaction.guild;
             await interaction.channel.send({ content: interaction.options.getString('texte') });
-            const response = await interaction.reply({ embeds: [emb.generate(null, null, `Message envoyé !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, true)], ephemeral: true });
+            const response = await interaction.followUp({ embeds: [emb.generate(null, null, `Message envoyé !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, true)], ephemeral: true });
             await wait(5000);
             await response.delete();
         } else {

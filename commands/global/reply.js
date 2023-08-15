@@ -10,7 +10,7 @@ const wait = require('node:timers/promises').setTimeout;
 module.exports = {
     //Création de la commande
     data: new SlashCommandBuilder()
-        .setName('say')
+        .setName('reply')
         .setDescription('[DEV ONLY] Faire parler Iris dans le salon actuel')
         .addStringOption(option =>
             option.setName('texte')

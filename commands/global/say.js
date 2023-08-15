@@ -23,9 +23,13 @@ module.exports = {
         if(interaction.user.id == '461880599594926080' || interaction.user.id == '461807010086780930' || interaction.user.id == '368259650136571904') {
             //Affichage du message "Iris réfléchis..."
             await interaction.deferReply({ ephemeral: true });
-            const guild = interaction.guild;
-            await interaction.channel.send({ content: interaction.options.getString('texte') });
-            await interaction.followUp({ embeds: [emb.generate(null, null, `Message envoyé !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, true)], ephemeral: true });
+            try {
+                await interaction.channel.send({ content: interaction.options.getString('texte') });
+                await interaction.followUp({ embeds: [emb.generate(null, null, `Message envoyé !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, true)], ephemeral: true });
+            } catch (err) {
+                logger.error(err);
+                await interaction.followUp({ embeds: [emb.generate(`Oups :(`, null, `Une erreur est survenue lors de l'envois du message !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, true)], ephemeral: true });
+            }
             await wait(5000);
             await interaction.deleteReply();
         } else {

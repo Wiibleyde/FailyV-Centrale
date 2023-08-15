@@ -1,5 +1,5 @@
 // Récupération des fonctions pour créer une commande
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 // Récupération du logger
 const logger = require('../../modules/logger');
 // Récupération du créateur d'embed
@@ -28,7 +28,7 @@ module.exports = {
             option.setName('rôle')
             .setDescription('Le nouveau rôle à attribuer')
             .setRequired(true)
-        ),
+        ).setDefaultMemberPermissions(PermissionFlagsBits.RequestToSpeak),
     async execute(interaction) {
         await interaction.deferReply({ ephemeral: true });
         const serverIcon = `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`;

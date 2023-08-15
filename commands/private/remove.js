@@ -1,5 +1,5 @@
 // Récupération des fonctions pour créer une commande
-const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, PermissionFlagsBits } = require('discord.js');
 // Récupération du logger
 const logger = require('../../modules/logger');
 // Récupération du créateur d'embed
@@ -47,7 +47,7 @@ module.exports = {
             option.setName('motif')
             .setDescription(`La raison du retrait de la personne de l'effectif`)
             .setRequired(false)
-        ),
+        ).setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
     async execute(interaction) {
         await interaction.deferReply({ ephemeral: true });
         const serverIcon = `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`;

@@ -1,5 +1,5 @@
 //Récupération des fonctions pour créer une commande
-const { SlashCommandBuilder, ChannelType } = require('discord.js');
+const { SlashCommandBuilder, ChannelType, PermissionFlagsBits } = require('discord.js');
 //Récup du logger
 const logger = require('../../modules/logger');
 // Récup du gestionnaire d'autoriasation
@@ -26,30 +26,31 @@ module.exports = {
         .setDescription(`[Direction] Ajouter un membre à l'effectif`)
         .addStringOption(option =>
             option.setName(`personne`)
-                .setDescription(`Prénom et Nom de la personne à ajouter`)
-                .setRequired(true))
+            .setDescription(`Prénom et Nom de la personne à ajouter`)
+            .setRequired(true))
         .addStringOption(option =>
             option.setName(`téléphone`)
-                .setDescription(`Numéro téléphone de la personne à ajouter`)
-                .setMinLength(4)
-                .setMaxLength(8)
-                .setRequired(true))
+            .setDescription(`Numéro téléphone de la personne à ajouter`)
+            .setMinLength(4)
+            .setMaxLength(8)
+            .setRequired(true))
         .addUserOption(option =>
             option.setName(`tag`)
-                .setDescription(`Tag Discord de la personne à ajouter`)
-                .setRequired(true))
+            .setDescription(`Tag Discord de la personne à ajouter`)
+            .setRequired(true))
         .addStringOption(option =>
             option.setName(`grade`)
-                .setDescription(`Grade auquel la personne doit être ajoutée`)
-                .addChoices(
-                    { name: `Interne`, value: `intern` },
-                    { name: `Résident`, value: `resident` },
-                    { name: `Titulaire`, value: `incumbent` },
-                    { name: `Spécialiste`, value: `specialist` },
-                    { name: `Chef de service`, value: `departement_manager` },
-                    { name: `Directeur adjoint`, value: `assistant_manager` },
-                    { name: `Directeur`, value: `director` },
-                )),
+            .setDescription(`Grade auquel la personne doit être ajoutée`)
+            .addChoices(
+                { name: `Interne`, value: `intern` },
+                { name: `Résident`, value: `resident` },
+                { name: `Titulaire`, value: `incumbent` },
+                { name: `Spécialiste`, value: `specialist` },
+                { name: `Chef de service`, value: `departement_manager` },
+                { name: `Directeur adjoint`, value: `assistant_manager` },
+                { name: `Directeur`, value: `director` },
+            )
+        ).setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
     async execute(interaction) {
         //Affichage du message 'Iris réfléchis...'
         await interaction.deferReply({ ephemeral: true });

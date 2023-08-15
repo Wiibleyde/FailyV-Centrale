@@ -1,5 +1,5 @@
 //Récupération des fonctions pour créer une commande et un modal
-const { SlashCommandBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require('discord.js');
+const { SlashCommandBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, PermissionFlagsBits } = require('discord.js');
 //Récup du logger
 const logger = require('../../modules/logger');
 //Récup du SQL pour les rôles
@@ -29,7 +29,7 @@ module.exports = {
                     value: `reset`
                 }
             ).setRequired(true)
-        ),
+        ).setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
     async execute(interaction) {
         if(hasAuthorization(Rank.Director, interaction.member.roles.cache)) {
             if(interaction.options.getString(`action`) === `rename`) {

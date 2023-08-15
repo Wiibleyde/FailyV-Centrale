@@ -1,5 +1,5 @@
 //Récupération des fonctions pour créer une commande
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 //Récup du logger
 const logger = require('../../modules/logger');
 //Récup du créateur d'embed
@@ -20,7 +20,7 @@ module.exports = {
             option.setName('membre')
             .setDescription('Le docteur que vous souhaitez mettre en vacances')
             .setRequired(true)
-        ),
+        ).setDefaultMemberPermissions(PermissionFlagsBits.RequestToSpeak),
     async execute(interaction) {
         //Affichage du message "Iris réfléchis..."
         await interaction.deferReply({ ephemeral: true });

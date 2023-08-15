@@ -9,6 +9,8 @@ const sql = require('../../sql/agenda/agenda');
 //Récup du formateur de noms
 const format = require('../../modules/formatName');
 
+const security = require('../../modules/service');
+
 const wait = require('node:timers/promises').setTimeout;
 
 module.exports = {
@@ -227,6 +229,7 @@ module.exports = {
                 }
             );
         }
+        security.setGen(true);
         const agendaID = await agendaChan.send({ embeds: [newEmbed], components: [buttons] });
         newEmbed.spliceFields(3, 7);
         newEmbed.addFields(
@@ -256,6 +259,7 @@ module.exports = {
         } else {
             sql.insertWithDetails(firstname + ' ' + lastname, sqlDate, interaction.options.getString(`service`), interaction.options.getString(`responsables`), interaction.options.getString(`autorisées`), confiDB, donDB, interaction.options.getString(`traitement`), interaction.options.getString(`cause`), interaction.options.getString(`autre`), interaction.member.nickname, agendaID.id, mayorID.id, LSPDID.id);
         }
+        security.setGen(false);
 
         await interaction.followUp({ embeds: [emb.generate(null, null, `Agenda mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion décès`, serverIconURL, null, null, null, false)], ephemeral: true });
         await wait(5000);

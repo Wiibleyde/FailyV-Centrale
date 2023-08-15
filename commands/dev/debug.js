@@ -17,6 +17,8 @@ module.exports = {
         .setName('debug')
         .setDescription('[DEV ONLY] Activer/Désactiver le mode debug'),
     async execute(interaction) {
+        const serverIcon = `https://cdn.discordapp.com/icons/${interaction.guild.id}/${interaction.guild.icon}webp`;
+        const title = `DEBUG MODE`;
         if(interaction.user.id == '461880599594926080' || interaction.user.id == '461807010086780930' || interaction.user.id == '368259650136571904') {
             //Affichage du message "Iris réfléchis..."
             await interaction.deferReply({ ephemeral: true });
@@ -51,9 +53,9 @@ module.exports = {
                     color = '#FF0000';
                 }
             }
-            interaction.followUp({ embeds: [emb.generate(null, null, text, color, process.env.LSMS_LOGO_V2, null, `DEBUG MODE`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)], ephemeral: true })
+            interaction.followUp({ embeds: [emb.generate(null, null, text, color, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, true)], ephemeral: true })
         } else {
-            await interaction.reply({ embeds: [emb.generate(`Désolé :(`, null, `Cette commande est réservé à mes développeurs (<@461880599594926080>, <@461807010086780930> et <@368259650136571904>) au cas où j'aurais un soucis !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `DEBUG MODE`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)], ephemeral: true });
+            await interaction.reply({ embeds: [emb.generate(`Désolé :(`, null, `Cette commande est réservé à mes développeurs (<@461880599594926080>, <@461807010086780930> et <@368259650136571904>) au cas où j'aurais un soucis !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, true)], ephemeral: true });
             await wait(5000);
             await interaction.deleteReply();
         }

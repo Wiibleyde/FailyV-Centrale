@@ -54,6 +54,10 @@ module.exports = {
                 {
                     name: `Foie`,
                     value: `foie`
+                },
+                {
+                    name: `Peau`,
+                    value: `peau`
                 }
             ).setRequired(true)
         ),
@@ -106,6 +110,9 @@ module.exports = {
                 break;
             case 'foie':
                 organ = 'Foie';
+                break;
+            case 'peau':
+                organ = 'Peau';
                 break;
             default:
                 organ = '?';

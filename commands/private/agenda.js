@@ -9,6 +9,8 @@ const sql = require('../../sql/agenda/agenda');
 //Récup du formateur de noms
 const format = require('../../modules/formatName');
 
+const security = require('../../modules/service');
+
 const wait = require('node:timers/promises').setTimeout;
 
 module.exports = {
@@ -92,7 +94,7 @@ module.exports = {
         const lspdChannelId = await sql.getLSPDChannelId();
 
         if(agendaChannelId[0] == null || mairieDécèsChannelId[0] == null || lspdChannelId[0] == null) {
-            return interaction.followUp({ embeds: [emb.generate(`Oups :(`, null, `Aucun identifiant pour les salons de gestion de l'agenda n'a été trouvé en base de donnée\nVeuillez contacter un des développeurs (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour régler ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion décès`, serverIconURL, null, null, null, false)], ephemeral: true });
+            return interaction.followUp({ embeds: [emb.generate(`Oups :(`, null, `Aucun identifiant pour les salons de gestion de l'agenda n'a été trouvé en base de donnée\nVeuillez faire un </report:1140480157367402507>, merci !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion décès`, serverIconURL, null, null, null, false)], ephemeral: true });
         }
         const agendaChan = guild.channels.cache.get(agendaChannelId[0].id);
         const mairieDécèsChan = guild.channels.cache.get(mairieDécèsChannelId[0].id);
@@ -227,6 +229,7 @@ module.exports = {
                 }
             );
         }
+        security.setGen(true);
         const agendaID = await agendaChan.send({ embeds: [newEmbed], components: [buttons] });
         newEmbed.spliceFields(3, 7);
         newEmbed.addFields(
@@ -256,6 +259,7 @@ module.exports = {
         } else {
             sql.insertWithDetails(firstname + ' ' + lastname, sqlDate, interaction.options.getString(`service`), interaction.options.getString(`responsables`), interaction.options.getString(`autorisées`), confiDB, donDB, interaction.options.getString(`traitement`), interaction.options.getString(`cause`), interaction.options.getString(`autre`), interaction.member.nickname, agendaID.id, mayorID.id, LSPDID.id);
         }
+        security.setGen(false);
 
         await interaction.followUp({ embeds: [emb.generate(null, null, `Agenda mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion décès`, serverIconURL, null, null, null, false)], ephemeral: true });
         await wait(5000);

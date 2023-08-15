@@ -1,5 +1,5 @@
 //Récupération des fonctions pour créer une commande et un modal
-const { SlashCommandBuilder, ChannelType } = require('discord.js');
+const { SlashCommandBuilder, ChannelType, PermissionFlagsBits } = require('discord.js');
 //Récup du logger
 const logger = require('../../modules/logger');
 //Récup du SQL pour les channels
@@ -82,13 +82,12 @@ module.exports = {
                 }
             )
             .setRequired(true)
-        )
-        .addChannelOption( option =>
+        ).addChannelOption( option =>
             option.setName('salon')
             .setDescription('Nouveau salon à assigner')
             .addChannelTypes(ChannelType.AnnouncementThread, ChannelType.GuildAnnouncement, ChannelType.GuildText, ChannelType.GuildVoice, ChannelType.PrivateThread, ChannelType.PublicThread)
             .setRequired(true)
-        ),
+        ).setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
     async execute(interaction) {
         const serverIcon = `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`;
         const title = `Gestion des salons`;

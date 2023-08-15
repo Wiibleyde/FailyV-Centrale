@@ -58,7 +58,7 @@ module.exports = {
                 .setRequired(true)
         ),
     async execute(interaction) {
-        const serverIcon = `https://cdn.discordapp.com/icons/${interaction.guild.id}/${interaction.guild.icon}webp`;
+        const serverIcon = `https://cdn.discordapp.com/icons/${interaction.guild.id}/${interaction.guild.icon}.webp`;
         const title = `Gestion des patchnotes`;
         if(interaction.commandName == 'patchnote') {
             if(interaction.user.id == '461880599594926080' || interaction.user.id == '461807010086780930' || interaction.user.id == '368259650136571904') {
@@ -205,7 +205,7 @@ module.exports = {
                         break;
                     case `send`:
                         if (lastPatchnote.state != undefined) {
-                            let embed = emb.generate(`Nouvelle mise à jour de ${interaction.client.user.username}, la **${lastPatchnote.version}** !`, null, `**${lastPatchnote.name}** - **${lastPatchnote.version}**`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}webp`, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
+                            let embed = emb.generate(`Nouvelle mise à jour de ${interaction.client.user.username}, la **${lastPatchnote.version}** !`, null, `**${lastPatchnote.name}** - **${lastPatchnote.version}**`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
                             let features = lastPatchnote.features_id.split(`;`)
                             if(features[0] == "") {
                                 let embed = emb.generate(null, null, `Désolé :(\n\nIl n'y a pas de feature dans ce patchnote !\nAjoutez en avant de l'envoyer.`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)

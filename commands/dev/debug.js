@@ -17,7 +17,7 @@ module.exports = {
         .setName('debug')
         .setDescription('[DEV ONLY] Activer/Désactiver le mode debug'),
     async execute(interaction) {
-        const serverIcon = `https://cdn.discordapp.com/icons/${interaction.guild.id}/${interaction.guild.icon}webp`;
+        const serverIcon = `https://cdn.discordapp.com/icons/${interaction.guild.id}/${interaction.guild.icon}.webp`;
         const title = `DEBUG MODE`;
         if(interaction.user.id == '461880599594926080' || interaction.user.id == '461807010086780930' || interaction.user.id == '368259650136571904') {
             //Affichage du message "Iris réfléchis..."

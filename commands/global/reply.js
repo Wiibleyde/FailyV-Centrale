@@ -29,9 +29,7 @@ module.exports = {
             //Affichage du message "Iris réfléchis..."
             await commandInteraction.deferReply({ ephemeral: true });
             try {
-                logger.debug(commandInteraction.guild.channel);
-                const msgToReply = await commandInteraction.guild.channel.messages.fetch(commandInteraction.options.getString('id'));
-                logger.debug(msgToReply);
+                const msgToReply = await commandInteraction.channel.messages.fetch(commandInteraction.options.getString('id'));
                 await msgToReply.reply({ content: commandInteraction.options.getString('texte') });
                 await commandInteraction.followUp({ embeds: [emb.generate(null, null, `Message envoyé !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, true)], ephemeral: true });
             } catch (err) {

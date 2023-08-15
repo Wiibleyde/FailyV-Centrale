@@ -124,14 +124,6 @@ module.exports = {
             } else {
                 side = interaction.options.getString(`côté`);
             }
-        } else {
-            if(interaction.options.getString(`côté`) == null) {
-                side = 0;
-            } else {
-                await interaction.followUp({ embeds: [emb.generate(`Oups :(`, null, `L'organe ${interaction.options.getString(`type`)} n'a pas de côtés spécifiques, cela ne sert à rien de le spécifier !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des organes`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], ephemeral: true });            // Supprime la réponse après 5s
-                await wait(5000);
-                return await interaction.deleteReply();
-            }
         }
 
         if(interaction.options.getString(`état`) != null) {

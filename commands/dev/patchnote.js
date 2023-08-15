@@ -17,7 +17,7 @@ let reply;
 
 const typeEmojis = {
     0: `🔧`,
-    1: `🔨`,
+    1: `<:maj:1141039934153687130>`,
     2: `🆕`,
     3: `🗑️`
 }
@@ -58,6 +58,8 @@ module.exports = {
                 .setRequired(true)
         ),
     async execute(interaction) {
+        const serverIcon = `https://cdn.discordapp.com/icons/${interaction.guild.id}/${interaction.guild.icon}.webp`;
+        const title = `Gestion des patchnotes`;
         if(interaction.commandName == 'patchnote') {
             if(interaction.user.id == '461880599594926080' || interaction.user.id == '461807010086780930' || interaction.user.id == '368259650136571904') {
                 const lastPatchnote = await patchnoteSQL.getLastPatchnote();
@@ -71,12 +73,12 @@ module.exports = {
                             await interaction.showModal(addPatchnoteModal);
                             break;
                         } else {
-                            let embed = emb.generate(`Gestion des patchnotes`, null, `Désolé :(\n\Il n'y aucun patchnote enregistré !\nEnvoyez le ou supprimez le avant d'en créer un autre.`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
+                            let embed = emb.generate(null, null, `Désolé :(\n\Il n'y aucun patchnote enregistré !\nEnvoyez le ou supprimez le avant d'en créer un autre.`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
                             await interaction.reply({ embeds: [embed], ephemeral: true });
                             break;
                         }
                     case `delete`:
-                        let embed = emb.generate(`Gestion des patchnotes`, null, `Le dernier patchnote a été supprimé`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)                    
+                        let embed = emb.generate(null, null, `Le dernier patchnote a été supprimé`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)                    
                         await patchnoteSQL.deleteLastPatchnote();
                         await interaction.reply({ embeds: [embed], ephemeral: true });
                         break;
@@ -100,7 +102,7 @@ module.exports = {
                                     break;
                                 }
                             } else {
-                                let embed = emb.generate(`Gestion des patchnotes`, null, `Liste des features`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
+                                let embed = emb.generate(null, null, `Liste des features`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
                                 embed.addFields(
                                     {
                                         name: `Aucune feature`,
@@ -113,7 +115,7 @@ module.exports = {
                                 await interaction.deleteReply();
                             }
                         } else {
-                            let embed = emb.generate(`Gestion des patchnotes`, null, `Désolé :(\n\nIl n'y a pas de patchnote en cours de création !\nCréez en un avant d'ajouter des features.`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
+                            let embed = emb.generate(null, null, `Désolé :(\n\nIl n'y a pas de patchnote en cours de création !\nCréez en un avant d'ajouter des features.`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
                             await interaction.reply({ embeds: [embed], ephemeral: true });
                             break;
                         }
@@ -123,7 +125,7 @@ module.exports = {
                             reply = null;
                             let features = lastPatchnote.features_id
                             if(features == '') {
-                                let embed = emb.generate(`Gestion des patchnotes`, null, `Désolé :(\n\nIl n'y a pas de feature dans le patchnote en cours de création !\nAjoutez en avant d'en supprimer.`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
+                                let embed = emb.generate(null, null, `Désolé :(\n\nIl n'y a pas de feature dans le patchnote en cours de création !\nAjoutez en avant d'en supprimer.`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
                                 await interaction.reply({ embeds: [embed], ephemeral: true });
                                 break;
                             }
@@ -145,7 +147,7 @@ module.exports = {
                                     break;
                                 }
                             } else {
-                                let embed = emb.generate(`Gestion des patchnotes`, null, `Liste des features`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
+                                let embed = emb.generate(null, null, `Liste des features`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
                                 embed.addFields(
                                     {
                                         name: `Aucune feature`,
@@ -158,7 +160,7 @@ module.exports = {
                                 await interaction.deleteReply();
                             }
                         } else {
-                            let embed = emb.generate(`Gestion des patchnotes`, null, `Désolé :(\n\nIl n'y a pas de patchnote en cours de création !\nCréez en un avant de supprimer des features.`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
+                            let embed = emb.generate(null, null, `Désolé :(\n\nIl n'y a pas de patchnote en cours de création !\nCréez en un avant de supprimer des features.`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
                             await interaction.reply({ embeds: [embed], ephemeral: true });
                             // Supprime la réponse après 5s
                             await wait(5000);
@@ -168,7 +170,7 @@ module.exports = {
                         break;
                     case `view`:
                         if (lastPatchnote.state != undefined) {
-                            let viewEmbed = emb.generate(`Gestion des patchnotes`, null, `Dernier patchnote : ${lastPatchnote.name} - ${lastPatchnote.version}`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
+                            let viewEmbed = emb.generate(null, null, `Dernier patchnote : ${lastPatchnote.name} - ${lastPatchnote.version}`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
                             if (lastPatchnote.features_id == "") {
                                 viewEmbed.addFields(
                                     {
@@ -194,7 +196,7 @@ module.exports = {
                             }
                             await interaction.reply({ embeds: [viewEmbed], ephemeral: true })
                         } else {
-                            let embed = emb.generate(`Gestion des patchnotes`, null, `Désolé :(\n\nIl n'y a pas de patchnote en cours de création !\nCréez en un avant de le voir.`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
+                            let embed = emb.generate(null, null, `Désolé :(\n\nIl n'y a pas de patchnote en cours de création !\nCréez en un avant de le voir.`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
                             await interaction.reply({ embeds: [embed], ephemeral: true });
                             // Supprime la réponse après 5s
                             await wait(5000);
@@ -206,7 +208,7 @@ module.exports = {
                             let embed = emb.generate(`Nouvelle mise à jour de ${interaction.client.user.username}, la **${lastPatchnote.version}** !`, null, `**${lastPatchnote.name}** - **${lastPatchnote.version}**`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
                             let features = lastPatchnote.features_id.split(`;`)
                             if(features[0] == "") {
-                                let embed = emb.generate(`Gestion des patchnotes`, null, `Désolé :(\n\nIl n'y a pas de feature dans ce patchnote !\nAjoutez en avant de l'envoyer.`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
+                                let embed = emb.generate(null, null, `Désolé :(\n\nIl n'y a pas de feature dans ce patchnote !\nAjoutez en avant de l'envoyer.`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
                                 await interaction.reply({ embeds: [embed], ephemeral: true });
                                 // Supprime la réponse après 5s
                                 await wait(5000);
@@ -239,7 +241,7 @@ module.exports = {
                             }
                             let channel = await channelSQL.getChannel(`IRIS_PATCHNOTE_CHANNEL_ID`)
                             if (channel[0] == undefined) {
-                                let embed = emb.generate(`Gestion des patchnotes`, null, `Désolé :(\n\nLe channel de patchnote n'est pas configuré !\nConfigurez le avant d'envoyer un patchnote.`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
+                                let embed = emb.generate(null, null, `Désolé :(\n\nLe channel de patchnote n'est pas configuré !\nConfigurez le avant d'envoyer un patchnote.`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
                                 await interaction.reply({ embeds: [embed], ephemeral: true });
                                 // Supprime la réponse après 5s
                                 await wait(5000);
@@ -249,9 +251,9 @@ module.exports = {
                             const patchnoteChannel = interaction.client.channels.cache.get(channel[0].id)
                             await patchnoteChannel.send({ embeds: [embed] })
                             await patchnoteSQL.updateState(lastPatchnote.id, 1)
-                            await interaction.reply({ embeds: [emb.generate(`Gestion des patchnotes`, null, `Le patchnote a été envoyé.`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
+                            await interaction.reply({ embeds: [emb.generate(null, null, `Le patchnote a été envoyé.`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)], ephemeral: true });
                         } else {
-                            let embed = emb.generate(`Gestion des patchnotes`, null, `Désolé :(\n\nIl n'y a pas de patchnote en cours de création !\nCréez en un avant de l'envoyer.`, `#FF0000`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
+                            let embed = emb.generate(null, null, `Désolé :(\n\nIl n'y a pas de patchnote en cours de création !\nCréez en un avant de l'envoyer.`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
                             await interaction.reply({ embeds: [embed], ephemeral: true });
                             // Supprime la réponse après 5s
                             await wait(5000);
@@ -262,13 +264,13 @@ module.exports = {
                         break;
                 }
             } else {
-                await interaction.reply({ embeds: [emb.generate(`Désolé :(`, null, `Cette commande est réservé à mes développeurs (<@461880599594926080>, <@461807010086780930> et <@368259650136571904>) !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion ${interaction.client.user.username}`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true)], ephemeral: true });
+                await interaction.reply({ embeds: [emb.generate(`Désolé :(`, null, `Cette commande est réservé à mes développeurs (<@461880599594926080>, <@461807010086780930> et <@368259650136571904>) !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, true)], ephemeral: true });
                 await wait(5000);
                 await interaction.deleteReply();
             }
         } else if(interaction.customId == 'addFeaturePatchnoteSelect') {
             try {
-                await reply.edit({ embeds: [emb.generate(null, null, `<a:loading:1140500830672392283> Mise à jour en cours...`, `Gold`, process.env.LSMS_LOGO_V2, null, `Gestion des features`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], components: [], ephemeral: true });
+                await reply.edit({ embeds: [emb.generate(null, null, `<a:loading:1140500830672392283> Mise à jour en cours...`, `Gold`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false)], components: [], ephemeral: true });
             } catch (err) {
                 await interaction.deferReply({ ephemeral: true });
             }
@@ -289,20 +291,20 @@ module.exports = {
             }
             await patchnoteSQL.addFeatureToLastPatchnote(features, oldFeatures.id)
             try {
-                await reply.edit({ embeds: [emb.generate(null, null, `Les features ${features} sont présentes dans le dernier patchnote !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des features`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true)], components: [], ephemeral: true });
+                await reply.edit({ embeds: [emb.generate(null, null, `Les features ${features} sont présentes dans le dernier patchnote !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, true)], components: [], ephemeral: true });
                 // Supprime la réponse après 5s
                 await wait(5000);
                 await reply.delete();
             } catch (err) {
                 logger.error(err);
-                await interaction.followUp({ embeds: [emb.generate(null, null, `Les features ${features} sont présentes dans le dernier patchnote !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des features`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true)], ephemeral: true });
+                await interaction.followUp({ embeds: [emb.generate(null, null, `Les features ${features} sont présentes dans le dernier patchnote !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, true)], ephemeral: true });
                 // Supprime la réponse après 5s
                 await wait(5000);
                 await interaction.deleteReply();
             }
         } else if(interaction.customId == 'removeFeaturePatchnoteSelect') {
             try {
-                await reply.edit({ embeds: [emb.generate(null, null, `<a:loading:1140500830672392283> Mise à jour en cours...`, `Gold`, process.env.LSMS_LOGO_V2, null, `Gestion des features`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], components: [], ephemeral: true });
+                await reply.edit({ embeds: [emb.generate(null, null, `<a:loading:1140500830672392283> Mise à jour en cours...`, `Gold`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false)], components: [], ephemeral: true });
             } catch (err) {
                 await interaction.deferReply({ ephemeral: true });
             }
@@ -318,13 +320,13 @@ module.exports = {
             features = features.join(";")
             await patchnoteSQL.addFeatureToLastPatchnote(features,oldFeatures.id);
             try {
-                await reply.edit({ embeds: [emb.generate(null, null, `Les features ${features} sont présentes dans le dernier patchnote !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des features`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true)], components: [], ephemeral: true });
+                await reply.edit({ embeds: [emb.generate(null, null, `Les features ${features} sont présentes dans le dernier patchnote !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, true)], components: [], ephemeral: true });
                 // Supprime la réponse après 5s
                 await wait(5000);
                 await reply.delete();
             } catch (err) {
                 logger.error(err);
-                await interaction.followUp({ embeds: [emb.generate(null, null, `Les features ${features} sont présentes dans le dernier patchnote !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des features`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true)], ephemeral: true });
+                await interaction.followUp({ embeds: [emb.generate(null, null, `Les features ${features} sont présentes dans le dernier patchnote !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, true)], ephemeral: true });
                 // Supprime la réponse après 5s
                 await wait(5000);
                 await interaction.deleteReply();

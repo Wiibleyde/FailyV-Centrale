@@ -87,6 +87,14 @@ module.exports = {
             return await interaction.deleteReply();
         }
         const memberChannel = interaction.guild.channels.cache.get(memberData[0].channel_id);
+        const staffRepresentativeChannelId = await config.getChannel('staff_representative');
+        if(staffRepresentativeChannelId[0] == null) {
+            const embed = emb.generate(`Désolé :(`, null, `Il semblerait que le salon du/des délégué(s) du personnel n'est pas défini hors il doit l'être pour effectuer une sanction !\nPour le définir veuillez utiliser la commande </define:${process.env.IRIS_DEFINE_COMMAND_ID}>`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+            await interaction.followUp({ embeds: [embed], ephemeral: true });
+            await wait(5000);
+            return await interaction.deleteReply();
+        }
+
         const archivesCatId = await config.getCategory('archives');
 
         if(archivesCatId[0] == null) {
@@ -209,12 +217,29 @@ module.exports = {
 
         await memberChannel.send({ embeds: [privateEmbed] });
 
+        if(privateText == 'Licenciement') {
+            privateEmbed.setAuthor({ name: privateText, iconURL: serverIcon });
+            privateEmbed.spliceFields(0,2);
+            privateEmbed.addFields({name: '**Membre**', value: memberData[0].name, inline: false}, { name: '**Motif**', value: textReason, inline: false });
+            const staffRepresentativeChannel = interaction.guild.channels.cache.get(staffRepresentativeChannelId[0].id);
+            await staffRepresentativeChannel.send({ embeds: [privateEmbed] });
+        }
+
         const announceChanId = await config.getChannel('IRIS_ANNOUNCEMENT_CHANNEL_ID');
         if(announceChanId[0] != null) {
             try {
                 const chan = await interaction.guild.channels.cache.get(announceChanId[0].id);
                 const msg = await chan.send({ content: `<@&${process.env.IRIS_LSMS_ROLE}>`, embeds: [respEmb] });
-                msg.react('❤️');
+                if(privateText == 'Licenciement') {
+                    try {
+                        await msg.react('<:yes:1139625753181433998>');
+                    } catch (err2) {
+                        logger.error(err2);
+                        await msg.react('✅');
+                    }
+                } else {
+                    msg.react('❤️');
+                }
             } catch (err) {
                 logger.error(err);
                 const embed = emb.generate(`Attention`, null, `Le retrait de l'effectif à bien été effectuée mais il semblerait que le salon d'annonce ne soit pas à jour, pour corriger se problème veuillez le redéfinir via la commande </define:${process.env.IRIS_DEFINE_COMMAND_ID}> !`, `Gold`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);

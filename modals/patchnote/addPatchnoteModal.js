@@ -9,9 +9,11 @@ const patchnoteSQL = require('../../sql/patchnote/patchnote');
 
 module.exports = {
     execute: async function (interaction, errEmb) {
+        const serverIcon = `https://cdn.discordapp.com/icons/${interaction.guild.id}/${interaction.guild.icon}.webp`;
+        const authorTitleEmbed = `Gestion des patchnotes`;
         const name = interaction.components[0].components[0].value
         const version = interaction.components[1].components[0].value
         await patchnoteSQL.createPatchnote(name, version)
-        await interaction.reply({ embeds: [emb.generate(`Succès !`, null, `La patchnote a bien été ajoutée.`, `#00FF00`, process.env.LSMS_LOGO_V2, null, `Gestion des patchnotes`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], ephemeral: true });
+        await interaction.reply({ embeds: [emb.generate(`Succès !`, null, `La patchnote a bien été ajoutée.`, `#00FF00`, process.env.LSMS_LOGO_V2, null, authorTitleEmbed, serverIcon, null, null, null, false)], ephemeral: true });
     }
 }

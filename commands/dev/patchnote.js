@@ -205,7 +205,7 @@ module.exports = {
                         break;
                     case `send`:
                         if (lastPatchnote.state != undefined) {
-                            let embed = emb.generate(`Nouvelle mise à jour de ${interaction.client.user.username}, la **${lastPatchnote.version}** !`, null, `**${lastPatchnote.name}** - **${lastPatchnote.version}**`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
+                            let embed = emb.generate(`Nouvelle mise à jour de ${interaction.client.user.username}, la **${lastPatchnote.version}** !`, null, `**${lastPatchnote.name}** - **${lastPatchnote.version}**`, `#0DE600`, process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
                             let features = lastPatchnote.features_id.split(`;`)
                             if(features[0] == "") {
                                 let embed = emb.generate(null, null, `Désolé :(\n\nIl n'y a pas de feature dans ce patchnote !\nAjoutez en avant de l'envoyer.`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)

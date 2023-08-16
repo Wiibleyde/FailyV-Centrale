@@ -77,6 +77,10 @@ module.exports = {
                     value: 'lspd'
                 },
                 {
+                    name: 'BCMS',
+                    value: 'bcms_channel_id'
+                },
+                {
                     name: 'Mises à jour de la Centrale',
                     value: 'IRIS_PATCHNOTE_CHANNEL_ID'
                 }

@@ -23,7 +23,7 @@ module.exports = {
     getLetters: () => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "SELECT `letter` FROM `lit`",
+                    sql: "SELECT `letter` FROM `lit` ORDER BY `letter` ASC",
                     timeout: 40000
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {

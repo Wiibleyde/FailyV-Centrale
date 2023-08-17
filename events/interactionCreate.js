@@ -18,7 +18,17 @@ module.exports = {
         const cName = interaction.commandName;
         const serverIcon = `https://cdn.discordapp.com/icons/${interaction.guild.id}/${interaction.guild.icon}.webp`;
         // Check si l'utilisateur est chef de service ou plus
-        if (!hasAuthorization(Rank.LSMS, interaction.member.roles.cache) && interaction.user.id != '461880599594926080' && interaction.user.id != '461807010086780930' && interaction.user.id != '368259650136571904') {
+        if(interaction.member.roles.cache.has(process.env.IRIS_BCMS_ROLE)) {
+            if(cName == 'lit' || cID == 'a' || cID == 'b' || cID == 'c' || cID == 'd' || cID == 'e' || cID == 'f' || cID == 'g' || cID == 'h' || cID == 'i' || cID == 'j' || cID == 'k' || cID == 'l' || cID == 'm' || cID == 'n' || cID == 'o' || cID == 'p' || cID == 'q' || cID == 'r') {
+                //Désactivation de la sécurité de la commande /lit pour le BCMS
+            } else {
+                const embed = emb.generate(`Désolé :(`, null, `Vous devez être un membre du <@&${process.env.IRIS_LSMS_ROLE}> pour pouvoir vous servir de mes commandes !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Interaction`, serverIcon, null, null, null, false);
+                await interaction.reply({ embeds: [embed], ephemeral: true });
+                // Supprime la réponse après 5s
+                await wait(5000);
+                return await interaction.deleteReply();
+            }
+        } else if(!hasAuthorization(Rank.LSMS, interaction.member.roles.cache) && interaction.user.id != '461880599594926080' && interaction.user.id != '461807010086780930' && interaction.user.id != '368259650136571904') {
             if(cName != 'ping' && cName != 'report' && cName != 'debug' && cName != 'feature' && cName != 'patchnote' && cName != 'regenerate_workforce') {
                 const embed = emb.generate(`Désolé :(`, null, `Vous devez être un membre du <@&${process.env.IRIS_LSMS_ROLE}> pour pouvoir vous servir de mes commandes !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Interaction`, serverIcon, null, null, null, false);
                 await interaction.reply({ embeds: [embed], ephemeral: true });

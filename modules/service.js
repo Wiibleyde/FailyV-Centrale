@@ -9,6 +9,7 @@ const sqlRadio = require('./../sql/radio/radios');
 const sqlAgenda = require('./../sql/agenda/agenda');
 const sqlFollow = require('./../sql/suivi/suivi');
 const sqlBeds = require('./../sql/lit/lit');
+const doctorCardSql = require('./../sql/doctorManagement/doctorCard');
 //Récup des réactions
 const btnCreator = require('./btnCreator');
 
@@ -43,6 +44,8 @@ let time = 0;
 //Récupération des channels
 let IRIS_SERVICE_CHANNEL_ID;
 let IRIS_RADIO_CHANNEL_ID;
+let IRIS_BCMS_CHANNEL_ID;
+let IRIS_BCMS_BEDS_THREAD_ID;
 
 function setGen(state) {
     gen = state;
@@ -217,6 +220,8 @@ async function testRegen(client) {
         time = 2000;
         IRIS_SERVICE_CHANNEL_ID = await awaitSQLGetChannel('IRIS_SERVICE_CHANNEL_ID');
         IRIS_RADIO_CHANNEL_ID = await awaitSQLGetChannel('IRIS_RADIO_CHANNEL_ID');
+        IRIS_BCMS_CHANNEL_ID = await awaitSQLGetChannel('bcms_channel_id');
+        IRIS_BCMS_BEDS_THREAD_ID = await awaitSQLGetChannel('bcms_beds_thread');
         //Récupération de l'image des lits
         let bedsImg;
         client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_BEDS_CHANNEL_ID).messages.fetch({ limit: 1 }).then(messages => {
@@ -243,6 +248,27 @@ async function testRegen(client) {
             radioChan = guild.channels.cache.get(IRIS_RADIO_CHANNEL_ID);
             radioMessages = await radioChan.messages.fetch();
             radioFound = await getCentraleMessages(radioMessages, client);
+        }
+        //Refresh de tous les messages du channel et check si les messages sont bien présents (thread lit BCMS)
+        let bcmsBedsThread;
+        let bcmsBedsMessages;
+        let bcmsBedsFound = 1;
+        if(IRIS_BCMS_BEDS_THREAD_ID != null && IRIS_BCMS_CHANNEL_ID != null) {
+            try {
+                bcmsBedsThread = guild.channels.cache.get(IRIS_BCMS_BEDS_THREAD_ID);
+                bcmsBedsMessages = await bcmsBedsThread.messages.fetch();
+                bcmsBedsFound = await getCentraleMessages(bcmsBedsMessages, client);
+            } catch (err) {
+                logger.error(err);
+            }
+        } else if(IRIS_BCMS_BEDS_THREAD_ID == null && IRIS_BCMS_CHANNEL_ID != null) {
+            const bcmsChannel = guild.channels.cache.get(IRIS_BCMS_CHANNEL_ID);
+            bcmsBedsThread = await bcmsChannel.threads.create({
+                name: 'Salle de réveil LSMS',
+                autoArchiveDuration: 4320
+            });
+            await sql.setChannel('bcms_beds_thread', bcmsBedsThread.id);
+            bcmsBedsFound = 0;
         }
         //Refresh de tous les messages du channel et check si les messages sont bien présents (agenda)
         const agendaChanId = await sqlAgenda.getAgendaChannelId();
@@ -284,6 +310,25 @@ async function testRegen(client) {
             secoursThread = await followChan.threads.cache.get(secoursThreadId[0].id);
             secoursMessages = await secoursThread.messages.fetch();
             secoursMessagesCount = await getIrisChannelMessages(secoursMessages);
+        }
+        const doctorCardData = await doctorCardSql.getDoctorCard();
+        const templateFormId = await awaitSQLGetChannel('template_form');
+        let doctorCardLength = 0;
+        let templateFormLength = [];
+        let templateFormChannel;
+        if(templateFormId != null) {
+            templateFormChannel = guild.channels.cache.get(templateFormId);
+            for (const [_, value] of Object.entries(doctorCardData)) {
+                if (value.position === 0) {
+                    doctorCardLength++;
+                } else {
+                    doctorCardLength++;
+                }
+                for (const i in value.elements) {
+                    doctorCardLength++;
+                }
+            }
+            await templateFormChannel.messages.fetch().then(msg => msg.map(d => templateFormLength.push(d)));
         }
         //Si pas présent recréation du message
         if(!found) {
@@ -382,7 +427,7 @@ async function testRegen(client) {
                 const radioMsg = await radioChan.send({ embeds: [radioEmb], components: [radioBtns] });
                 await sqlRadio.clearRadioMessageId();
                 await sqlRadio.setRadioMessageId(radioMsg.id);
-                await sendBedsImage(letters, radioChan, bedsImg);
+                await sendBedsImage(letters, radioChan, bedsImg, 'lit');
                 radioMessages = await radioChan.messages.fetch();
                 radioFound = await getCentraleMessages(radioMessages, client);
             } else if(radioFound.embeds != null) {
@@ -392,19 +437,27 @@ async function testRegen(client) {
                         const radioMsg = await radioChan.send({ embeds: [radioEmb], components: [radioBtns] });
                         await sqlRadio.clearRadioMessageId();
                         await sqlRadio.setRadioMessageId(radioMsg.id);
-                        await sendBedsImage(letters, radioChan, bedsImg);
+                        await sendBedsImage(letters, radioChan, bedsImg, 'lit');
                         radioMessages = await radioChan.messages.fetch();
                         radioFound = await getCentraleMessages(radioMessages, client);
                     }
-                }
-                if(radioFound.embeds[0].author != null) {
+                } else if(radioFound.embeds[0].author != null) {
                     if(radioFound.embeds[0].author.name == 'Gestion des radios') {
-                        await sendBedsImage(letters, radioChan, bedsImg);
+                        await sendBedsImage(letters, radioChan, bedsImg, 'lit');
                         radioMessages = await radioChan.messages.fetch();
                         radioFound = await getCentraleMessages(radioMessages, client);
                     }
                 }
             }
+            setGen(false);
+        }
+        if(bcmsBedsFound == 0) {
+            setGen(true);
+            let letters = await sqlBeds.getLetters();
+            //Envois
+            await sendBedsImage(letters, bcmsBedsThread, bedsImg, 'lit_bcms');
+            bcmsBedsMessages = await bcmsBedsThread.messages.fetch();
+            bcmsBedsFound = await getCentraleMessages(bcmsBedsMessages, client);
             setGen(false);
         }
         if(agendaMessagesCount != agendaWaiting.length) {
@@ -420,7 +473,7 @@ async function testRegen(client) {
                     new ButtonBuilder().setLabel(`Responsables contactés`).setCustomId(`agRespContact`).setStyle(ButtonStyle.Primary).setEmoji(`📱`).setDisabled(false),
                     new ButtonBuilder().setLabel(`Supprimer`).setCustomId(`agDelete`).setStyle(ButtonStyle.Danger).setEmoji(`896393106633687040`).setDisabled(false)
                 );
-        
+
                 const date = new Date(agendaWaiting[i].date);
                 const year = date.getFullYear();
                 let month = date.getMonth() + 1;
@@ -526,13 +579,41 @@ async function testRegen(client) {
             const ended = await follow.regen(client);
             setGen(ended);
         }
-        for(i=time;i>=0;i--) {
+        if(templateFormLength.length != doctorCardLength) {
+            setGen(true);
+            for(let i=0;i<templateFormLength.length;i++) {
+                await templateFormLength[i].delete();
+            }
+            let message;
+            for (const [_, value] of Object.entries(doctorCardData)) {
+                const embed = emb.generate(value.name, null, null, value.color, null, null, null, null, null, null, null, false);
+                if (value.position === 0) {
+                    message = await templateFormChannel.send({ embeds: [embed] });
+                } else {
+                    await templateFormChannel.send({ embeds: [embed] });
+                }
+                for (const i in value.elements) {
+                    await templateFormChannel.send(`- ${value.elements[i]}`);
+                }
+            }
+            await message.pin();
+            templateFormChannel.messages.fetch({ limit: 1 }).then(messages => {
+                let lastMessage = messages.first();
+                
+                if (lastMessage.author.bot) {
+                    lastMessage.delete();
+                }
+            })
+            .catch(logger.error);
+            setGen(false);
+        }
+        for(let i=time;i>=0;i--) {
             time = i;
         }
     }
 }
 
-async function sendBedsImage(letters, radioChan, bedsImg) {
+async function sendBedsImage(letters, channel, bedsImg, bed) {
     let lettersArray1 = [];
     let lettersArray2 = [];
     let lettersArray3 = [];
@@ -549,35 +630,35 @@ async function sendBedsImage(letters, radioChan, bedsImg) {
         }
     }
     if(letters.length == 0) {
-        const bedsMsg = await radioChan.send({ content: bedsImg });
-        await sqlBeds.clearMessageId();
-        await sqlBeds.setMessageId(bedsMsg.id);
+        const bedsMsg = await channel.send({ content: bedsImg });
+        await sqlBeds.clearMessageId(bed);
+        await sqlBeds.setMessageId(bedsMsg.id, bed);
     } else if(letters.length < 6) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
-        const bedsMsg = await radioChan.send({ content: bedsImg, components: [btns1] });
-        await sqlBeds.clearMessageId();
-        await sqlBeds.setMessageId(bedsMsg.id);
+        const bedsMsg = await channel.send({ content: bedsImg, components: [btns1] });
+        await sqlBeds.clearMessageId(bed);
+        await sqlBeds.setMessageId(bedsMsg.id, bed);
     } else if(letters.length < 11) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
-        const bedsMsg = await radioChan.send({ content: bedsImg, components: [btns1, btns2] });
-        await sqlBeds.clearMessageId();
-        await sqlBeds.setMessageId(bedsMsg.id);
+        const bedsMsg = await channel.send({ content: bedsImg, components: [btns1, btns2] });
+        await sqlBeds.clearMessageId(bed);
+        await sqlBeds.setMessageId(bedsMsg.id, bed);
     } else if(letters.length < 16) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
         const btns3 = btnCreator.genBedsBtns(lettersArray3);
-        const bedsMsg = await radioChan.send({ content: bedsImg, components: [btns1, btns2, btns3] });
-        await sqlBeds.clearMessageId();
-        await sqlBeds.setMessageId(bedsMsg.id);
+        const bedsMsg = await channel.send({ content: bedsImg, components: [btns1, btns2, btns3] });
+        await sqlBeds.clearMessageId(bed);
+        await sqlBeds.setMessageId(bedsMsg.id, bed);
     } else if(letters.length < 21) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
         const btns3 = btnCreator.genBedsBtns(lettersArray3);
         const btns4 = btnCreator.genBedsBtns(lettersArray4);
-        const bedsMsg = await radioChan.send({ content: bedsImg, components: [btns1, btns2, btns3, btns4] });
-        await sqlBeds.clearMessageId();
-        await sqlBeds.setMessageId(bedsMsg.id);
+        const bedsMsg = await channel.send({ content: bedsImg, components: [btns1, btns2, btns3, btns4] });
+        await sqlBeds.clearMessageId(bed);
+        await sqlBeds.setMessageId(bedsMsg.id, bed);
     }
 }
 

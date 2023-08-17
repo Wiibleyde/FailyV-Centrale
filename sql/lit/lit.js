@@ -23,7 +23,7 @@ module.exports = {
     getLetters: () => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "SELECT `letter` FROM `lit`",
+                    sql: "SELECT `letter` FROM `lit` ORDER BY `letter` ASC",
                     timeout: 40000
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
@@ -35,40 +35,42 @@ module.exports = {
         });
     },
     //Fonction de récupération du message des lits
-    getMessageId: () => {
+    getMessageId: (bed) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "SELECT `id` FROM `message` WHERE `correspond`='lit'",
-                    timeout: 40000
-                }, async (reqErr, result, fields) => {
-                if(reqErr) {
-                    logger.error(reqErr);
-                    reject(reqErr);
-                }
-                resolve(result);
-            });
-        });
-    },
-    clearMessageId: () => {
-        return new Promise((resolve, reject) => {
-            mysql.sql().query({
-                    sql: "DELETE FROM `message` WHERE `correspond`='lit'",
-                    timeout: 40000
-                }, async (reqErr, result, fields) => {
-                if(reqErr) {
-                    logger.error(reqErr);
-                    reject(reqErr);
-                }
-                resolve(result);
-            });
-        });
-    },
-    setMessageId: (msgId) => {
-        return new Promise((resolve, reject) => {
-            mysql.sql().query({
-                    sql: "INSERT INTO `message` SET `id`=?, `correspond`='lit'",
+                    sql: "SELECT `id` FROM `message` WHERE `correspond`=?",
                     timeout: 40000,
-                    values: [msgId]
+                    values: [bed]
+                }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
+    clearMessageId: (bed) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "DELETE FROM `message` WHERE `correspond`=?",
+                    timeout: 40000,
+                    values: [bed]
+                }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
+    setMessageId: (msgId, bed) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "INSERT INTO `message` SET `id`=?, `correspond`=?",
+                    timeout: 40000,
+                    values: [msgId, bed]
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {
                     logger.error(reqErr);

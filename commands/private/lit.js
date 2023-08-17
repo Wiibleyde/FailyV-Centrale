@@ -63,19 +63,23 @@ module.exports = {
         ),
     async execute(interaction) {
         let IRIS_RADIO_CHANNEL_ID = await sql.getChannel('IRIS_RADIO_CHANNEL_ID');
-        if(IRIS_RADIO_CHANNEL_ID[0] == undefined) {
-            await interaction.followUp({ embeds: [emb.generate(null, null, `Désolé, le channel radio n'est pas configuré !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)], ephemeral: true });
+        let IRIS_BCMS_BEDS_THREAD_ID = await sql.getChannel('bcms_beds_thread');
+        if(IRIS_RADIO_CHANNEL_ID[0] == null || IRIS_BCMS_BEDS_THREAD_ID[0] == null) {
+            await interaction.followUp({ embeds: [emb.generate(null, null, `Désolé, le salon centrale ou BCMS n'est pas configuré !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)], ephemeral: true });
             // Supprime la réponse après 5s
             await wait(5000);
             await interaction.deleteReply();
             return;
-        }           
+        }
         let radioChannel = interaction.guild.channels.cache.get(IRIS_RADIO_CHANNEL_ID[0].id);
+        let bcmsThread = interaction.guild.channels.cache.get(IRIS_BCMS_BEDS_THREAD_ID[0].id);
         const guild = interaction.guild;
         if(!service.isGen()) {
             await interaction.deferReply({ ephemeral: true });
-            const getMsgId = await beds.getMessageId();
+            const getMsgId = await beds.getMessageId('lit');
             const msgId = getMsgId[0].id;
+            const getBCMSMsgId = await beds.getMessageId('lit_bcms');
+            const bcmsMsgId = getBCMSMsgId[0].id;
             let surveillance;
             if(interaction.options.getString('surveillance') != null) {
                 surveillance = interaction.options.getString('surveillance');
@@ -98,13 +102,13 @@ module.exports = {
                             patient.push(interaction.options.getString('patient').toLowerCase());
                             patientLetter.push(interaction.options.getString('lettre'));
                             patientSurveilance.push(surveillance);
-                            genLits(guild, radioChannel, msgId, interaction, interaction.options.getString('patient').toLowerCase(), interaction.options.getString('lettre'), surveillance, patient, patientLetter, patientSurveilance);
+                            genLits(guild, radioChannel, bcmsThread, msgId, bcmsMsgId, interaction, interaction.options.getString('patient').toLowerCase(), interaction.options.getString('lettre'), surveillance, patient, patientLetter, patientSurveilance);
                     } else {
                         let patientIndex = patient.indexOf(interaction.options.getString('patient').toLowerCase());
                         if(patientLetter[patientIndex] != interaction.options.getString('lettre') || patientSurveilance[patientIndex] != surveillance) {
                             patientLetter[patientIndex] = interaction.options.getString('lettre');
                             patientSurveilance[patientIndex] = surveillance;
-                            changePatientBed(guild, radioChannel, msgId, interaction, interaction.options.getString('patient').toLowerCase(), interaction.options.getString('lettre'), surveillance, patient, patientLetter, patientSurveilance);
+                            changePatientBed(guild, radioChannel, bcmsThread, msgId, bcmsMsgId, interaction, interaction.options.getString('patient').toLowerCase(), interaction.options.getString('lettre'), surveillance, patient, patientLetter, patientSurveilance);
                         } else {
                             await interaction.followUp({ embeds: [emb.generate(null, null, `Désolé, ce patient est déjà placé dans le lit **${patientLetter[patientIndex].toUpperCase()}** !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)], ephemeral: true });
                             // Supprime la réponse après 5s
@@ -119,7 +123,7 @@ module.exports = {
                     await interaction.deleteReply();
                 }
             } else {
-                genLits(guild, radioChannel, msgId, interaction, interaction.options.getString('patient').toLowerCase(), interaction.options.getString('lettre'), surveillance, [interaction.options.getString('patient').toLowerCase()], [interaction.options.getString('lettre')], [surveillance]);
+                genLits(guild, radioChannel, bcmsThread, msgId, bcmsMsgId, interaction, interaction.options.getString('patient').toLowerCase(), interaction.options.getString('lettre'), surveillance, [interaction.options.getString('patient').toLowerCase()], [interaction.options.getString('lettre')], [surveillance]);
             }
         } else {
             await interaction.reply({ embeds: [emb.generate(null, null, `L'aperçu de la salle de réveil est déjà en cours de mise à jour, veuillez patienter quelques secondes !`, `#FEAC12`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)], ephemeral: true });
@@ -130,15 +134,16 @@ module.exports = {
     },
 };
 
-async function genLits(guild, radioChannel, msgId, interaction, newPatient, newPatientLetter, newPatientSurveillance, patientList, patientLetters, patientSurveillance) {
+async function genLits(guild, radioChannel, bcmsThread, msgId, bcmsMsgId, interaction, newPatient, newPatientLetter, newPatientSurveillance, patientList, patientLetters, patientSurveillance) {
     service.setGen(true);
     await beds.add(newPatient, newPatientLetter, newPatientSurveillance);
     const imgMsg = await img.write(patientList, patientLetters, patientSurveillance, interaction.client);
     let imgUrl;
     imgMsg.attachments.map(bedImg => imgUrl = bedImg.attachment);
     const messageToEdit = await radioChannel.messages.fetch(msgId);
-    if(messageToEdit.embeds[0].url != null) {
-        editBedsImage(messageToEdit, imgUrl);
+    const messageToEditBCMS = await bcmsThread.messages.fetch(bcmsMsgId);
+    if(messageToEdit.embeds[0].url != null && messageToEditBCMS.embeds[0].url != null) {
+        editBedsImage(messageToEdit, messageToEditBCMS, imgUrl);
         await interaction.followUp({ embeds: [emb.generate(null, null, `Aperçu de la salle de réveil mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)], ephemeral: true });
         service.setGen(false);
         // Supprime la réponse après 5s
@@ -147,15 +152,16 @@ async function genLits(guild, radioChannel, msgId, interaction, newPatient, newP
     }
 }
 
-async function changePatientBed(guild, radioChannel, msgId, interaction, newPatient, newPatientLetter, newPatientSurveillance, patientList, patientLetters, patientSurveillance) {
+async function changePatientBed(guild, radioChannel, bcmsThread, msgId, bcmsMsgId, interaction, newPatient, newPatientLetter, newPatientSurveillance, patientList, patientLetters, patientSurveillance) {
     service.setGen(true);
     await beds.update(newPatient, newPatientLetter, newPatientSurveillance);
     const imgMsg = await img.write(patientList, patientLetters, patientSurveillance, interaction.client);
     let imgUrl;
     imgMsg.attachments.map(bedImg => imgUrl = bedImg.attachment);
     const messageToEdit = await radioChannel.messages.fetch(msgId);
-    if(messageToEdit.embeds[0].url != null) {
-        editBedsImage(messageToEdit, imgUrl);
+    const messageToEditBCMS = await bcmsThread.messages.fetch(bcmsMsgId);
+    if(messageToEdit.embeds[0].url != null && messageToEditBCMS.embeds[0].url != null) {
+        editBedsImage(messageToEdit, messageToEditBCMS, imgUrl);
         await interaction.followUp({ embeds: [emb.generate(null, null, `Aperçu de la salle de réveil mis à jour !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, null, null, true)], ephemeral: true });
         service.setGen(false);
         // Supprime la réponse après 5s
@@ -165,7 +171,7 @@ async function changePatientBed(guild, radioChannel, msgId, interaction, newPati
 
 }
 
-async function editBedsImage(d, imgUrl) {
+async function editBedsImage(d, bcmsMsg, imgUrl) {
     let letters = await beds.getLetters();
     let lettersArray1 = [];
     let lettersArray2 = [];
@@ -184,23 +190,28 @@ async function editBedsImage(d, imgUrl) {
     }
     if(letters.length == 0) {
         await d.edit({ content: imgUrl, components: [] });
+        await bcmsMsg.edit({ content: imgUrl, components: [] });
     } else if(letters.length < 6) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         await d.edit({ content: imgUrl, components: [btns1] });
+        await bcmsMsg.edit({ content: imgUrl, components: [btns1] });
     } else if(letters.length < 11) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
         await d.edit({ content: imgUrl, components: [btns1, btns2] });
+        await bcmsMsg.edit({ content: imgUrl, components: [btns1, btns2] });
     } else if(letters.length < 16) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
         const btns3 = btnCreator.genBedsBtns(lettersArray3);
         await d.edit({ content: imgUrl, components: [btns1, btns2, btns3] });
+        await bcmsMsg.edit({ content: imgUrl, components: [btns1, btns2, btns3] });
     } else if(letters.length < 21) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
         const btns3 = btnCreator.genBedsBtns(lettersArray3);
         const btns4 = btnCreator.genBedsBtns(lettersArray4);
         await d.edit({ content: imgUrl, components: [btns1, btns2, btns3, btns4] });
+        await bcmsMsg.edit({ content: imgUrl, components: [btns1, btns2, btns3, btns4] });
     }
 }

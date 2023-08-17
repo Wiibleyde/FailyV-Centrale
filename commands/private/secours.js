@@ -36,24 +36,8 @@ module.exports = {
             .setDescription('Le métier de la personne à ajouter au suivi')
             .addChoices(
                 {
-                    name: `American Restaurant Company`,
-                    value: `ARC`
-                },
-                {
                     name: `Blaine County Medical Service`,
                     value: `BCMS`
-                },
-                {
-                    name: `Benny's`,
-                    value: `Bn's`
-                },
-                {
-                    name: `Blé d'or`,
-                    value: `BDO`
-                },
-                {
-                    name: `Castello Don Telo`,
-                    value: `CDT`
                 },
                 {
                     name: `Civil`,
@@ -87,42 +71,6 @@ module.exports = {
                     name: `Mairie de Los Santos`,
                     value: `Mairie LS`
                 },
-                {
-                    name: `Maze Secure Transfer`,
-                    value: `M$T`
-                },
-                {
-                    name: `Paleto Bay Sawmill Company`,
-                    value: `PBSC`
-                },
-                {
-                    name: `Paradise`,
-                    value: `Bar`
-                },
-                {
-                    name: `Petrol Los Santos`,
-                    value: `PLS`
-                },
-                {
-                    name: `Rapid Transit`,
-                    value: `RT`
-                },
-                {
-                    name: `Rogers`,
-                    value: `Rogers`
-                },
-                {
-                    name: `Ryan's`,
-                    value: `R's`
-                },
-                {
-                    name: `San Andreas Beer Company`,
-                    value: `SBC`
-                },
-                {
-                    name: `Weazel News`,
-                    value: `WZN`
-                }
             ).setRequired(true)
         ).addStringOption(option =>
             option.setName('catégorie')

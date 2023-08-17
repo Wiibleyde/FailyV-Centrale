@@ -81,6 +81,10 @@ module.exports = {
                     value: 'bcms_channel_id'
                 },
                 {
+                    name: 'Template des fiches médecin',
+                    value: 'template_form'
+                },
+                {
                     name: 'Mises à jour de la Centrale',
                     value: 'IRIS_PATCHNOTE_CHANNEL_ID'
                 }

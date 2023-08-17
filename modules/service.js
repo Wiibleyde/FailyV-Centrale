@@ -9,6 +9,7 @@ const sqlRadio = require('./../sql/radio/radios');
 const sqlAgenda = require('./../sql/agenda/agenda');
 const sqlFollow = require('./../sql/suivi/suivi');
 const sqlBeds = require('./../sql/lit/lit');
+const doctorCardSql = require('./../sql/doctorManagement/doctorCard');
 //Récup des réactions
 const btnCreator = require('./btnCreator');
 
@@ -258,13 +259,7 @@ async function testRegen(client) {
                 bcmsBedsMessages = await bcmsBedsThread.messages.fetch();
                 bcmsBedsFound = await getCentraleMessages(bcmsBedsMessages, client);
             } catch (err) {
-                const bcmsChannel = guild.channels.cache.get(IRIS_BCMS_CHANNEL_ID);
-                bcmsBedsThread = await bcmsChannel.threads.create({
-                    name: 'Salle de réveil LSMS',
-                    autoArchiveDuration: 4320
-                });
-                await sql.updateChannel('bcms_beds_thread', bcmsBedsThread.id);
-                bcmsBedsFound = 0;
+                logger.error(err);
             }
         } else if(IRIS_BCMS_BEDS_THREAD_ID == null && IRIS_BCMS_CHANNEL_ID != null) {
             const bcmsChannel = guild.channels.cache.get(IRIS_BCMS_CHANNEL_ID);
@@ -315,6 +310,25 @@ async function testRegen(client) {
             secoursThread = await followChan.threads.cache.get(secoursThreadId[0].id);
             secoursMessages = await secoursThread.messages.fetch();
             secoursMessagesCount = await getIrisChannelMessages(secoursMessages);
+        }
+        const doctorCardData = await doctorCardSql.getDoctorCard();
+        const templateFormId = await awaitSQLGetChannel('template_form');
+        let doctorCardLength = 0;
+        let templateFormLength = [];
+        let templateFormChannel;
+        if(templateFormId != null) {
+            templateFormChannel = guild.channels.cache.get(templateFormId);
+            for (const [_, value] of Object.entries(doctorCardData)) {
+                if (value.position === 0) {
+                    doctorCardLength++;
+                } else {
+                    doctorCardLength++;
+                }
+                for (const i in value.elements) {
+                    doctorCardLength++;
+                }
+            }
+            await templateFormChannel.messages.fetch().then(msg => msg.map(d => templateFormLength.push(d)));
         }
         //Si pas présent recréation du message
         if(!found) {
@@ -565,7 +579,35 @@ async function testRegen(client) {
             const ended = await follow.regen(client);
             setGen(ended);
         }
-        for(i=time;i>=0;i--) {
+        if(templateFormLength.length != doctorCardLength) {
+            setGen(true);
+            for(let i=0;i<templateFormLength.length;i++) {
+                await templateFormLength[i].delete();
+            }
+            let message;
+            for (const [_, value] of Object.entries(doctorCardData)) {
+                const embed = emb.generate(value.name, null, null, value.color, null, null, null, null, null, null, null, false);
+                if (value.position === 0) {
+                    message = await templateFormChannel.send({ embeds: [embed] });
+                } else {
+                    await templateFormChannel.send({ embeds: [embed] });
+                }
+                for (const i in value.elements) {
+                    await templateFormChannel.send(`- ${value.elements[i]}`);
+                }
+            }
+            await message.pin();
+            templateFormChannel.messages.fetch({ limit: 1 }).then(messages => {
+                let lastMessage = messages.first();
+                
+                if (lastMessage.author.bot) {
+                    lastMessage.delete();
+                }
+            })
+            .catch(logger.error);
+            setGen(false);
+        }
+        for(let i=time;i>=0;i--) {
             time = i;
         }
     }

@@ -314,7 +314,8 @@ async function testRegen(client) {
         const doctorCardData = await doctorCardSql.getDoctorCard();
         const templateFormId = await awaitSQLGetChannel('template_form');
         let doctorCardLength = 0;
-        let templateFormLength = [];
+        let templateFormMessages = [];
+        let templateFormLength = 0;
         let templateFormChannel;
         if(templateFormId != null) {
             templateFormChannel = guild.channels.cache.get(templateFormId);
@@ -328,7 +329,12 @@ async function testRegen(client) {
                     doctorCardLength++;
                 }
             }
-            await templateFormChannel.messages.fetch().then(msg => msg.map(d => templateFormLength.push(d)));
+            await templateFormChannel.messages.fetch().then(msg => msg.map(d => {
+                templateFormMessages.push(d);
+                if(d.author.id == client.user.id) {
+                    templateFormLength++;
+                }
+            }));
         }
         //Si pas présent recréation du message
         if(!found) {
@@ -579,10 +585,10 @@ async function testRegen(client) {
             const ended = await follow.regen(client);
             setGen(ended);
         }
-        if(templateFormLength.length != doctorCardLength) {
+        if(templateFormLength != doctorCardLength) {
             setGen(true);
-            for(let i=0;i<templateFormLength.length;i++) {
-                await templateFormLength[i].delete();
+            for(let i=0;i<templateFormMessages.length;i++) {
+                await templateFormMessages[i].delete();
             }
             let message;
             for (const [_, value] of Object.entries(doctorCardData)) {

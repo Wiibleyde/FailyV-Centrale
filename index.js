@@ -23,6 +23,11 @@ const readcmd = readline.createInterface({
 //Récup du logger
 const logger = require('./modules/logger');
 
+//Fonction pour attendre
+const wait = require('node:timers/promises').setTimeout;
+
+const emb = require('./modules/embeds');
+
 //Discord init
 const { Client, GatewayIntentBits, Collection, Events, WebhookClient } = require('discord.js');
 const client = new Client({ intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildScheduledEvents ]});
@@ -90,10 +95,19 @@ client.on(Events.MessageCreate, async (message) => {
         templateFormId = templateFormId[0].id;
     }
     // if(message.channelId == IRIS_SERVICE_CHANNEL_ID || message.channelId == IRIS_RADIO_CHANNEL_ID || message.channelId == IRIS_FOLLOW_CHANNEL_ID) {
-    if (message.channelId == IRIS_SERVICE_CHANNEL_ID || message.channelId == IRIS_RADIO_CHANNEL_ID || message.channelId == IRIS_FOLLOW_CHANNEL_ID || message.channelId == IRIS_FOLLOW_THREAD_PPA_ID || message.channelId == IRIS_FOLLOW_THREAD_SECOURS_ID || message.channelId == IRIS_BCMS_BEDS_THREAD_ID || message.channelId == templateFormId) {
+    if (message.channelId == IRIS_SERVICE_CHANNEL_ID || message.channelId == IRIS_RADIO_CHANNEL_ID || message.channelId == IRIS_FOLLOW_CHANNEL_ID || message.channelId == IRIS_FOLLOW_THREAD_PPA_ID || message.channelId == IRIS_FOLLOW_THREAD_SECOURS_ID || message.channelId == templateFormId) {
         if(message.author != process.env.IRIS_DISCORD_ID) {
             logger.warn(`${message.member.nickname} - ${message.author.username}#${message.author.discriminator} (<@${message.author.id}>)\n\nà envoyé un message dans le salon interdit "#${client.guilds.cache.get(message.guildId).channels.cache.get(message.channelId).name} <#${message.channelId}>"\n\nContenu: "${message.content}"`);
             await message.delete();
+        }
+    }
+    if(message.channelId == IRIS_BCMS_BEDS_THREAD_ID) {
+        if(message.author != process.env.IRIS_DISCORD_ID) {
+            logger.warn(`${message.member.nickname} - ${message.author.username}#${message.author.discriminator} (<@${message.author.id}>)\n\nà envoyé un message dans le salon interdit "#${client.guilds.cache.get(message.guildId).channels.cache.get(message.channelId).name} <#${message.channelId}>"\n\nContenu: "${message.content}"`);
+            await message.delete();
+            const warnMsg = await message.channel.send({ content: `<@${message.member.id}>`, embeds: [emb.generate(`Oups :(`, null, `Vous ne pouvez pas écrire dans ce fil, si vous souhaitez utiliser la salle de réveil veuillez passer par la commande </lit:${process.env.IRIS_BEDS_COMMAND_ID}> pour ajouter un patient ou par les boutons pour en retirer !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${message.guild.id}/${message.guild.icon}.webp`, null, null, null, false)] });
+            await wait(8000);
+            await warnMsg.delete();
         }
     }
 });
@@ -141,8 +155,6 @@ client.on(Events.ClientReady, (client) => {
     const ws = new WebSocket(`ws://${process.env.RADIO_SERVER_URL}`);
     //Requêtes SQL de radios
     const sqlRadio = require('./sql/radio/radios');
-    //Fonction pour attendre
-    const wait = require('node:timers/promises').setTimeout;
     
     ws.onmessage = async (wsData) => {
         let radioMessageId;

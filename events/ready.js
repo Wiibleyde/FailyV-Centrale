@@ -25,6 +25,8 @@ const sql = require('./../sql/init/initAllTables');
 
 const rolesCreator = require('../modules/rolesCreator');
 
+const cfx = require('../modules/cfxStatus');
+
 let isDebugMode = false;
 
 module.exports = {
@@ -83,6 +85,8 @@ module.exports = {
             privateClient.setNickname('');
         }
         service.start(client);
+        cfx.startStatusCheck(client);
+
 
         const update = new CronJob('00 55 05 * * *', async function() {
             const { exec } = require('node:child_process');

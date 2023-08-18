@@ -1,5 +1,5 @@
 //Récupération des fonctions pour créer des boutons
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, WebhookClient } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 //Récup du logger
 const logger = require('./logger');
 //Récup du créateur d'embed
@@ -18,6 +18,8 @@ const follow = require('./suiviMessages');
 const sql = require('./../sql/config/config');
 
 const ws = require('./commonRadioServer');
+
+const cfx = require('./cfxStatus');
 
 //Fonction pour attendre
 const wait = require('node:timers/promises').setTimeout;
@@ -274,13 +276,11 @@ async function testRegen(client) {
         const agendaChanId = await sqlAgenda.getAgendaChannelId();
         let agendaChan;
         let agendaMessages;
-        let agendaMessagesCount;
+        let agendaMessagesCount = 0;
         if(agendaChanId[0] != null) {
             agendaChan = guild.channels.cache.get(agendaChanId[0].id);
             agendaMessages = await agendaChan.messages.fetch();
             agendaMessagesCount = await getIrisChannelMessages(agendaMessages);
-        } else {
-            agendaMessagesCount = 0;
         }
         const agendaWaiting = await sqlAgenda.getAllWaiting();
         //Refresh de tous les messages du channel et check si les messages sont bien présents (suivi)
@@ -335,6 +335,16 @@ async function testRegen(client) {
                     templateFormLength++;
                 }
             }));
+        }
+        const cfxThreadId = await awaitSQLGetChannel('cfx_thread');
+        const cfxStatusMessageId = await sql.getMessage('cfx_status');
+        let cfxThread;
+        let cfxStatusMessage = null;
+        if(cfxThreadId != null) {
+            cfxThread = guild.channels.cache.get(cfxThreadId);
+            try {
+                cfxStatusMessage = await cfxThread.messages.fetch(cfxStatusMessageId[0].id);
+            } catch (err) {}
         }
         //Si pas présent recréation du message
         if(!found) {
@@ -611,6 +621,11 @@ async function testRegen(client) {
                 }
             })
             .catch(logger.error);
+            setGen(false);
+        }
+        if(cfxStatusMessage == null && cfxThreadId != null) {
+            setGen(true);
+            await cfx.sendStatusEmbed(client, cfxThread);
             setGen(false);
         }
         for(let i=time;i>=0;i--) {

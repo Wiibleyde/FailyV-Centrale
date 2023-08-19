@@ -19,6 +19,8 @@ module.exports = {
                 const freqUnit = Math.floor(Math.random() * (344-250+1)) + 250;
                 const freqDeci = Math.floor(Math.random() * 10);
                 const freq = freqUnit + '.' + freqDeci;
+                if(interaction.customId == 'regenLSMS') { logger.logRadio('LSMS', freq); }
+                if(interaction.customId == 'regenEvent') { logger.logRadio('Event', freq); }
                 radio.change(interaction.client, interaction.customId, freq, true);
             }
             if(interaction.customId == 'regenFDO') {

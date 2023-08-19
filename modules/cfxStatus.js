@@ -183,9 +183,9 @@ module.exports = {
                         break;
                 }
             }
-            if(underMaintenance >= 1) { color = '#3498DB'; }
             if(degradedPerformance >= 1) { color = '#F1C40F'; }
             if(partialOutage >= 1) { color = '#E67E22'; }
+            if(underMaintenance >= 1) { color = '#3498DB'; }
             if(majorOutage >= 1) { color = '#E74C3C'; }
             cfxStatusMessageId = await sql.getMessage('cfx_status');
             if(cfxThreadId[0] != null) {
@@ -208,36 +208,45 @@ module.exports = {
 
 async function updateStatus(cfxStatusMessage, cfxThread) {
     const cfxStatusMessageOld = cfxStatusMessage;
-    const oldColor = '#' + cfxStatusMessageOld.embeds[0].color.toString(16);
+    const oldColor = `#` + cfxStatusMessageOld.embeds[0].color.toString(16);
     await cfxStatusMessage.edit({ embeds: [emb.generate(null, null, `- \`${getIcon(games)}\` Games\n  - \`${getIcon(fiveM)}\` FiveM\n  - \`${getIcon(cfxPlatformServer)}\` Cfx.re Platform Server (FXServer)\n- \`${getIcon(gameServices)}\` Game Services\n  - \`${getIcon(cnl)}\` CnL\n  - \`${getIcon(policy)}\` Policy\n  - \`${getIcon(keymaster)}\` Keymaster\n- \`${getIcon(webServices)}\` Web Services\n  - \`${getIcon(serverListFrontend)}\` Server List Frontend\n  - \`${getIcon(runtime)}\` "Runtime"\n  - \`${getIcon(idms)}\` IDMS`, color, `https://cdn.discordapp.com/attachments/1132323171471736915/1142205778745376858/cfx.png`, null, `Cfx.re Status`, null, `https://status.cfx.re/`, cfxStatusMessage.embeds[0].footer.text, cfxStatusMessage.embeds[0].footer.icon_url, true)], components: [btn] });
     if(oldColor != color) {
-        if(oldColor != '#F1C40F' && color != '#0DE600') {
-            let state;
-            switch(color) {
-                case '#F1C40F':
-                    state = null;
-                    break;
-                case '#E67E22':
-                    state = 'un/des composant·s viens/viennent de tomber en panne partielle !';
-                    break;
-                case '#E74C3C':
-                    state = 'un/des composant·s viens/viennent de tomber en panne majeure !';
-                    break;
-                case '#3498DB':
-                    state = 'un/des composant·s est/sont désormais en maintenance !';
-                    break;
-                default:
-                    state = 'tout les composants sont de nouveau opérationnels !';
-                    break;
-            }
-            if(state != null) {
-                const msg = await cfxThread.send({ content: `<@&${process.env.IRIS_CFX_ROLE}> ${state}` });
-                await wait(120000);
-                try {
-                    msg.delete();
-                } catch (err) {}
-            }
+        let state;
+        if(oldColor == `#0DE600`) /*Operational*/ {
+            if(color == `#F1C40F`) /*Degraded performance*/ { state = `Un/des composant·s a/ont des performances dégradées, il n'est pas impossible que vous ayez des complications pour vous connecter !`; }
+            if(color == `#E67E22`) /*Partial Outage*/ { state = `<@&${process.env.IRIS_CFX_ROLE}> un/des composant·s viens/viennent de tomber en panne partielle !`; }
+            if(color == `#3498DB`) /*Under Maintenance*/ { state = `<@&${process.env.IRIS_CFX_ROLE}> un/des composant·s est/sont désormais en maintenance !`; }
+            if(color == `#E74C3C`) /*Major Outage*/ { state = `<@&${process.env.IRIS_CFX_ROLE}> un/des composant·s viens/viennent de tomber en panne majeure !`; }
         }
+        if(oldColor == `#F1C40F`) /*Degraded performance*/ {
+            if(color == `#0DE600`) /*Operational*/ { state = `Tout les composants sont revenus à la normal est sont de nouveau complètement opérationnels !`; }
+            if(color == `#E67E22`) /*Partial Outage*/ { state = `<@&${process.env.IRIS_CFX_ROLE}> un/des composant·s viens/viennent de tomber en panne partielle !`; }
+            if(color == `#3498DB`) /*Under Maintenance*/ { state = `<@&${process.env.IRIS_CFX_ROLE}> un/des composant·s est/sont désormais en maintenance !`; }
+            if(color == `#E74C3C`) /*Major Outage*/ { state = `<@&${process.env.IRIS_CFX_ROLE}> un/des composant·s viens/viennent de tomber en panne majeure !`; }
+        }
+        if(oldColor == `#E67E22`) /*Partial Outage*/ {
+            if(color == `#0DE600`) /*Operational*/ { state = `<@&${process.env.IRIS_CFX_ROLE}> tout les composants sont de nouveau opérationnels !`; }
+            if(color == `#F1C40F`) /*Degraded performance*/ { state = `<@&${process.env.IRIS_CFX_ROLE}> tout les composants ont été redémarrés mais ne sont pas totalement stables, il n'est pas impossible que vous ayez encore un peut de mal pour vous connecter !`; }
+            if(color == `#3498DB`) /*Under Maintenance*/ { state = `<@&${process.env.IRIS_CFX_ROLE}> un/des composant·s est/sont désormais en maintenance !`; }
+            if(color == `#E74C3C`) /*Major Outage*/ { state = `<@&${process.env.IRIS_CFX_ROLE}> un/des composant·s viens/viennent de tomber en panne majeure !`; }
+        }
+        if(oldColor == `#3498DB`) /*Under Maintenance*/ {
+            if(color == `#0DE600`) /*Operational*/ { state = `<@&${process.env.IRIS_CFX_ROLE}> tout les composants sont de nouveau opérationnels !`; }
+            if(color == `#F1C40F`) /*Degraded performance*/ { state = `<@&${process.env.IRIS_CFX_ROLE}> tout les composants ont été redémarrés mais ne sont pas totalement stables, il n'est pas impossible que vous ayez encore un peut de mal pour vous connecter !`;}
+            if(color == `#E67E22`) /*Partial Outage*/ { state = `<@&${process.env.IRIS_CFX_ROLE}> tout les composants ne sont plus en maintenance mais il y a toujours une panne partielle sur certains composants !`; }
+            if(color == `#E74C3C`) /*Major Outage*/ { state = `<@&${process.env.IRIS_CFX_ROLE}> un/des composant·s viens/viennent de tomber en panne majeure !`; }
+        }
+        if(oldColor == `#E74C3C`) /*Major Outage*/ {
+            if(color == `#0DE600`) /*Operational*/ { state = `<@&${process.env.IRIS_CFX_ROLE}> tout les composants sont de nouveau opérationnels !`; }
+            if(color == `#F1C40F`) /*Degraded performance*/ { state = `<@&${process.env.IRIS_CFX_ROLE}> tout les composants ont été redémarrés mais ne sont pas totalement stables, il n'est pas impossible que vous ayez encore un peut de mal pour vous connecter !`;}
+            if(color == `#E67E22`) /*Partial Outage*/ { state = `<@&${process.env.IRIS_CFX_ROLE}> tout les composants ne sont plus en panne majeure mais il en reste encore qui sont en panne partielle !`;}
+            if(color == `#3498DB`) /*Under Maintenance*/ { state = `<@&${process.env.IRIS_CFX_ROLE}> un/des composant·s est/sont désormais en maintenance !`; }
+        }
+        const msg = await cfxThread.send({ content: `${state}` });
+        await wait(120000);
+        try {
+            msg.delete();
+        } catch (err) {}
     }
 }
 

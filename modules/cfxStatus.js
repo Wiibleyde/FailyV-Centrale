@@ -202,9 +202,15 @@ module.exports = {
 
 async function updateStatus(cfxStatusMessage, cfxThread) {
     const cfxStatusMessageOld = cfxStatusMessage;
-    const oldColor = `#` + cfxStatusMessageOld.embeds[0].color.toString(16);
+    let oldColor = cfxStatusMessageOld.embeds[0].color.toString(16).toUpperCase();
+    if(oldColor.length == 5) {
+        oldColor = '0' + oldColor;
+    }
+    oldColor = '#' + oldColor;
     await cfxStatusMessage.edit({ embeds: [emb.generate(null, null, `- \`${getIcon(games)}\` Games\n  - \`${getIcon(fiveM)}\` FiveM\n  - \`${getIcon(cfxPlatformServer)}\` Cfx.re Platform Server (FXServer)\n- \`${getIcon(gameServices)}\` Game Services\n  - \`${getIcon(cnl)}\` CnL\n  - \`${getIcon(policy)}\` Policy\n- \`${getIcon(webServices)}\` Web Services\n  - \`${getIcon(serverListFrontend)}\` Server List Frontend\n  - \`${getIcon(runtime)}\` "Runtime"\n  - \`${getIcon(idms)}\` IDMS`, color, `https://cdn.discordapp.com/attachments/1132323171471736915/1142205778745376858/cfx.png`, null, `Cfx.re Status`, null, `https://status.cfx.re/`, cfxStatusMessage.embeds[0].footer.text, cfxStatusMessage.embeds[0].footer.icon_url, true)], components: [btn] });
     if(oldColor != color) {
+        logger.debug(oldColor);
+        logger.debug(color);
         let state;
         if(oldColor == `#0DE600`) /*Operational*/ {
             if(color == `#F1C40F`) /*Degraded performance*/ { state = `Un/des composant·s a/ont des performances dégradées, il n'est pas impossible que vous ayez des complications pour vous connecter !`; }

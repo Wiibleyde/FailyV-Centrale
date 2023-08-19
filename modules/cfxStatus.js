@@ -10,7 +10,6 @@ let cfxPlatformServer = '';
 let gameServices = '';
 let cnl = '';
 let policy = '';
-let keymaster = '';
 let webServices = '';
 let serverListFrontend = '';
 let runtime = '';
@@ -67,9 +66,6 @@ module.exports = {
                     case 'Policy\n  ':
                         policy = getState(icon);
                         break;
-                    case 'Keymaster\n':
-                        keymaster = getState(icon);
-                        break;
                     case 'Web Services\n  ':
                         webServices = getState(icon);
                         break;
@@ -83,7 +79,7 @@ module.exports = {
                         idms = getState(icon);
                         break;
                     default:
-                        break;
+                        continue;
                 }
                 switch(getState(icon)) {
                     case 'degraded_performance':
@@ -142,8 +138,6 @@ module.exports = {
                         policy = component.status;
                         break;
                     case 'Keymaster':
-                        if(keymaster != component.status) { hasChanged = true; }
-                        keymaster = component.status;
                         break;
                     case 'Web Services':
                         if(webServices != component.status) { hasChanged = true; }
@@ -198,7 +192,7 @@ module.exports = {
     },
     sendStatusEmbed: (client, channel) => {
         new Promise(async (resolve, reject) => {
-            const newMsg = await channel.send({ embeds: [emb.generate(null, null, `- \`${getIcon(games)}\` Games\n  - \`${getIcon(fiveM)}\` FiveM\n  - \`${getIcon(cfxPlatformServer)}\` Cfx.re Platform Server (FXServer)\n- \`${getIcon(gameServices)}\` Game Services\n  - \`${getIcon(cnl)}\` CnL\n  - \`${getIcon(policy)}\` Policy\n  - \`${getIcon(keymaster)}\` Keymaster\n- \`${getIcon(webServices)}\` Web Services\n  - \`${getIcon(serverListFrontend)}\` Server List Frontend\n  - \`${getIcon(runtime)}\` "Runtime"\n  - \`${getIcon(idms)}\` IDMS`, color, `https://cdn.discordapp.com/attachments/1132323171471736915/1142205778745376858/cfx.png`, null, `Cfx.re Status`, null, `https://status.cfx.re/`, client.user.username, client.user.avatarURL(), true)], components: [btn] });
+            const newMsg = await channel.send({ embeds: [emb.generate(null, null, `- \`${getIcon(games)}\` Games\n  - \`${getIcon(fiveM)}\` FiveM\n  - \`${getIcon(cfxPlatformServer)}\` Cfx.re Platform Server (FXServer)\n- \`${getIcon(gameServices)}\` Game Services\n  - \`${getIcon(cnl)}\` CnL\n  - \`${getIcon(policy)}\` Policy\n- \`${getIcon(webServices)}\` Web Services\n  - \`${getIcon(serverListFrontend)}\` Server List Frontend\n  - \`${getIcon(runtime)}\` "Runtime"\n  - \`${getIcon(idms)}\` IDMS`, color, `https://cdn.discordapp.com/attachments/1132323171471736915/1142205778745376858/cfx.png`, null, `Cfx.re Status`, null, `https://status.cfx.re/`, client.user.username, client.user.avatarURL(), true)], components: [btn] });
             await sql.deleteMessage('cfx_status');
             await sql.setMessage('cfx_status', newMsg.id);
             resolve('Done!');
@@ -209,7 +203,7 @@ module.exports = {
 async function updateStatus(cfxStatusMessage, cfxThread) {
     const cfxStatusMessageOld = cfxStatusMessage;
     const oldColor = `#` + cfxStatusMessageOld.embeds[0].color.toString(16);
-    await cfxStatusMessage.edit({ embeds: [emb.generate(null, null, `- \`${getIcon(games)}\` Games\n  - \`${getIcon(fiveM)}\` FiveM\n  - \`${getIcon(cfxPlatformServer)}\` Cfx.re Platform Server (FXServer)\n- \`${getIcon(gameServices)}\` Game Services\n  - \`${getIcon(cnl)}\` CnL\n  - \`${getIcon(policy)}\` Policy\n  - \`${getIcon(keymaster)}\` Keymaster\n- \`${getIcon(webServices)}\` Web Services\n  - \`${getIcon(serverListFrontend)}\` Server List Frontend\n  - \`${getIcon(runtime)}\` "Runtime"\n  - \`${getIcon(idms)}\` IDMS`, color, `https://cdn.discordapp.com/attachments/1132323171471736915/1142205778745376858/cfx.png`, null, `Cfx.re Status`, null, `https://status.cfx.re/`, cfxStatusMessage.embeds[0].footer.text, cfxStatusMessage.embeds[0].footer.icon_url, true)], components: [btn] });
+    await cfxStatusMessage.edit({ embeds: [emb.generate(null, null, `- \`${getIcon(games)}\` Games\n  - \`${getIcon(fiveM)}\` FiveM\n  - \`${getIcon(cfxPlatformServer)}\` Cfx.re Platform Server (FXServer)\n- \`${getIcon(gameServices)}\` Game Services\n  - \`${getIcon(cnl)}\` CnL\n  - \`${getIcon(policy)}\` Policy\n- \`${getIcon(webServices)}\` Web Services\n  - \`${getIcon(serverListFrontend)}\` Server List Frontend\n  - \`${getIcon(runtime)}\` "Runtime"\n  - \`${getIcon(idms)}\` IDMS`, color, `https://cdn.discordapp.com/attachments/1132323171471736915/1142205778745376858/cfx.png`, null, `Cfx.re Status`, null, `https://status.cfx.re/`, cfxStatusMessage.embeds[0].footer.text, cfxStatusMessage.embeds[0].footer.icon_url, true)], components: [btn] });
     if(oldColor != color) {
         let state;
         if(oldColor == `#0DE600`) /*Operational*/ {

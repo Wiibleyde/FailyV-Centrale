@@ -208,9 +208,11 @@ module.exports = {
 
 async function updateStatus(cfxStatusMessage, cfxThread) {
     const cfxStatusMessageOld = cfxStatusMessage;
+    const oldColor = '#' + cfxStatusMessageOld.embeds[0].color.toString(16);
     await cfxStatusMessage.edit({ embeds: [emb.generate(null, null, `- \`${getIcon(games)}\` Games\n  - \`${getIcon(fiveM)}\` FiveM\n  - \`${getIcon(cfxPlatformServer)}\` Cfx.re Platform Server (FXServer)\n- \`${getIcon(gameServices)}\` Game Services\n  - \`${getIcon(cnl)}\` CnL\n  - \`${getIcon(policy)}\` Policy\n  - \`${getIcon(keymaster)}\` Keymaster\n- \`${getIcon(webServices)}\` Web Services\n  - \`${getIcon(serverListFrontend)}\` Server List Frontend\n  - \`${getIcon(runtime)}\` "Runtime"\n  - \`${getIcon(idms)}\` IDMS`, color, `https://cdn.discordapp.com/attachments/1132323171471736915/1142205778745376858/cfx.png`, null, `Cfx.re Status`, null, `https://status.cfx.re/`, cfxStatusMessage.embeds[0].footer.text, cfxStatusMessage.embeds[0].footer.icon_url, true)], components: [btn] });
-    if(cfxStatusMessageOld.embeds[0].color.toString(16) != color) {
-        if(cfxStatusMessageOld.embeds[0].color.toString(16) != '#F1C40F' && color != '#0DE600') {
+    logger.debug(cfxStatusMessageOld.embeds[0].color.toString(16));
+    if(oldColor != color) {
+        if(oldColor != '#F1C40F' && color != '#0DE600') {
             let state;
             switch(color) {
                 case '#F1C40F':

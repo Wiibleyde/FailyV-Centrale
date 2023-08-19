@@ -235,7 +235,7 @@ async function updateRadios(client, ws, wsData, sqlRadio) {
                 const freqUnit = Math.floor(Math.random() * (344-250+1)) + 250;
                 const freqDeci = Math.floor(Math.random() * 10);
                 const freqLSMS = freqUnit + '.' + freqDeci;
-                logger.logRadio('LSMS', freq);
+                logger.logRadio('LSMS', freqLSMS);
                 service.resetRadios(client, freqLSMS, data.radioFreq, null);
                 const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
                 await userservice.kick(guild, guild.members.cache.get(process.env.IRIS_DISCORD_ID), false);

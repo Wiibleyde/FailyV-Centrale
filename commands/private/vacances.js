@@ -10,6 +10,7 @@ const wait = require('node:timers/promises').setTimeout;
 const { Rank, hasAuthorization } = require('../../modules/rankAuthorization');
 //Récup du gestionnaire des rôles
 const rolesManager = require('../../modules/rolesManager');
+const workforce = require('../../modules/workforce');
 
 module.exports = {
     //Création de la commande
@@ -52,6 +53,8 @@ module.exports = {
         }
 
         const switchMode = await rolesManager.switchVacacionMode(user, member, interaction.guild, interaction.member);
+
+        workforce.generateWorkforce(interaction.guild);
 
         if(switchMode != 'returned' && switchMode != 'gone') {
             logger.error(switchMode);

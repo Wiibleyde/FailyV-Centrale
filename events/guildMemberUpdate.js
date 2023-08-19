@@ -42,9 +42,8 @@ module.exports = {
                     isDebugMode = true;
                 }
                 let state;
-                let debugText = '';
-                if(isDebugMode) { state = 'dnd'; debugText = ' | DEBUG MODE' } else { state = 'online'; }
-                newMember.client.user.setPresence({ activities: [{ name: `🚑 ` + countPDS + ` | 🎙️ ` + dispatch + debugText, type: ActivityType.Watching }], status: state });
+                if(isDebugMode) { state = 'dnd'; } else { state = 'online'; }
+                newMember.client.user.setPresence({ activities: [{ name: `🚑 ` + countPDS + ` | 🎙️ ` + dispatch, type: ActivityType.Watching }], status: state });
             }
     
         }

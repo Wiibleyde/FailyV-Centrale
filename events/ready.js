@@ -57,9 +57,8 @@ module.exports = {
         else if(process.env.MODE == 'MAINTENANCE'){ client.user.setPresence({ activities: [{ name: `Maintenance en cours...`, type: ActivityType.Watching }], status: 'dnd' }); }
         else {
             let state;
-            let debugText = '';
-            if(isDebugMode) { state = 'dnd'; debugText = ' | DEBUG MODE' } else { state = 'online'; }
-            client.user.setPresence({ activities: [{ name: `🚑 ` + serviceCount + ` | 🎙️ ` + dispatchCount + debugText, type: ActivityType.Watching }], status: state });
+            if(isDebugMode) { state = 'dnd'; } else { state = 'online'; }
+            client.user.setPresence({ activities: [{ name: `🚑 ` + serviceCount + ` | 🎙️ ` + dispatchCount, type: ActivityType.Watching }], status: state });
             setInterval(async () => {
                 const newDebugState = await debugSQL.getDebugState();
                 if(newDebugState[0].state == '1') {
@@ -67,12 +66,11 @@ module.exports = {
                 } else {
                     isDebugMode = false;
                 }
-                debugText = '';
-                if(isDebugMode) { state = 'dnd'; debugText = ' | DEBUG MODE' } else { state = 'online'; }
+                if(isDebugMode) { state = 'dnd'; } else { state = 'online'; }
                 //Récupération des personnes en service
                 serviceCount = guild.roles.cache.get(process.env.IRIS_SERVICE_ROLE_ID).members.size;
                 dispatchCount = guild.roles.cache.get(process.env.IRIS_DISPATCH_ROLE_ID).members.size;
-                client.user.setPresence({ activities: [{ name: `🚑 ` + serviceCount + ` | 🎙️ ` + dispatchCount + debugText, type: ActivityType.Watching }], status: state });
+                client.user.setPresence({ activities: [{ name: `🚑 ` + serviceCount + ` | 🎙️ ` + dispatchCount, type: ActivityType.Watching }], status: state });
             }, 5000);
         }
         const privateClient = guild.members.cache.get(process.env.IRIS_DISCORD_ID);

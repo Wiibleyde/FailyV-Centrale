@@ -28,6 +28,12 @@ module.exports = {
         const embed = emb.generate(null, null, log, `#159879`, process.env.LSMS_LOGO_V2, null, `LOG`, null, null, null, null, true);
         await webhookClient.send({ embeds: [embed] });
     },
+    logRadio: async (radio, freq) => {
+        logger.log(`Régénération aléatoire de la radio "${radio}", fréquence: ${freq}`);
+        const embed = emb.generate(null, null, `Régénération aléatoire de la radio`, `#159879`, getIcon(radio), null, `LOG`, null, null, null, null, true);
+        embed.addFields({ name: '**Radio**', value: radio, inline: true }, { name: '**Fréquence**', value: freq });
+        await webhookClient.send({ embeds: [embed] });
+    },
     debug: async (debug) => {
         logger.debug(debug);
         try {
@@ -95,5 +101,14 @@ module.exports = {
     },
     getStartDate: () => {
         return logDate;
+    }
+}
+
+function getIcon(radio) {
+    switch(radio) {
+        case 'Event':
+            return 'https://cdn.discordapp.com/attachments/1132323171471736915/1142451759663566939/2021_Snowsgiving_Emojis_001_Icons_copy_2.png';
+        default:
+            return 'https://cdn.discordapp.com/attachments/1132323171471736915/1133027019131719861/Iris_LSMS.png';
     }
 }

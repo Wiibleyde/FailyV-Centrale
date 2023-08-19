@@ -30,7 +30,7 @@ const emb = require('./modules/embeds');
 
 //Discord init
 const { Client, GatewayIntentBits, Collection, Events, WebhookClient } = require('discord.js');
-const client = new Client({ intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildScheduledEvents ]});
+const client = new Client({ intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildScheduledEvents, GatewayIntentBits.GuildMessageReactions ]});
 //Init des commandes Discord
 client.commands = new Collection();
 const foldersPath = path.join(__dirname, 'commands');
@@ -108,6 +108,41 @@ client.on(Events.MessageCreate, async (message) => {
             const warnMsg = await message.channel.send({ content: `<@${message.member.id}>`, embeds: [emb.generate(`Oups :(`, null, `Vous ne pouvez pas écrire dans ce fil, si vous souhaitez utiliser la salle de réveil veuillez passer par la commande </lit:${process.env.IRIS_BEDS_COMMAND_ID}> pour ajouter un patient ou par les boutons pour en retirer !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${message.guild.id}/${message.guild.icon}.webp`, null, null, null, false)] });
             await wait(8000);
             await warnMsg.delete();
+        }
+    }
+});
+
+client.on(Events.MessageReactionAdd, async (reaction, user) => {
+    logger.debug('a');
+    const message = reaction.message;
+    logger.debug('b');
+    const doctorSql = require('./sql/doctorManagement/doctor');
+    logger.debug('c');
+    const channel = await doctorSql.getDoctorChannelIDByChannel(message.channelId);
+    logger.debug(channel);
+    if(channel[0] != null) {
+        if(message.embeds[0] != null) {
+            await reaction.remove();
+            return;
+        }
+        if(message.author.id == process.env.IRIS_DISCORD_ID) {
+            switch(reaction.emoji.name) {
+                case '✅':
+                    await message.reactions.cache.get('⏱️').remove();
+                    await message.reactions.cache.get('❌').remove();
+                    return;
+                case '⏱️':
+                    await message.reactions.cache.get('✅').remove();
+                    await message.reactions.cache.get('❌').remove();
+                    return;
+                case '❌':
+                    await message.reactions.cache.get('✅').remove();
+                    await message.reactions.cache.get('⏱️').remove();
+                    return;
+                default:
+                    await reaction.delete();
+                    return;
+            }
         }
     }
 });

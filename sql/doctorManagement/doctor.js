@@ -62,6 +62,21 @@ module.exports = {
             });
         });
     },
+    // Recupération de l'ID de la fiche du docteur
+    getDoctorChannelIDByChannel: (id) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                sql: "SELECT `channel_id` FROM `doctor` WHERE `channel_id`=?",
+                values: [id]
+            }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
     getOldDataByPhone: (phone) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({

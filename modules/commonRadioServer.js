@@ -4,6 +4,9 @@ const WebSocket = require("ws");
 const ws = new WebSocket(`ws://${process.env.RADIO_SERVER_URL}`);
 //Récupération du module de création de JsonWebToken
 const jwt = require('jsonwebtoken');
+const logger = require("./logger");
+
+ws.on('error', (err) => logger.error(err));
 
 module.exports = {
     getWS: () => {

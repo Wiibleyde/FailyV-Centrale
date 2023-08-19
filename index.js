@@ -148,14 +148,16 @@ client.on(Events.GuildScheduledEventDelete, async (guildScheduledEvent) => {
     }
 });
 
-client.on(Events.ClientReady, (client) => {
+client.on(Events.ClientReady, async (client) => {
     //Récupération du module WebSocket
     const WebSocket = require("ws");
     //Connection au serveur de radio communes
-    const ws = new WebSocket(`ws://${process.env.RADIO_SERVER_URL}`);
+    let ws = new WebSocket(`ws://${process.env.RADIO_SERVER_URL}`);
     //Requêtes SQL de radios
     const sqlRadio = require('./sql/radio/radios');
-    
+
+    ws.on('error', (err) => { logger.error(err); });
+
     ws.onmessage = async (wsData) => {
         let radioMessageId;
         try {
@@ -306,7 +308,7 @@ async function updateRadios(client, ws, wsData, sqlRadio) {
                 logger.log(`Reset de 06h00 effectué !`);
             }
         } else if (data.type === "radio_info") {
-            const wsModule = require('./modules/commonRadioServer');
+            //const wsModule = require('./modules/commonRadioServer');
             // On connection and specific radio asking
             if(data.radioName == 'lsms-lspd-lscs') {
                 radio.change(client, 'regenFDO', data.radioFreq, false);

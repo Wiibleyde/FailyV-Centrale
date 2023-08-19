@@ -137,6 +137,7 @@ module.exports = {
             if(cID == 'followRemoveSecoursForma') { const followRemoveSecoursForma = require('./../buttons/suivi/followRemoveSecoursForma'); followRemoveSecoursForma.execute(interaction, errEmb); }
             if(cID == 'followUpdateSecoursPatient') { const followUpdateSecoursPatient = require('./../buttons/suivi/followUpdateSecoursPatient'); followUpdateSecoursPatient.execute(interaction, errEmb); }
             if(cID == 'followRemoveSecoursPatient') { const followRemoveSecoursPatient = require('./../buttons/suivi/followRemoveSecoursPatient'); followRemoveSecoursPatient.execute(interaction, errEmb); }
+            if(cID == 'cfxNotif') { const cfxNotif = require('./../buttons/cfx/cfxNotif'); cfxNotif.execute(interaction, errEmb); }
         }
         //Lorsqu'il s'agit d'un Select Menu
         if(interaction.isChannelSelectMenu() || interaction.isStringSelectMenu()) {

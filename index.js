@@ -138,36 +138,38 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
         const channel = await doctorSql.getDoctorChannelIDByChannel(message.channelId);
         if(channel[0] != null) {
             const msg = await discordClient.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(message.channelId).messages.fetch(message.id);
-            if(message.embeds[0] != null) {
-                await reaction.remove();
-                return;
-            }
-            if(msg.author.id == process.env.IRIS_DISCORD_ID) {
-                switch(reaction.emoji.name) {
-                    case '✅':
-                        message.reactions.cache.forEach((value) => {
-                            if(value.emoji.name != '✅') {
-                                value.remove();
-                            }
-                        });
-                        return;
-                    case '⏲️':
-                        message.reactions.cache.forEach((value) => {
-                            if(value.emoji.name != '⏲️') {
-                                value.remove();
-                            }
-                        });
-                        return;
-                    case '❌':
-                        message.reactions.cache.forEach((value) => {
-                            if(value.emoji.name != '❌') {
-                                value.remove();
-                            }
-                        });
-                        return;
-                    default:
-                        await reaction.remove();
-                        return;
+            if(msg.content != '- Terrain' && msg.content != '- Gestion' && msg.content != '- Enseignement' && msg.content != '- Formation complémentaire') {
+                if(message.embeds[0] != null) {
+                    await reaction.remove();
+                    return;
+                }
+                if(msg.author.id == process.env.IRIS_DISCORD_ID) {
+                    switch(reaction.emoji.name) {
+                        case '✅':
+                            message.reactions.cache.forEach((value) => {
+                                if(value.emoji.name != '✅') {
+                                    value.remove();
+                                }
+                            });
+                            return;
+                        case '⏲️':
+                            message.reactions.cache.forEach((value) => {
+                                if(value.emoji.name != '⏲️') {
+                                    value.remove();
+                                }
+                            });
+                            return;
+                        case '❌':
+                            message.reactions.cache.forEach((value) => {
+                                if(value.emoji.name != '❌') {
+                                    value.remove();
+                                }
+                            });
+                            return;
+                        default:
+                            await reaction.remove();
+                            return;
+                    }
                 }
             }
         }

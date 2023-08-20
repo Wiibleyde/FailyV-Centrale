@@ -22,6 +22,8 @@ let underMaintenance = 0;
 
 let color = '#0DE600';
 
+let mainComponentChanged = false;
+
 const wait = require('node:timers/promises').setTimeout;
 
 const btn = new ActionRowBuilder().addComponents(
@@ -107,6 +109,7 @@ module.exports = {
             majorOutage = 0;
             underMaintenance = 0;
             color = '#0DE600';
+            mainComponentChanged = false;
             const status = await cfx.fetchStatus();
             const components = await status.fetchComponents();
             for(let component of components) {
@@ -116,13 +119,13 @@ module.exports = {
                         games = component.status;
                         break;
                     case 'FiveM':
-                        if(fiveM != component.status) { hasChanged = true; }
+                        if(fiveM != component.status) { hasChanged = true; mainComponentChanged = true; }
                         fiveM = component.status;
                         break;
                     case 'RedM':
                         break;
                     case 'Cfx.re Platform Server (FXServer)':
-                        if(cfxPlatformServer != component.status) { hasChanged = true; }
+                        if(cfxPlatformServer != component.status) { hasChanged = true; mainComponentChanged = true; }
                         cfxPlatformServer = component.status;
                         break;
                     case 'Game Services':
@@ -130,11 +133,11 @@ module.exports = {
                         gameServices = component.status;
                         break;
                     case 'CnL':
-                        if(cnl != component.status) { hasChanged = true; }
+                        if(cnl != component.status) { hasChanged = true; mainComponentChanged = true; }
                         cnl = component.status;
                         break;
                     case 'Policy':
-                        if(policy != component.status) { hasChanged = true; }
+                        if(policy != component.status) { hasChanged = true; mainComponentChanged = true; }
                         policy = component.status;
                         break;
                     case 'Keymaster':
@@ -146,15 +149,15 @@ module.exports = {
                     case 'Forums':
                         break;
                     case 'Server List Frontend':
-                        if(serverListFrontend != component.status) { hasChanged = true; }
+                        if(serverListFrontend != component.status) { hasChanged = true; mainComponentChanged = true; }
                         serverListFrontend = component.status;
                         break;
                     case '"Runtime"':
-                        if(runtime != component.status) { hasChanged = true; }
+                        if(runtime != component.status) { hasChanged = true; mainComponentChanged = true; }
                         runtime = component.status;
                         break;
                     case 'IDMS':
-                        if(idms != component.status) { hasChanged = true; }
+                        if(idms != component.status) { hasChanged = true; mainComponentChanged = true; }
                         idms = component.status;
                         break;
                     default:
@@ -208,7 +211,7 @@ async function updateStatus(cfxStatusMessage, cfxThread) {
     }
     oldColor = '#' + oldColor;
     await cfxStatusMessage.edit({ embeds: [emb.generate(null, null, `- \`${getIcon(games)}\` Games\n  - \`${getIcon(fiveM)}\` FiveM\n  - \`${getIcon(cfxPlatformServer)}\` Cfx.re Platform Server (FXServer)\n- \`${getIcon(gameServices)}\` Game Services\n  - \`${getIcon(cnl)}\` CnL\n  - \`${getIcon(policy)}\` Policy\n- \`${getIcon(webServices)}\` Web Services\n  - \`${getIcon(serverListFrontend)}\` Server List Frontend\n  - \`${getIcon(runtime)}\` "Runtime"\n  - \`${getIcon(idms)}\` IDMS`, color, `https://cdn.discordapp.com/attachments/1132323171471736915/1142205778745376858/cfx.png`, null, `Cfx.re Status`, null, `https://status.cfx.re/`, cfxStatusMessage.embeds[0].footer.text, cfxStatusMessage.embeds[0].footer.icon_url, true)], components: [btn] });
-    if(oldColor != color) {
+    if(mainComponentChanged) {    if(oldColor != color) {
         logger.debug(oldColor);
         logger.debug(color);
         let state;
@@ -247,6 +250,7 @@ async function updateStatus(cfxStatusMessage, cfxThread) {
         try {
             msg.delete();
         } catch (err) {}
+    }
     }
 }
 

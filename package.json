@@ -4,7 +4,6 @@
   "description": "Discord bot manager of the LSMS server",
   "main": "index.js",
   "scripts": {
-    "prestart": "git pull && npm i",
     "start": "node index.js"
   },
   "repository": {

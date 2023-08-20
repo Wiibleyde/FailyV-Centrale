@@ -13,6 +13,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 let returnResult = null;
                 if(result[0] != null) { returnResult = {}; }
@@ -37,6 +38,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 resolve(result);
             });
@@ -52,6 +54,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 resolve(result);
             });
@@ -66,6 +69,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 resolve(result);
             });
@@ -81,6 +85,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 resolve(result);
             });
@@ -96,6 +101,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 resolve(result);
             });

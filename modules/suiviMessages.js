@@ -65,6 +65,7 @@ module.exports = {
             const chan = await sqlFollow.getFollowChannelId();
             if(chan[0] == null) {
                 reject('No channel id found!');
+                return;
             }
 
             const channel = await client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(chan[0].id);

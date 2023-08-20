@@ -18,6 +18,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 resolve(result);
             });
@@ -37,6 +38,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 resolve(result);
             });
@@ -54,6 +56,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 if (result.length > 0) {
                     resolve(result[0]);
@@ -75,6 +78,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 if (result.length > 0) {
                     resolve(true);
@@ -94,6 +98,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 resolve(result);
             });
@@ -111,6 +116,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 resolve(result);
             });

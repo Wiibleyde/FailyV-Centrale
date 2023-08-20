@@ -80,11 +80,9 @@ module.exports = {
             const msgId = getMsgId[0].id;
             const getBCMSMsgId = await beds.getMessageId('lit_bcms');
             const bcmsMsgId = getBCMSMsgId[0].id;
-            let surveillance;
+            let surveillance = '0';
             if(interaction.options.getString('surveillance') != null) {
                 surveillance = interaction.options.getString('surveillance');
-            } else {
-                surveillance = '0';
             }
             let lits = await beds.get();
             if(lits.length > 0) {
@@ -168,7 +166,6 @@ async function changePatientBed(guild, radioChannel, bcmsThread, msgId, bcmsMsgI
         await wait(5000);
         await interaction.deleteReply();
     }
-
 }
 
 async function editBedsImage(d, bcmsMsg, imgUrl) {

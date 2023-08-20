@@ -15,6 +15,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 resolve(result);
             });
@@ -28,7 +29,9 @@ module.exports = {
                     timeout: 40000
                 }, (reqErr, result, fields) => {
                 if(reqErr) {
+                    logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 resolve(result);
             });
@@ -45,6 +48,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 resolve(result);
             });
@@ -61,6 +65,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 resolve(result);
             });
@@ -76,6 +81,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 resolve(result);
             });
@@ -92,6 +98,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 resolve(result);
             });
@@ -108,6 +115,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 resolve(result);
             });

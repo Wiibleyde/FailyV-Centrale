@@ -16,6 +16,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 result.forEach(element => {
                     returnResult[element.id] = {
@@ -36,6 +37,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 result.forEach(element => {
                     returnResult[element.category_id].elements.push(element.item);

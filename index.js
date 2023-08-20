@@ -143,7 +143,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
                     await reaction.remove();
                     return;
                 }
-                if(msg.author.id == process.env.IRIS_DISCORD_ID) {
+                if(msg.author.id == process.env.IRIS_DISCORD_ID || msg.author.id == '692506221135265822') {
                     switch(reaction.emoji.name) {
                         case '✅':
                             message.reactions.cache.forEach((value) => {

@@ -15,6 +15,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 resolve(result);
             });
@@ -31,6 +32,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 resolve(result);
             });
@@ -47,6 +49,7 @@ module.exports = {
                 if(reqErr) {
                     logger.error(reqErr);
                     reject(reqErr);
+                    return;
                 }
                 resolve(result);
             });

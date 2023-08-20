@@ -191,7 +191,7 @@ module.exports = {
                     if(hasChanged) { updateStatus(cfxStatusMessage, cfxThread); }
                 } catch (err) {}
             }
-        }, 10000);
+        }, 30000);
     },
     sendStatusEmbed: (client, channel) => {
         new Promise(async (resolve, reject) => {

@@ -35,6 +35,7 @@ module.exports = {
                     resolve('returned');
                 } catch (error) {
                     reject(error);
+                    return;
                 }
             } else {
                 if(roles.has(process.env.IRIS_SERVICE_ROLE_ID)) {

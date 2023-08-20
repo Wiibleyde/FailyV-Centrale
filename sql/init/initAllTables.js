@@ -54,6 +54,7 @@ function sendRequest(req) {
             if(reqErr) {
                 logger.error(reqErr);
                 reject(reqErr);
+                return;
             }
             resolve(result);
         });

@@ -111,8 +111,10 @@ function initCommandStatColumn(command) {
                     }, (reqErr2, result2, fields) => {
                     if(reqErr2) {
                         logger.error(reqErr2);
+                        return;
                     }
                     resolve(result2);
+                    return;
                 });
             }
             resolve(result);
@@ -145,6 +147,7 @@ function getCommandRow(command) {
             if(reqErr) {
                 logger.error(reqErr);
                 reject(reqErr);
+                return;
             }
             resolve(result);
         });

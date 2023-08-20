@@ -2,6 +2,7 @@
 const logger = require('./logger');
 //Récup du SQL pour les rôles
 const doctorRoles = require('../sql/doctorManagement/doctorRoles');
+const doctor = require('../sql/doctorManagement/doctor');
 //Importation du module pour kick du service
 const kickservice = require('./kickservice');
 
@@ -30,6 +31,7 @@ module.exports = {
                     })
                     //Supprime les rôles de la DB
                     await doctorRoles.deleteRoles(user.id);
+                    await doctor.updateHolydaysByDiscordId(user.id, false);
                     resolve('returned');
                 } catch (error) {
                     reject(error);
@@ -60,6 +62,7 @@ module.exports = {
                 let docteurRolesJSON = JSON.stringify(docteurRolesArray);
                 //Ajouter les rôles dans la DB
                 await doctorRoles.addRoles(user.id, docteurRolesJSON);
+                await doctor.updateHolydaysByDiscordId(user.id, true);
                 //Retirer les rôles valide au docteur 
                 docteurRolesArray.forEach(async role => {
                     //Récupère le rôle

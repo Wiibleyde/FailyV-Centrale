@@ -62,6 +62,21 @@ module.exports = {
             });
         });
     },
+    // Recupération de l'ID de la fiche du docteur
+    getDoctorChannelIDByChannel: (id) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                sql: "SELECT `channel_id` FROM `doctor` WHERE `channel_id`=?",
+                values: [id]
+            }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
     getOldDataByPhone: (phone) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
@@ -112,7 +127,7 @@ module.exports = {
                 });
             });
             mysql.sql().query({
-                sql: `SELECT d.name, d.phone_number, d.rank_id, DATE_FORMAT(d.arrival_date, '%d/%m/%x') arrival_date
+                sql: `SELECT d.name, d.phone_number, d.rank_id, DATE_FORMAT(d.arrival_date, '%d/%m/%x') arrival_date, d.holydays
                     FROM doctor d
                     WHERE d.departure_date IS NULL
                     ORDER BY d.arrival_date;`
@@ -125,7 +140,8 @@ module.exports = {
                     returnResult[element.rank_id].workforce.push({
                         name: element.name,
                         phone_number: element.phone_number,
-                        arrival_date: element.arrival_date
+                        arrival_date: element.arrival_date,
+                        holydays: element.holydays == 1
                     });
                 });
                 resolve(returnResult);
@@ -148,10 +164,24 @@ module.exports = {
             });
         });
     },
+    updateHolydaysByDiscordId: (id, holydays) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                sql: "UPDATE `doctor` SET `holydays`=? WHERE `discord_id`=? AND `departure_date` IS NULL",
+                values: [holydays, id]
+            }, (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                }
+                resolve(result);
+            });
+        });
+    },
     updateRank: (id, newRank) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                sql: "UPDATE `doctor` SET `rank_id`=? WHERE `discord_id`=?",
+                sql: "UPDATE `doctor` SET `rank_id`=? WHERE `discord_id`=? AND `departure_date` IS NULL",
                 values: [newRank, id]
             }, (reqErr, result, fields) => {
                 if(reqErr) {
@@ -165,7 +195,7 @@ module.exports = {
     removeDoctor: (id, departureDate) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                sql: "UPDATE `doctor` SET `departure_date`=? WHERE `discord_id`=?",
+                sql: "UPDATE `doctor` SET `departure_date`=? WHERE `discord_id`=? AND `departure_date` IS NULL",
                 values: [departureDate, id]
             }, (reqErr, result, fields) => {
                 if(reqErr) {

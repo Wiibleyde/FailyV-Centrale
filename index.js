@@ -28,9 +28,26 @@ const wait = require('node:timers/promises').setTimeout;
 
 const emb = require('./modules/embeds');
 
+let discordClient = null;
+
 //Discord init
-const { Client, GatewayIntentBits, Collection, Events, WebhookClient } = require('discord.js');
-const client = new Client({ intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildScheduledEvents, GatewayIntentBits.GuildMessageReactions ]});
+const { Client, GatewayIntentBits, Partials, Collection, Events, WebhookClient } = require('discord.js');
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildScheduledEvents,
+        GatewayIntentBits.GuildMessageReactions
+    ],
+    partials: [
+        Partials.User,
+        Partials.Reaction,
+        Partials.Message
+    ]
+});
 //Init des commandes Discord
 client.commands = new Collection();
 const foldersPath = path.join(__dirname, 'commands');
@@ -52,138 +69,160 @@ for(const folder of commandsFolders) {
 
 //Init des events Discord
 client.on(Events.MessageCreate, async (message) => {
-    let IRIS_SERVICE_CHANNEL_ID = await sql.getChannel('IRIS_SERVICE_CHANNEL_ID');
-    if (IRIS_SERVICE_CHANNEL_ID[0] == null) {
-        IRIS_SERVICE_CHANNEL_ID = null;
-    } else {
-        IRIS_SERVICE_CHANNEL_ID = IRIS_SERVICE_CHANNEL_ID[0].id;
-    }
-    let IRIS_RADIO_CHANNEL_ID = await sql.getChannel('IRIS_RADIO_CHANNEL_ID');
-    if (IRIS_RADIO_CHANNEL_ID[0] == null) {
-        IRIS_RADIO_CHANNEL_ID = null;
-    } else {
-        IRIS_RADIO_CHANNEL_ID = IRIS_RADIO_CHANNEL_ID[0].id;
-    }
-    let IRIS_FOLLOW_CHANNEL_ID = await sql.getChannel('follow');
-    if (IRIS_FOLLOW_CHANNEL_ID[0] == null) {
-        IRIS_FOLLOW_CHANNEL_ID = null;
-    } else {
-        IRIS_FOLLOW_CHANNEL_ID = IRIS_FOLLOW_CHANNEL_ID[0].id;
-    }
-    let IRIS_FOLLOW_THREAD_PPA_ID = await sql.getChannel('follow_thread_ppa');
-    if (IRIS_FOLLOW_THREAD_PPA_ID[0] == null) {
-        IRIS_FOLLOW_THREAD_PPA_ID = null;
-    } else {
-        IRIS_FOLLOW_THREAD_PPA_ID = IRIS_FOLLOW_THREAD_PPA_ID[0].id;
-    }
-    let IRIS_FOLLOW_THREAD_SECOURS_ID = await sql.getChannel('follow_thread_secours');
-    if (IRIS_FOLLOW_THREAD_SECOURS_ID[0] == null) {
-        IRIS_FOLLOW_THREAD_SECOURS_ID = null;
-    } else {
-        IRIS_FOLLOW_THREAD_SECOURS_ID = IRIS_FOLLOW_THREAD_SECOURS_ID[0].id;
-    }
-    let IRIS_BCMS_BEDS_THREAD_ID = await sql.getChannel('bcms_beds_thread');
-    if (IRIS_BCMS_BEDS_THREAD_ID[0] == null) {
-        IRIS_BCMS_BEDS_THREAD_ID = null;
-    } else {
-        IRIS_BCMS_BEDS_THREAD_ID = IRIS_BCMS_BEDS_THREAD_ID[0].id;
-    }
-    let templateFormId = await sql.getChannel('template_form');
-    if (templateFormId[0] == null) {
-        templateFormId = null;
-    } else {
-        templateFormId = templateFormId[0].id;
-    }
-    // if(message.channelId == IRIS_SERVICE_CHANNEL_ID || message.channelId == IRIS_RADIO_CHANNEL_ID || message.channelId == IRIS_FOLLOW_CHANNEL_ID) {
-    if (message.channelId == IRIS_SERVICE_CHANNEL_ID || message.channelId == IRIS_RADIO_CHANNEL_ID || message.channelId == IRIS_FOLLOW_CHANNEL_ID || message.channelId == IRIS_FOLLOW_THREAD_PPA_ID || message.channelId == IRIS_FOLLOW_THREAD_SECOURS_ID || message.channelId == templateFormId) {
-        if(message.author != process.env.IRIS_DISCORD_ID) {
-            logger.warn(`${message.member.nickname} - ${message.author.username}#${message.author.discriminator} (<@${message.author.id}>)\n\nà envoyé un message dans le salon interdit "#${client.guilds.cache.get(message.guildId).channels.cache.get(message.channelId).name} <#${message.channelId}>"\n\nContenu: "${message.content}"`);
-            await message.delete();
+    if(message.guildId == process.env.IRIS_PRIVATE_GUILD_ID) {
+        let IRIS_SERVICE_CHANNEL_ID = await sql.getChannel('IRIS_SERVICE_CHANNEL_ID');
+        if (IRIS_SERVICE_CHANNEL_ID[0] == null) {
+            IRIS_SERVICE_CHANNEL_ID = null;
+        } else {
+            IRIS_SERVICE_CHANNEL_ID = IRIS_SERVICE_CHANNEL_ID[0].id;
         }
-    }
-    if(message.channelId == IRIS_BCMS_BEDS_THREAD_ID) {
-        if(message.author != process.env.IRIS_DISCORD_ID) {
-            logger.warn(`${message.member.nickname} - ${message.author.username}#${message.author.discriminator} (<@${message.author.id}>)\n\nà envoyé un message dans le salon interdit "#${client.guilds.cache.get(message.guildId).channels.cache.get(message.channelId).name} <#${message.channelId}>"\n\nContenu: "${message.content}"`);
-            await message.delete();
-            const warnMsg = await message.channel.send({ content: `<@${message.member.id}>`, embeds: [emb.generate(`Oups :(`, null, `Vous ne pouvez pas écrire dans ce fil, si vous souhaitez utiliser la salle de réveil veuillez passer par la commande </lit:${process.env.IRIS_BEDS_COMMAND_ID}> pour ajouter un patient ou par les boutons pour en retirer !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${message.guild.id}/${message.guild.icon}.webp`, null, null, null, false)] });
-            await wait(8000);
-            await warnMsg.delete();
+        let IRIS_RADIO_CHANNEL_ID = await sql.getChannel('IRIS_RADIO_CHANNEL_ID');
+        if (IRIS_RADIO_CHANNEL_ID[0] == null) {
+            IRIS_RADIO_CHANNEL_ID = null;
+        } else {
+            IRIS_RADIO_CHANNEL_ID = IRIS_RADIO_CHANNEL_ID[0].id;
+        }
+        let IRIS_FOLLOW_CHANNEL_ID = await sql.getChannel('follow');
+        if (IRIS_FOLLOW_CHANNEL_ID[0] == null) {
+            IRIS_FOLLOW_CHANNEL_ID = null;
+        } else {
+            IRIS_FOLLOW_CHANNEL_ID = IRIS_FOLLOW_CHANNEL_ID[0].id;
+        }
+        let IRIS_FOLLOW_THREAD_PPA_ID = await sql.getChannel('follow_thread_ppa');
+        if (IRIS_FOLLOW_THREAD_PPA_ID[0] == null) {
+            IRIS_FOLLOW_THREAD_PPA_ID = null;
+        } else {
+            IRIS_FOLLOW_THREAD_PPA_ID = IRIS_FOLLOW_THREAD_PPA_ID[0].id;
+        }
+        let IRIS_FOLLOW_THREAD_SECOURS_ID = await sql.getChannel('follow_thread_secours');
+        if (IRIS_FOLLOW_THREAD_SECOURS_ID[0] == null) {
+            IRIS_FOLLOW_THREAD_SECOURS_ID = null;
+        } else {
+            IRIS_FOLLOW_THREAD_SECOURS_ID = IRIS_FOLLOW_THREAD_SECOURS_ID[0].id;
+        }
+        let IRIS_BCMS_BEDS_THREAD_ID = await sql.getChannel('bcms_beds_thread');
+        if (IRIS_BCMS_BEDS_THREAD_ID[0] == null) {
+            IRIS_BCMS_BEDS_THREAD_ID = null;
+        } else {
+            IRIS_BCMS_BEDS_THREAD_ID = IRIS_BCMS_BEDS_THREAD_ID[0].id;
+        }
+        let templateFormId = await sql.getChannel('template_form');
+        if (templateFormId[0] == null) {
+            templateFormId = null;
+        } else {
+            templateFormId = templateFormId[0].id;
+        }
+        // if(message.channelId == IRIS_SERVICE_CHANNEL_ID || message.channelId == IRIS_RADIO_CHANNEL_ID || message.channelId == IRIS_FOLLOW_CHANNEL_ID) {
+        if (message.channelId == IRIS_SERVICE_CHANNEL_ID || message.channelId == IRIS_RADIO_CHANNEL_ID || message.channelId == IRIS_FOLLOW_CHANNEL_ID || message.channelId == IRIS_FOLLOW_THREAD_PPA_ID || message.channelId == IRIS_FOLLOW_THREAD_SECOURS_ID || message.channelId == templateFormId) {
+            if(message.author != process.env.IRIS_DISCORD_ID) {
+                logger.warn(`${message.member.nickname} - ${message.author.username}#${message.author.discriminator} (<@${message.author.id}>)\n\nà envoyé un message dans le salon interdit "#${client.guilds.cache.get(message.guildId).channels.cache.get(message.channelId).name} <#${message.channelId}>"\n\nContenu: "${message.content}"`);
+                await message.delete();
+            }
+        }
+        if(message.channelId == IRIS_BCMS_BEDS_THREAD_ID) {
+            if(message.author != process.env.IRIS_DISCORD_ID) {
+                logger.warn(`${message.member.nickname} - ${message.author.username}#${message.author.discriminator} (<@${message.author.id}>)\n\nà envoyé un message dans le salon interdit "#${client.guilds.cache.get(message.guildId).channels.cache.get(message.channelId).name} <#${message.channelId}>"\n\nContenu: "${message.content}"`);
+                await message.delete();
+                const warnMsg = await message.channel.send({ content: `<@${message.member.id}>`, embeds: [emb.generate(`Oups :(`, null, `Vous ne pouvez pas écrire dans ce fil, si vous souhaitez utiliser la salle de réveil veuillez passer par la commande </lit:${process.env.IRIS_BEDS_COMMAND_ID}> pour ajouter un patient ou par les boutons pour en retirer !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${message.guild.id}/${message.guild.icon}.webp`, null, null, null, false)] });
+                await wait(8000);
+                await warnMsg.delete();
+            }
         }
     }
 });
 
 client.on(Events.MessageReactionAdd, async (reaction, user) => {
-    logger.debug('a');
-    const message = reaction.message;
-    logger.debug('b');
-    const doctorSql = require('./sql/doctorManagement/doctor');
-    logger.debug('c');
-    const channel = await doctorSql.getDoctorChannelIDByChannel(message.channelId);
-    logger.debug(channel);
-    if(channel[0] != null) {
-        if(message.embeds[0] != null) {
-            await reaction.remove();
-            return;
-        }
-        if(message.author.id == process.env.IRIS_DISCORD_ID) {
-            switch(reaction.emoji.name) {
-                case '✅':
-                    await message.reactions.cache.get('⏱️').remove();
-                    await message.reactions.cache.get('❌').remove();
-                    return;
-                case '⏱️':
-                    await message.reactions.cache.get('✅').remove();
-                    await message.reactions.cache.get('❌').remove();
-                    return;
-                case '❌':
-                    await message.reactions.cache.get('✅').remove();
-                    await message.reactions.cache.get('⏱️').remove();
-                    return;
-                default:
-                    await reaction.delete();
-                    return;
+    if(discordClient != null) {
+        const message = reaction.message;
+        const doctorSql = require('./sql/doctorManagement/doctor');
+        const channel = await doctorSql.getDoctorChannelIDByChannel(message.channelId);
+        if(channel[0] != null) {
+            const msg = await discordClient.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).channels.cache.get(message.channelId).messages.fetch(message.id);
+            if(message.embeds[0] != null) {
+                await reaction.remove();
+                return;
+            }
+            if(msg.author.id == process.env.IRIS_DISCORD_ID) {
+                switch(reaction.emoji.name) {
+                    case '✅':
+                        message.reactions.cache.forEach((value) => {
+                            if(value.emoji.name != '✅') {
+                                value.remove();
+                            }
+                        });
+                        return;
+                    case '⏲️':
+                        message.reactions.cache.forEach((value) => {
+                            if(value.emoji.name != '⏲️') {
+                                value.remove();
+                            }
+                        });
+                        return;
+                    case '❌':
+                        message.reactions.cache.forEach((value) => {
+                            if(value.emoji.name != '❌') {
+                                value.remove();
+                            }
+                        });
+                        return;
+                    default:
+                        await reaction.remove();
+                        return;
+                }
             }
         }
     }
 });
 
 client.on(Events.GuildScheduledEventCreate, async (guildScheduledEvent) => {
-    //Import du créateur de webhook
-    logger.log(`Événement "**${guildScheduledEvent.name}**" créé`);
-    const webhookClient = new WebhookClient({ url: process.env.IRIS_AGENDA_WEBHOOK_URL });
-    webhookClient.send({ content: `https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}` });
+    if(guildScheduledEvent.guildId == process.env.IRIS_PRIVATE_GUILD_ID) {
+        //Import du créateur de webhook
+        logger.log(`Événement "**${guildScheduledEvent.name}**" créé`);
+        const webhookClient = new WebhookClient({ url: process.env.IRIS_AGENDA_WEBHOOK_URL });
+        webhookClient.send({ content: `https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}` });
+    }
 });
 
 client.on(Events.GuildScheduledEventUpdate, async (guildScheduledEvent) => {
-    //Récup des requêtes SQL
-    const sqlAgenda = require('./sql/agenda/agenda');
-    const agendaChannelId = await sqlAgenda.getAgendaChannelId();
-    if(guildScheduledEvent.status == 1) {
-        logger.log(`Événement "**${guildScheduledEvent.name}**" démarré`);
-    }
-    if(guildScheduledEvent.status == 2) {
-        logger.log(`Événement "**${guildScheduledEvent.name}**" terminé`);
-        guildScheduledEvent.guild.channels.cache.get(agendaChannelId[0].id).messages.fetch().then(m => { m.forEach(msg => { if(msg.content == `https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}`) { msg.delete(); } }) });
-        const isEventIsDelta = await sqlAgenda.getByURL(`https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}`);
-        if(isEventIsDelta[0] != null) {
-            await sqlAgenda.updateToEndState(`https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}`);
+    if(guildScheduledEvent.guildId == process.env.IRIS_PRIVATE_GUILD_ID) {
+        //Récup des requêtes SQL
+        const sqlAgenda = require('./sql/agenda/agenda');
+        const agendaChannelId = await sqlAgenda.getAgendaChannelId();
+        if(agendaChannelId[0] != null) {
+            if(guildScheduledEvent.status == 1) {
+                logger.log(`Événement "**${guildScheduledEvent.name}**" démarré`);
+            }
+            if(guildScheduledEvent.status == 2) {
+                logger.log(`Événement "**${guildScheduledEvent.name}**" terminé`);
+                guildScheduledEvent.guild.channels.cache.get(agendaChannelId[0].id).messages.fetch().then(m => { m.forEach(msg => { if(msg.content == `https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}`) { msg.delete(); } }) });
+                const isEventIsDelta = await sqlAgenda.getByURL(`https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}`);
+                if(isEventIsDelta[0] != null) {
+                    await sqlAgenda.updateToEndState(`https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}`);
+                }
+            }
+    
         }
     }
 });
 
 client.on(Events.GuildScheduledEventDelete, async (guildScheduledEvent) => {
-    //Récup des requêtes SQL
-    const sqlAgenda = require('./sql/agenda/agenda');
-    const agendaChannelId = await sqlAgenda.getAgendaChannelId();
-    logger.log(`Événement "**${guildScheduledEvent.name}**" supprimé`);
-    guildScheduledEvent.guild.channels.cache.get(agendaChannelId[0].id).messages.fetch().then(m => { m.forEach(msg => { if(msg.content == `https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}`) { msg.delete(); } }) });
-    const isEventIsDelta = await sqlAgenda.getByURL(`https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}`);
-    if(isEventIsDelta[0] != null) {
-        await sqlAgenda.updateToEndState(`https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}`);
+    if(guildScheduledEvent.guildId == process.env.IRIS_PRIVATE_GUILD_ID) {
+        //Récup des requêtes SQL
+        const sqlAgenda = require('./sql/agenda/agenda');
+        const agendaChannelId = await sqlAgenda.getAgendaChannelId();
+        if(agendaChannelId[0] != null) {
+            logger.log(`Événement "**${guildScheduledEvent.name}**" supprimé`);
+            guildScheduledEvent.guild.channels.cache.get(agendaChannelId[0].id).messages.fetch().then(m => { m.forEach(msg => { if(msg.content == `https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}`) { msg.delete(); } }) });
+            const isEventIsDelta = await sqlAgenda.getByURL(`https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}`);
+            if(isEventIsDelta[0] != null) {
+                await sqlAgenda.updateToEndState(`https://discord.com/events/${guildScheduledEvent.guildId}/${guildScheduledEvent.id}`);
+            }
+        }
     }
 });
 
 client.on(Events.ClientReady, async (client) => {
+    discordClient = client;
     //Récupération du module WebSocket
     const WebSocket = require("ws");
     //Connection au serveur de radio communes

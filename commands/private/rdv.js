@@ -54,16 +54,16 @@ module.exports = {
             let IRIS_PSYCHO_CHANNEL_ID = await sql.getChannel('IRIS_PSYCHO_CHANNEL_ID');
             if (IRIS_PSYCHO_CHANNEL_ID[0] == undefined) {
                 psychoChannelId = null;
-                const embed = emb.generate("Désolé :(", null, `Aucun channel n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
+                const embed = emb.generate("Désolé :(", null, `Aucun channel n'a été trouvé dans la base de donnée, merci de faire un </define:1140478983536918600> pour choisir un salon !) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             } else {
                 psychoChannelId = interaction.guild.channels.cache.get(IRIS_PSYCHO_CHANNEL_ID[0].id);
             }
         } else if (interaction.options.getString('action') === 'chirurgie') {
-            let IRIS_SURGERY_CHANNEL_ID = await sql.getChannel('IRIS_SURGERY_CHANNEL_ID');
+            let IRIdéveloppS_SURGERY_CHANNEL_ID = await sql.getChannel('IRIS_SURGERY_CHANNEL_ID');
             if (IRIS_SURGERY_CHANNEL_ID[0] == undefined) {
                 surgeryChannelId = null;
-                const embed = emb.generate("Désolé :(", null, `Aucun channel n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
+                const embed = emb.generate("Désolé :(", null, `Aucun channel n'a été trouvé dans la base de donnée, merci de faire un </define:1140478983536918600> pour choisir un salon !) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             } else {
                 surgeryChannelId = interaction.guild.channels.cache.get(IRIS_SURGERY_CHANNEL_ID[0].id);
@@ -72,7 +72,7 @@ module.exports = {
             let IRIS_GENERAL_CHANNEL_ID = await sql.getChannel('IRIS_GENERAL_CHANNEL_ID');
             if (IRIS_GENERAL_CHANNEL_ID[0] == undefined) {
                 generalChannelId = null;
-                const embed = emb.generate("Désolé :(", null, `Aucun channel n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
+                const embed = emb.generate("Désolé :(", null, `Aucun channel n'a été trouvé dans la base de donnée, merci de faire un </define:1140478983536918600> pour choisir un salon !) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             } else {
                 generalChannelId = interaction.guild.channels.cache.get(IRIS_GENERAL_CHANNEL_ID[0].id);
@@ -84,7 +84,7 @@ module.exports = {
             let IRIS_PSYCHO_CHANNEL_ID = await sql.getChannel('IRIS_PSYCHO_CHANNEL_ID');
             if (IRIS_PSYCHO_CHANNEL_ID[0] == undefined) {
                 psychoChannelId = null;
-                const embed = emb.generate("Désolé :(", null, `Aucun channel n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
+                const embed = emb.generate("Désolé :(", null, `Aucun channel n'a été trouvé dans la base de donnée, merci de faire un </define:1140478983536918600> pour choisir un salon !) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             } else {
                 psychoChannelId = interaction.guild.channels.cache.get(IRIS_PSYCHO_CHANNEL_ID[0].id);
@@ -102,7 +102,7 @@ module.exports = {
             let IRIS_SURGERY_CHANNEL_ID = await sql.getChannel('IRIS_SURGERY_CHANNEL_ID');
             if (IRIS_SURGERY_CHANNEL_ID[0] == undefined) {
                 surgeryChannelId = null;
-                const embed = emb.generate("Désolé :(", null, `Aucun channel n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
+                const embed = emb.generate("Désolé :(", null, `Aucun channel n'a été trouvé dans la base de donnée, merci de faire un </define:1140478983536918600> pour choisir un salon !) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             } else {
                 surgeryChannelId = interaction.guild.channels.cache.get(IRIS_SURGERY_CHANNEL_ID[0].id);
@@ -120,7 +120,7 @@ module.exports = {
             let IRIS_GENERAL_CHANNEL_ID = await sql.getChannel('IRIS_GENERAL_CHANNEL_ID');
             if (IRIS_GENERAL_CHANNEL_ID[0] == undefined) {
                 generalChannelId = null;
-                const embed = emb.generate("Désolé :(", null, `Aucun channel n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
+                const embed = emb.generate("Désolé :(", null, `Aucun channel n'a été trouvé dans la base de donnée, merci de faire un </define:1140478983536918600> pour choisir un salon !) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             } else {
                 generalChannelId = interaction.guild.channels.cache.get(IRIS_GENERAL_CHANNEL_ID[0].id);
@@ -146,7 +146,7 @@ module.exports = {
             let IRIS_PSYCHO_CHANNEL_ID = await sql.getChannel('IRIS_PSYCHO_CHANNEL_ID');
             if (IRIS_PSYCHO_CHANNEL_ID[0] == undefined) {
                 psychoChannelId = null;
-                const embed = emb.generate("Désolé :(", null, `Aucun channel psy n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
+                const embed = emb.generate("Désolé :(", null, `Aucun channel psy n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             } else {
                 psychoChannelId = interaction.guild.channels.cache.get(IRIS_PSYCHO_CHANNEL_ID[0].id);
@@ -154,7 +154,7 @@ module.exports = {
             let IRIS_SURGERY_CHANNEL_ID = await sql.getChannel('IRIS_SURGERY_CHANNEL_ID');
             if (IRIS_SURGERY_CHANNEL_ID[0] == undefined) {
                 surgeryChannelId = null;
-                const embed = emb.generate("Désolé :(", null, `Aucun channel chir n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
+                const embed = emb.generate("Désolé :(", null, `Aucun channel chir n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             } else {
                 surgeryChannelId = interaction.guild.channels.cache.get(IRIS_SURGERY_CHANNEL_ID[0].id);
@@ -162,7 +162,7 @@ module.exports = {
             let IRIS_GENERAL_CHANNEL_ID = await sql.getChannel('IRIS_GENERAL_CHANNEL_ID');
             if (IRIS_GENERAL_CHANNEL_ID[0] == undefined) {
                 generalChannelId = null;
-                const embed = emb.generate("Désolé :(", null, `Aucun channel général n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des employés`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
+                const embed = emb.generate("Désolé :(", null, `Aucun channel général n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, "#FF0000", process.env.LSMS_LOGO_V2, null, `Gestion des rendez-vous`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false);
                 return await interaction.reply({ embeds: [embed], ephemeral: true });
             } else {
                 generalChannelId = interaction.guild.channels.cache.get(IRIS_GENERAL_CHANNEL_ID[0].id);

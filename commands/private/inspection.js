@@ -87,15 +87,12 @@ module.exports = {
                     break;
             }
         } else if(interaction.customId == 'inspectionCompanyUpdateSelect') {
-            logger.debug(interaction.values[0])
             let inspection = await inspectionSQL.getInspectionById(interaction.values[0])
-            logger.debug(inspection)
             const updateInspectionModal = new ModalBuilder().setCustomId('updateInspectionModal').setTitle(`Mise à jour d'une inspection`)
             const date = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('date').setLabel('Date de l\'inspection').setPlaceholder('JJ/MM/AAAA').setMinLength(1).setMaxLength(100).setStyle(TextInputStyle.Short))
             const doctors = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('doctors').setLabel('Médecins').setPlaceholder('Médecins').setMinLength(1).setMaxLength(100).setStyle(TextInputStyle.Short))
             const company = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('company').setLabel('Entreprise').setPlaceholder('Entreprise').setMinLength(1).setMaxLength(100).setStyle(TextInputStyle.Short).setValue(interaction.values[0]))
             updateInspectionModal.addComponents(date, doctors, company)
-            logger.debug(updateInspectionModal)
             await interaction.showModal(updateInspectionModal)
         }
     }

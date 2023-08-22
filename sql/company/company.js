@@ -25,7 +25,7 @@ module.exports = {
     getAllcompany: () => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                    sql: "SELECT * FROM `company`",
+                    sql: "SELECT * FROM `company` ORDER BY `name` ASC",
                     timeout: 40000
                 }, async (reqErr, result, fields) => {
                 if(reqErr) {

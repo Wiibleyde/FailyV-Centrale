@@ -37,6 +37,22 @@ module.exports = {
             });
         });
     },
+    getAllcompanyBySide(side) {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "SELECT * FROM `company` WHERE `side`=?",
+                    timeout: 40000,
+                    values: [side]
+                }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                    return;
+                }
+                resolve(result);
+            });
+        });
+    },
     //Récupération d'une entreprise
     getCompany: (id) => {
         return new Promise((resolve, reject) => {

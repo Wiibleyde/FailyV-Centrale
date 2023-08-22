@@ -10,9 +10,9 @@ const inspectionSQL = require('../../sql/inspection/inspection');
 module.exports = {
     execute: async function (interaction, errEmb) {
         const regexDate = /^(0[1-9]|1\d|2[0-8]|29(?=\/02\/(?!1[01345789]00|2[1235679]00)\d\d(?:[02468][048]|[13579][26]))|29(?!\/02)|30(?!\/02)|31(?=\/0[13578]|\/1[02]))\/(0[1-9]|1[0-2])\/([12]\d{3})$/gm
-        const company = interaction.components[0].components[0].value
         const doctors = interaction.components[1].components[0].value
-        let date = interaction.components[2].components[0].value
+        const company = interaction.components[2].components[0].value
+        let date = interaction.components[0].components[0].value
         if(date == '') {
             const now = new Date();
             let day = now.getDate()

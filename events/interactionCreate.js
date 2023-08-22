@@ -95,7 +95,7 @@ module.exports = {
             if(cID == 'vehEditCtModal') { const vehEditCtModal = require('./../modals/vehicule/vehEditCtModal'); vehEditCtModal.execute(interaction, errEmb); }
             if(cID == 'renameModal') { const renameModal = require('./../modals/rename/renameModal'); renameModal.execute(interaction, errEmb); }
             if(cID == 'agEventDefineModal') { const agEventDefineModal = require('./../modals/agenda/agEventDefineModal'); agEventDefineModal.execute(interaction, errEmb); }
-            if(cID == 'updateInspeModal') { const updateInspeModal = require('./../modals/inspection/updateInspeModal'); updateInspeModal.execute(interaction, errEmb); }
+            if(cID == 'updateInspectionModal') { const updateInspectionModal = require('./../modals/inspection/updateInspectionModal'); updateInspectionModal.execute(interaction, errEmb); }
             if(cID == 'addFeatureModal') { const addFeatureModal = require('./../modals/patchnote/addFeatureModal'); addFeatureModal.execute(interaction, errEmb); }
             if(cID == 'updateFeatureModal') { const updateFeatureModal = require('./../modals/patchnote/updateFeatureModal'); updateFeatureModal.execute(interaction, errEmb); }
             if(cID == 'addPatchnoteModal') { const addPatchnoteModal = require('./../modals/patchnote/addPatchnoteModal'); addPatchnoteModal.execute(interaction, errEmb); }
@@ -158,13 +158,13 @@ module.exports = {
             if(cID == 'followUpdateSecoursPatientSelect') { const followUpdateSecoursPatientSelect = require('../buttons/suivi/followUpdateSecoursPatient'); followUpdateSecoursPatientSelect.execute(interaction, errEmb); }
             if(cID == 'followRemoveSecoursFormaSelect') { const followRemoveSecoursFormaSelect = require('../buttons/suivi/followRemoveSecoursForma'); followRemoveSecoursFormaSelect.execute(interaction, errEmb); }
             if(cID == 'followRemoveSecoursPatientSelect') { const followRemoveSecoursPatientSelect = require('../buttons/suivi/followRemoveSecoursPatient'); followRemoveSecoursPatientSelect.execute(interaction, errEmb); }
-            if(cID == 'companyDeleteSelect') { const companyDeleteSelect = require('../commands/private/inspection'); companyDeleteSelect.execute(interaction, errEmb); }
             if(cID == 'featureDeleteSelect') { const featureDeleteSelect = require('../commands/dev/feature'); featureDeleteSelect.execute(interaction, errEmb); }
             if(cID == 'featureUpdateSelect') { const featureUpdateSelect = require('../commands/dev/feature'); featureUpdateSelect.execute(interaction, errEmb); }
             if(cID == 'addFeaturePatchnoteSelect') { const addFeaturePatchnoteSelect = require('../commands/dev/patchnote'); addFeaturePatchnoteSelect.execute(interaction, errEmb); }
             if(cID == 'removeFeaturePatchnoteSelect') { const removeFeaturePatchnoteSelect = require('../commands/dev/patchnote'); removeFeaturePatchnoteSelect.execute(interaction, errEmb); }
             if(cID == 'companyGlobalUpdateSelect') { const companyGlobalUpdateSelect = require('../commands/private/entrprise'); companyGlobalUpdateSelect.execute(interaction, errEmb); }
             if(cID == 'companyGlobalDeleteSelect') { const companyGlobalDeleteSelect = require('../commands/private/entrprise'); companyGlobalDeleteSelect.execute(interaction, errEmb); }
+            if(cID == 'inspectionCompanyUpdateSelect') { const inspectionCompanyUpdateSelect = require('../commands/private/inspection'); inspectionCompanyUpdateSelect.execute(interaction, errEmb); }
 
             //Logs de quel option du menu de selection à été utilisée
             logger.log(`${interaction.member.nickname} - ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user})\n\na utilisé(e) l'option "${interaction.values}" du menu de séléction "${interaction.customId}"`);

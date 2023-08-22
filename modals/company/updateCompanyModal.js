@@ -18,21 +18,7 @@ module.exports = {
         } else if(side == `sud` || side == `Sud` || side == `SUD`) {
             side = true
         }
-        const testIfExist = await companySQL.testIfExist(name, acronym)
-        if(testIfExist == true) {
-            let embed = emb.generate('Gestion des entreprises', null, 'Liste des entreprises', '#0DE600', process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
-            embed.addFields(
-                {
-                    name: `Entreprise déjà existante`,
-                    value: `L'entreprise ${name} existe déjà`
-                }
-            )
-            await interaction.reply({embeds: [embed], ephemeral: true})
-            await wait(5000)
-            await interaction.deleteReply()
-            return
-        }
-        await companySQL.updateCompany(id, name, acronym, side)
+        companySQL.updateCompany(id, name, acronym, side)
         let embed = emb.generate('Gestion des entreprises', null, 'Liste des entreprises', '#0DE600', process.env.LSMS_LOGO_V2, null, null, null, null, interaction.client.user.username, interaction.client.user.avatarURL(), true)
         embed.addFields(
             {

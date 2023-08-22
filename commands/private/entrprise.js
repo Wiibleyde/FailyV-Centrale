@@ -55,15 +55,24 @@ module.exports = {
                             }
                         )
                     }
+                    let nordCompanies = []
+                    let sudCompanies = []
                     for(let i = 0; i < companies.length; i++) {
                         let companySide = companies[i].side == 1 ? 'Sud' : 'Nord'
-                        fields.push(
-                            {
-                                name: `${companies[i].acronym}`,
-                                value: `Nom: ${companies[i].name}\nJuridiction: ${companySide}`
-                            }
-                        )
+                        if(companySide == 'Nord') {
+                            nordCompanies.push(`**${companies[i].acronym}** - ${companies[i].name}`)
+                        } else {
+                            sudCompanies.push(`**${companies[i].acronym}** - ${companies[i].name}`)
+                        }
                     }
+                    fields.push({
+                        name: 'Nord',
+                        value: nordCompanies.join('\n')
+                    })
+                    fields.push({
+                        name: 'Sud',
+                        value: sudCompanies.join('\n')
+                    })
                     embed.addFields(fields)
                     interaction.reply({ embeds: [embed], ephemeral: true })
                     break;

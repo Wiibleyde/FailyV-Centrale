@@ -66,6 +66,27 @@ module.exports = {
             });
         });
     },
+    getInspectionById: (id) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql(). query({
+                sql: `SELECT * FROM inspection WHERE id = ?;`,
+                values: [
+                    id
+                ]
+            }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                    return;
+                }
+                if (result.length > 0) {
+                    resolve(result[0]);
+                } else {
+                    resolve("-1");
+                }
+            });
+        });
+    },
     // Voir si l'inspection d'une entrprise existe réélement
     testInspection: (company) => {
         return new Promise((resolve, reject) => {

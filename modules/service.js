@@ -82,7 +82,7 @@ module.exports = {
         const msg = await radioChan.messages.fetch(radioMessageId[0].id);
         if(msg != false) {
             //Reset de l'embed
-            const radioEmb = emb.generate(null, null, `**Note: Ctrl+R si vous ne voyez pas les radios actualisées !**\n\u200b`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
+            const radioEmb = emb.generate(null, null, `**Note: Ctrl+R à chaque prise de service !**\n\u200b`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
             radioEmb.addFields([
                 {
                     name: `<:IrisLSMS:1133116950357213355> Radio LSMS`,
@@ -134,7 +134,7 @@ module.exports = {
         freqEvent = freqEvent[0].radiofreq;
         if(msg) {
             //Reset de l'embed
-            const newRadioEmb = emb.generate(null, null, `**Note: Ctrl+R si vous ne voyez pas les radios actualisées !**\n\u200b`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
+            const newRadioEmb = emb.generate(null, null, `**Note: Ctrl+R à chaque prise de service !**\n\u200b`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
             newRadioEmb.addFields([
                 {
                     name: `<:IrisLSMS:1133116950357213355> Radio LSMS`,
@@ -360,7 +360,7 @@ async function testRegen(client) {
             ws.askRadioInfo('lsms-lspd-lscs');
             ws.askRadioInfo('lsms-bcms');
             //Base de l'embed
-            const radioEmb = emb.generate(null, null, `**Note: Ctrl+R si vous ne voyez pas les radios actualisées !**\n\u200b`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
+            const radioEmb = emb.generate(null, null, `**Note: Ctrl+R à chaque prise de service !**\n\u200b`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
             //Radios
             var freqLSMS = await sqlRadio.getRadio('lsms');
             freqLSMS = freqLSMS[0].radiofreq;

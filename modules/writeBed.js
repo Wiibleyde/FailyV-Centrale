@@ -100,7 +100,7 @@ module.exports = {
                 }
 
             }
-            image.write('src/img/generated/lit.' + image.getExtension());
+            await image.writeAsync('src/img/generated/lit.' + image.getExtension());
             resolve(await client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_BEDS_CHANNEL_ID).send({ files: [{ attachment: './src/img/generated/lit.png' }]}));
         });
 

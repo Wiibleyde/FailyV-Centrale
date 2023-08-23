@@ -67,11 +67,11 @@ module.exports = {
             ws.askRadioInfo('lsms-lspd-lscs');
             ws.askRadioInfo('lsms-bcms');
             const vacationRole = guild.roles.cache.get(process.env.IRIS_VACANCES_ROLE_ID);
-            lsmsRole.edit({
+            await lsmsRole.edit({
                 name: 'LSMS',
                 color: process.env.LSMS_COLORCODE,
             });
-            lsmsRole.edit({
+            await lsmsRole.edit({
                 position: vacationRole.rawPosition,
                 hoist: false,
                 mentionable: true
@@ -86,11 +86,11 @@ module.exports = {
             ws.askRadioInfo('lsms-lspd-lscs');
             ws.askRadioInfo('lsms-bcms');
             const offRole = guild.roles.cache.get(process.env.IRIS_OFF_ROLE_ID);
-            lsmsRole.edit({
+            await lsmsRole.edit({
                 name: '\u200b',
                 color: '#2B2D31',
             });
-            lsmsRole.edit({
+            await lsmsRole.edit({
                 position: offRole.rawPosition,
                 hoist: true,
                 mentionable: false

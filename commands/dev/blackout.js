@@ -66,13 +66,13 @@ module.exports = {
             await config.setBlackoutMode(0);
             ws.askRadioInfo('lsms-lspd-lscs');
             ws.askRadioInfo('lsms-bcms');
-            const vacationRole = guild.roles.cache.get(process.env.IRIS_VACANCES_ROLE_ID);
+            const leftRole = guild.roles.cache.get(process.env.IRIS_LEFT_ROLE_ID);
             await lsmsRole.edit({
                 name: 'LSMS',
                 color: process.env.LSMS_COLORCODE,
             });
             await lsmsRole.edit({
-                position: vacationRole.rawPosition,
+                position: leftRole.rawPosition,
                 hoist: false,
                 mentionable: true
             });
@@ -91,7 +91,7 @@ module.exports = {
                 color: '#2B2D31',
             });
             await lsmsRole.edit({
-                position: offRole.rawPosition,
+                position: offRole.rawPosition + 1,
                 hoist: true,
                 mentionable: false
             });

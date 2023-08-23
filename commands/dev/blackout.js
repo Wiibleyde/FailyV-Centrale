@@ -41,7 +41,7 @@ module.exports = {
         let bedsImg;
         let bedsChannel = process.env.IRIS_BLACKOUT_BEDS_CHANNEL_ID;
         if(isBlackout) { bedsChannel = process.env.IRIS_BEDS_CHANNEL_ID; }
-        await guild.channels.cache.get(bedsChannel).messages.fetch({ limit: 1 }).then(messages => {
+        await interaction.guild.channels.cache.get(bedsChannel).messages.fetch({ limit: 1 }).then(messages => {
             if(messages.first() != null) {
                 messages.first().attachments.map(bedImg => bedsImg = bedImg.attachment);
             }

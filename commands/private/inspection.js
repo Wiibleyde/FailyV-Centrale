@@ -6,6 +6,8 @@ const logger = require('../../modules/logger');
 const emb = require('../../modules/embeds');
 //Récup du sql pour les inspections
 const inspectionSQL = require('../../sql/inspection/inspection');
+// Récup du sql pour les entreprises
+const companySQL = require('../../sql/company/company');
 //Fonction pour attendre
 const wait = require('node:timers/promises').setTimeout;
 
@@ -26,12 +28,7 @@ module.exports = {
                 {
                     name: `Ajouter ou mettre à jour une inspection`,
                     value: `update`
-                },
-                {
-                    name: `Supprimer une inspection`,
-                    value: `delete`
                 }
-
             ).setRequired(true)
         ),
     async execute(interaction) {
@@ -67,79 +64,36 @@ module.exports = {
                     interaction.reply({embeds: [embed], ephemeral: true});
                     break;
                 case `update`:
-                    const updateInspeModal = new ModalBuilder().setCustomId('updateInspeModal').setTitle('Modification ou ajout d\'une inspection.');
-                    const company = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('company').setLabel('Nom de l\'entrprise').setStyle(TextInputStyle.Short).setPlaceholder('Ex: LSMS').setRequired(true));
-                    const doctors = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('doctors').setLabel('Nom des docteurs participants à l\'inspection').setStyle(TextInputStyle.Short).setPlaceholder('Ex: Dr. Prale | Ex: Dr. Prale, Dr. Wolf').setRequired(true));
-                    const date = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('date').setLabel('Date de l\'inspection').setStyle(TextInputStyle.Short).setPlaceholder('Ex: 09/11/2023').setRequired(false));
-                    updateInspeModal.addComponents(company, doctors, date);
-                    await interaction.showModal(updateInspeModal)
-                    break;
-                case `delete`:
-                    reply = null;
-                    let inspectionsDelete = await inspectionSQL.getInspections()
-                    let options = new StringSelectMenuBuilder().setCustomId('companyDeleteSelect').setPlaceholder('Choisissez les entrprises à retirer des inspections').setMinValues(1);
-                    let totalCompany = 0
-                    inspectionsDelete.map(d => {
-                        options.addOptions(new StringSelectMenuOptionBuilder().setLabel(`${d.company}`).setValue(d.company))
-                        totalCompany++
+                    let companies = await companySQL.getAllcompanyBySide(1)
+                    let options = new StringSelectMenuBuilder().setCustomId('inspectionCompanyUpdateSelect').setPlaceholder('Sélectionnez une entreprise').setMinValues(1).setMaxValues(1)
+                    let totalOptions = 0
+                    companies.forEach(company => {
+                        options.addOptions(new StringSelectMenuOptionBuilder().setLabel(`${company.name}`).setValue(`${company.id}`))
+                        totalOptions++
                     })
-                    options.setMaxValues(totalCompany)
-                    if(totalCompany != 0) {
-                        const allOptions = new ActionRowBuilder().addComponents(options);
+                    if (totalOptions != 0) {
+                        const allOptions = new ActionRowBuilder().addComponents(options)
                         try {
-                            //Confirmation à Discord du succès de l'opération
-                            reply = await interaction.reply({ components: [allOptions], ephemeral: true });
-                        } catch (err) {
-                            logger.error(err)
-                            //Confirmation à Discord du succès de l'opération
-                            await interaction.reply({ embeds: [errEmb], ephemeral: true });
+                            interaction.reply({content: `Sélectionnez une entreprise`, components: [allOptions], ephemeral: true})
+                        } catch (error) {
+                            logger.error(error)
+                            break;
                         }
                     } else {
-                        await interaction.reply({content: `Aucune entreprise n'a été trouvée`, ephemeral: true})
-                        // Supprime la réponse après 5s
-                        await wait(5000);
-                        await interaction.deleteReply();
+                        interaction.reply({content: `Aucune entreprise n'a été trouvée`, ephemeral: true})
                     }
+                    break;
                 default:
                     break;
             }
-        } else if(interaction.customId == 'companyDeleteSelect') {
-            //Confirmation à Discord du succès de l'opération
-            try {
-                await reply.edit({ embeds: [emb.generate(null, null, `<a:loading:1140500830672392283> Mise à jour en cours...`, `Gold`, process.env.LSMS_LOGO_V2, null, `Gestion des inspections`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], components: [], ephemeral: true });
-            } catch (err) {
-                await interaction.deferReply({ ephemeral: true });
-            }
-            let companies = '';
-            for (i=0;i<interaction.values.length;i++) {
-                const company = interaction.values[i]
-                await inspectionSQL.deleteInspection(company);
-                if(i < interaction.values.length) {
-                    companies = companies + company + ', ';
-                } else {
-                    companies = companies + company
-                }
-            }
-            try {
-                if(interaction.values.length > 1) {
-                    reply.edit({ embeds: [emb.generate(null, null, `Les entreprises ${companies} ont bien été supprimées de la liste des inspections !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des inspections`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true)], components: [], ephemeral: true });
-                } else {
-                    reply.edit({ embeds: [emb.generate(null, null, `L'entreprise ${companies} a bien été supprimée de la liste des inspections !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des inspections`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true)], components: [], ephemeral: true });
-                }
-                // Supprime la réponse après 5s
-                await wait(5000);
-                await reply.delete();
-            } catch (err) {
-                logger.error(err);
-                if(interaction.values.length > 1) {
-                    interaction.followUp({ embeds: [emb.generate(null, null, `Les entreprises ${companies} ont bien été supprimées de la liste des inspections !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des inspections`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true)], ephemeral: true });
-                } else {
-                    interaction.followUp({ embeds: [emb.generate(null, null, `L'entreprise ${companies} a bien été supprimée de la liste des inspections !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des inspections`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, true)], ephemeral: true });
-                }
-                // Supprime la réponse après 5s
-                await wait(5000);
-                await interaction.deleteReply();
-            }
+        } else if(interaction.customId == 'inspectionCompanyUpdateSelect') {
+            let inspection = await inspectionSQL.getInspectionById(interaction.values[0])
+            const updateInspectionModal = new ModalBuilder().setCustomId('updateInspectionModal').setTitle(`Mise à jour d'une inspection`)
+            const date = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('date').setLabel('Date de l\'inspection').setPlaceholder('JJ/MM/AAAA').setMinLength(1).setMaxLength(100).setStyle(TextInputStyle.Short))
+            const doctors = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('doctors').setLabel('Médecins').setPlaceholder('Médecins').setMinLength(1).setMaxLength(100).setStyle(TextInputStyle.Short))
+            const company = new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('company').setLabel('Entreprise').setPlaceholder('Entreprise').setMinLength(1).setMaxLength(100).setStyle(TextInputStyle.Short).setValue(interaction.values[0]))
+            updateInspectionModal.addComponents(date, doctors, company)
+            await interaction.showModal(updateInspectionModal)
         }
     }
 }

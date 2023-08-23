@@ -37,7 +37,7 @@ module.exports = {
         }
         var pingMsg = `<@&${serviceID}> changement de fréquence radio `;
         //Recréation de l'embed pour édition du message
-        const embed = emb.generate(null, null, `**Note: Ctrl+R si vous ne voyez pas les radios actualisées !**\n\u200b`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
+        const embed = emb.generate(null, null, `**Note: Ctrl+R à chaque prise de service !**\n\u200b`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
         //Récupération de la radio LSMS si non régénérée
         var freqLSMS = await sql.getRadio('lsms');
         freqLSMS = freqLSMS[0].radiofreq;

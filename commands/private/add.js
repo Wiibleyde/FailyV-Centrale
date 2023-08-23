@@ -71,7 +71,7 @@ module.exports = {
         //Récupération du channel 
         let IRIS_ANNOUNCEMENT_CHANNEL_ID = await sql.getChannel('IRIS_ANNOUNCEMENT_CHANNEL_ID');
         if (IRIS_ANNOUNCEMENT_CHANNEL_ID[0] == undefined) {
-            const embed = emb.generate(`Désolé :(`, null, `Aucun channel n'a été trouvé dans la base de donnée, veuillez contacter un de mes développeur (<@461880599594926080>, <@461807010086780930> ou <@368259650136571904>) pour corriger ce problème !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+            const embed = emb.generate(`Désolé :(`, null, `Aucun channel n'a été trouvé dans la base de donnée, merci de faire un </define:1140478983536918600> pour choisir un salon !) pour corriger ce problème !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
             return await interaction.followUp({ embeds: [embed], ephemeral: true });
         } else {
             IRIS_ANNOUNCEMENT_CHANNEL_ID = IRIS_ANNOUNCEMENT_CHANNEL_ID[0].id;

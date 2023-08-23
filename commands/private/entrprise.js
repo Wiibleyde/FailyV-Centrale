@@ -65,14 +65,28 @@ module.exports = {
                             sudCompanies.push(`**${companies[i].acronym}** - ${companies[i].name}`)
                         }
                     }
-                    fields.push({
-                        name: 'Nord',
-                        value: nordCompanies.join('\n')
-                    })
-                    fields.push({
-                        name: 'Sud',
-                        value: sudCompanies.join('\n')
-                    })
+                    if (nordCompanies.length <= 0) {
+                        nordCompanies.push({
+                            name: 'Aucune entreprise',
+                            value: 'Aucune entreprise n\'a été trouvée'
+                        })
+                    } else {
+                        fields.push({
+                            name: 'Nord',
+                            value: nordCompanies.join('\n')
+                        })
+                    }
+                    if (sudCompanies.length <= 0) {
+                        sudCompanies.push({
+                            name: 'Aucune entreprise',
+                            value: 'Aucune entreprise n\'a été trouvée'
+                        })
+                    } else {
+                        fields.push({
+                            name: 'Sud',
+                            value: sudCompanies.join('\n')
+                        })
+                    }
                     embed.addFields(fields)
                     interaction.reply({ embeds: [embed], ephemeral: true })
                     break;
@@ -177,7 +191,7 @@ module.exports = {
             embed.addFields(
                 {
                     name: 'Entreprise supprimée',
-                    value: `L'entreprise **${companyToDelete.name}** a été supprimée avec succès`
+                    value: `L'entreprise **${companyToDelete[0].name}** a été supprimée avec succès`
                 }
             )
             await interaction.reply({ embeds: [embed], ephemeral: true })

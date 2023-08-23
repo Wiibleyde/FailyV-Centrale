@@ -226,15 +226,22 @@ client.on(Events.GuildScheduledEventDelete, async (guildScheduledEvent) => {
 client.on(Events.ClientReady, async (client) => {
     discordClient = client;
     //Récupération du module WebSocket
-    const WebSocket = require("ws");
+    const WebSocket = require('./modules/commonRadioServer');
     //Connection au serveur de radio communes
-    let ws = new WebSocket(`ws://${process.env.RADIO_SERVER_URL}`);
+    const ws = WebSocket.getWS();
+    //Récupération du module de création de JsonWebToken
+    const jwt = require('jsonwebtoken');
     //Requêtes SQL de radios
     const sqlRadio = require('./sql/radio/radios');
 
     ws.on('error', (err) => { logger.error(err); });
 
+    WebSocket.askRadioInfo('lsms-lspd-lscs');
+    WebSocket.askRadioInfo('lsms-bcms');
+
     ws.onmessage = async (wsData) => {
+        let data;
+        try { data = jwt.verify(wsData.data, process.env.RADIO_SERVER_JWT_SECRET); } catch (err) { logger.error(err); }
         let radioMessageId;
         try {
             radioMessageId = await sqlRadio.getRadioMessageId();
@@ -244,9 +251,9 @@ client.on(Events.ClientReady, async (client) => {
         }
         if(radioMessageId == null) {
             await wait(10000);
-            updateRadios(client, ws, wsData, sqlRadio);
+            updateRadios(client, ws, data, sqlRadio);
         } else {
-            updateRadios(client, ws, wsData, sqlRadio);
+            updateRadios(client, ws, data, sqlRadio);
         }
     }
 });
@@ -283,9 +290,7 @@ process.on('SIGTERM', async () => {
     process.exit(0);
 });
 
-async function updateRadios(client, ws, wsData, sqlRadio) {
-    //Récupération du module de création de JsonWebToken
-    const jwt = require('jsonwebtoken');
+async function updateRadios(client, ws, data, sqlRadio) {
     //Module de mise à jour des radios
     const radio = require('./modules/changeRadio');
     //Récup du service de kick
@@ -293,16 +298,17 @@ async function updateRadios(client, ws, wsData, sqlRadio) {
     //Déployement des commandes
     const service = require('./modules/service');
 
+    const sqlBlackout = require('./sql/config/config');
+
     try {
-        const data = jwt.verify(wsData.data, process.env.RADIO_SERVER_JWT_SECRET);
         if (data.type === "refresh") {
             // On radio refresh
             if(data.radioName == 'lsms-lspd-lscs') {
-                radio.change(client, 'regenFDO', data.radioFreq, true);
+                radio.change(client, 'regenFDO', data.radioFreq, true, service.isBlackout());
                 await sqlRadio.setRadio('fdo', data.radioFreq);
             }
             if(data.radioName == 'lsms-bcms') {
-                radio.change(client, 'regenBCMS', data.radioFreq, true);
+                radio.change(client, 'regenBCMS', data.radioFreq, true, service.isBlackout());
                 await sqlRadio.setRadio('bcms', data.radioFreq);
             }
         } else if(data.type === "auto_refresh") {
@@ -385,16 +391,25 @@ async function updateRadios(client, ws, wsData, sqlRadio) {
                 logger.log(`Reset de 06h00 effectué !`);
             }
         } else if (data.type === "radio_info") {
+            while(service.isGen()) {
+                await wait(1);
+            }
+            const getBlackoutMode = await sqlBlackout.getBlackoutMode();
             //const wsModule = require('./modules/commonRadioServer');
             // On connection and specific radio asking
+            if(getBlackoutMode[0].state == '1') {
+                service.setBlackout(true);
+            } else {
+                service.setBlackout(false);
+            }
             if(data.radioName == 'lsms-lspd-lscs') {
-                radio.change(client, 'regenFDO', data.radioFreq, false);
+                radio.change(client, 'regenFDO', data.radioFreq, false, service.isBlackout());
                 await sqlRadio.setRadio('fdo', data.radioFreq);
             }
             if(data.radioName == 'lsms-bcms') {
                 const isBCMSDisplayed = await sqlRadio.isRadioDisplayed('bcms');
                 if(isBCMSDisplayed[0].displayed == '1') {
-                    radio.change(client, 'regenBCMS', data.radioFreq, false);
+                    radio.change(client, 'regenBCMS', data.radioFreq, false, service.isBlackout());
                 }
                 await sqlRadio.setRadio('bcms', data.radioFreq);
             }

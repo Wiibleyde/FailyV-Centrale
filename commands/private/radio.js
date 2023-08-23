@@ -11,6 +11,8 @@ const radio = require('../../modules/changeRadio');
 //Fonction pour attendre
 const wait = require('node:timers/promises').setTimeout;
 
+const service = require('../../modules/service');
+
 const serviceID = process.env.IRIS_SERVICE_ROLE_ID;
 
 module.exports = {
@@ -54,10 +56,10 @@ module.exports = {
         if(radioRegex.test(newRadio)) {
             if(parseInt(newRadio.substring(0,3)) >= 250 && parseInt(newRadio.substring(0,3)) < 400) {
                 let orga;
-                if(interaction.options.getString('organisme') == 'regenLSMS') { orga = 'LSMS'; radio.change(interaction.client, interaction.options.getString('organisme'), newRadio, true); }
+                if(interaction.options.getString('organisme') == 'regenLSMS') { orga = 'LSMS'; radio.change(interaction.client, interaction.options.getString('organisme'), newRadio, true, service.isBlackout()); }
                 if(interaction.options.getString('organisme') == 'regenFDO') { orga = 'FDO'; radioServer.askManualRefresh('lsms-lspd-lscs', newRadio); }
                 if(interaction.options.getString('organisme') == 'regenBCMS') { orga = 'BCMS'; radioServer.askManualRefresh('lsms-bcms', newRadio); }
-                if(interaction.options.getString('organisme') == 'regenEvent') { orga = 'évènementielle'; radio.change(interaction.client, interaction.options.getString('organisme'), newRadio, true); }
+                if(interaction.options.getString('organisme') == 'regenEvent') { orga = 'évènementielle'; radio.change(interaction.client, interaction.options.getString('organisme'), newRadio, true, service.isBlackout()); }
                 await interaction.reply({ embeds: [emb.generate(null, null, `La radio **${orga}** à bien été mise à jour sur **${newRadio}** !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, null, null, false)], ephemeral: true });
                 // Supprime la réponse après 5s
                 await wait(5000);

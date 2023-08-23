@@ -9,6 +9,8 @@ const radio = require('../../modules/changeRadio');
 //Récup du WS pour MAJ les radios
 const radioServer = require('../../modules/commonRadioServer');
 
+const service = require('../../modules/service');
+
 const serviceID = process.env.IRIS_SERVICE_ROLE_ID;
 
 module.exports = {
@@ -21,7 +23,7 @@ module.exports = {
                 const freq = freqUnit + '.' + freqDeci;
                 if(interaction.customId == 'regenLSMS') { logger.logRadio('LSMS', freq); }
                 if(interaction.customId == 'regenEvent') { logger.logRadio('Event', freq); }
-                radio.change(interaction.client, interaction.customId, freq, true);
+                radio.change(interaction.client, interaction.customId, freq, true, service.isBlackout());
             }
             if(interaction.customId == 'regenFDO') {
                 radioServer.askRefresh('lsms-lspd-lscs');

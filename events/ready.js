@@ -56,10 +56,13 @@ module.exports = {
         if(process.env.MODE == 'DEV') { client.user.setPresence({ activities: [{ name: `🤖 Dev mode!`, type: ActivityType.Competing }], status: 'idle' }); }
         else if(process.env.MODE == 'MAINTENANCE'){ client.user.setPresence({ activities: [{ name: `Maintenance en cours...`, type: ActivityType.Watching }], status: 'dnd' }); }
         else {
-            let state;
-            if(isDebugMode) { state = 'dnd'; } else { state = 'online'; }
+            let isBlackout = service.isBlackout();
+            let state = 'online';
+            if(isDebugMode) { state = 'dnd'; }
+            if(isBlackout) { state = 'invisible' }
             client.user.setPresence({ activities: [{ name: `🚑 ` + serviceCount + ` | 🎙️ ` + dispatchCount, type: ActivityType.Watching }], status: state });
             setInterval(async () => {
+                isBlackout = service.isBlackout();
                 const newDebugState = await debugSQL.getDebugState();
                 if(newDebugState[0].state == '1') {
                     isDebugMode = true;
@@ -67,6 +70,7 @@ module.exports = {
                     isDebugMode = false;
                 }
                 if(isDebugMode) { state = 'dnd'; } else { state = 'online'; }
+                if(isBlackout) { state = 'invisible' }
                 //Récupération des personnes en service
                 serviceCount = guild.roles.cache.get(process.env.IRIS_SERVICE_ROLE_ID).members.size;
                 dispatchCount = guild.roles.cache.get(process.env.IRIS_DISPATCH_ROLE_ID).members.size;

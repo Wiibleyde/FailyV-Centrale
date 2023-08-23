@@ -167,5 +167,36 @@ module.exports = {
                 resolve(result);
             });
         });
+    },
+    getBlackoutMode: () => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "SELECT * FROM `blackout` WHERE 1",
+                    timeout: 40000
+                }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                    return;
+                }
+                resolve(result);
+            });
+        });
+    },
+    setBlackoutMode: (state) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                    sql: "UPDATE `blackout` SET `state`=? WHERE 1",
+                    timeout: 40000,
+                    values: [state]
+                }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                    return;
+                }
+                resolve(result);
+            });
+        });
     }
 }

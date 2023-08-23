@@ -70,6 +70,8 @@ module.exports = {
             lsmsRole.edit({
                 name: 'LSMS',
                 color: process.env.LSMS_COLORCODE,
+            });
+            lsmsRole.edit({
                 position: vacationRole.rawPosition,
                 hoist: false,
                 mentionable: true
@@ -87,6 +89,8 @@ module.exports = {
             lsmsRole.edit({
                 name: '\u200b',
                 color: '#2B2D31',
+            });
+            lsmsRole.edit({
                 position: offRole.rawPosition,
                 hoist: true,
                 mentionable: false

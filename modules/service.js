@@ -243,6 +243,7 @@ async function testRegen(client) {
         });
         //Récupération du serveur Discord LSMS
         const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
+        const debugGuild = client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID);
         //Refresh de tous les messages du channel et check si les messages sont bien présents (service)
         let serviceChan;
         let messages;
@@ -355,6 +356,17 @@ async function testRegen(client) {
             try {
                 cfxStatusMessage = await cfxThread.messages.fetch(cfxStatusMessageId[0].id);
             } catch (err) {}
+        }
+        const managementChannelId = process.env.IRIS_MANAGEMENT_CHANNEL_ID;
+        let managementChannel;
+        let managementMessage = null;
+        if(managementChannelId != null) {
+            managementChannel = debugGuild.channels.cache.get(managementChannelId);
+            await managementChannel.messages.fetch().then(m => m.map((d) => {
+                if(d.author.id == process.env.IRIS_DISCORD_ID && d.components.length != 0) {
+                    managementMessage = d;
+                }
+            }));
         }
         //Si pas présent recréation du message
         if(!found) {
@@ -636,6 +648,17 @@ async function testRegen(client) {
         if(cfxStatusMessage == null && cfxThreadId != null) {
             setGen(true);
             await cfx.sendStatusEmbed(client, cfxThread);
+            setGen(false);
+        }
+        if(managementMessage == null) {
+            setGen(true);
+            //Boutons de gestion du service
+            const managementBtns = new ActionRowBuilder().addComponents(
+                new ButtonBuilder().setLabel('Debug').setCustomId('managementDebug').setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder().setLabel('Workforce').setCustomId('managementWorkforce').setStyle(ButtonStyle.Primary),
+                new ButtonBuilder().setLabel('BLACKOUT').setCustomId('managementBlackout').setStyle(ButtonStyle.Danger)
+            );
+            await managementChannel.send({ components: [managementBtns] });
             setGen(false);
         }
         for(let i=time;i>=0;i--) {

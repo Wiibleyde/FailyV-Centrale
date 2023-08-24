@@ -28,7 +28,7 @@ module.exports = {
                     return;
                 } else {
                     const debugRoleId = await debugSql.getDebugRole();
-                    if(cName != 'blackout' && cName != 'debug' && cName != 'say' && cName != 'reply' && !interaction.member.roles.cache.has(debugRoleId[0].roleID)) {
+                    if(cName != 'blackout' && cName != 'debug' && cName != 'say' && cName != 'reply' && cID != 'managementDebug' && cID != 'managementBlackout' && !interaction.member.roles.cache.has(debugRoleId[0].roleID)) {
                         return;
                     }
                 }
@@ -156,6 +156,7 @@ module.exports = {
             if(cID == 'followUpdateSecoursPatient') { const followUpdateSecoursPatient = require('./../buttons/suivi/followUpdateSecoursPatient'); followUpdateSecoursPatient.execute(interaction, errEmb); }
             if(cID == 'followRemoveSecoursPatient') { const followRemoveSecoursPatient = require('./../buttons/suivi/followRemoveSecoursPatient'); followRemoveSecoursPatient.execute(interaction, errEmb); }
             if(cID == 'cfxNotif') { const cfxNotif = require('./../buttons/cfx/cfxNotif'); cfxNotif.execute(interaction, errEmb); }
+            if(cID == 'managementDebug' || cID == 'managementWorkforce' || cID == 'managementBlackout') { const managementDebug = require('./../buttons/management/management'); managementDebug.execute(interaction, errEmb); }
         }
         //Lorsqu'il s'agit d'un Select Menu
         if(interaction.isChannelSelectMenu() || interaction.isStringSelectMenu()) {

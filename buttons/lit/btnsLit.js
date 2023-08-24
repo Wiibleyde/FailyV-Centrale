@@ -101,7 +101,6 @@ async function editBedsImage(letters, d, bcmsMsg, imgUrl, interaction) {
         // Supprime la réponse après 5s
         await wait(5000);
         await interaction.deleteReply();
-        service.setGen(false);
     } else if(letters.length < 11) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
@@ -112,7 +111,6 @@ async function editBedsImage(letters, d, bcmsMsg, imgUrl, interaction) {
         // Supprime la réponse après 5s
         await wait(5000);
         await interaction.deleteReply();
-        service.setGen(false);
     } else if(letters.length < 16) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
@@ -124,7 +122,6 @@ async function editBedsImage(letters, d, bcmsMsg, imgUrl, interaction) {
         // Supprime la réponse après 5s
         await wait(5000);
         await interaction.deleteReply();
-        service.setGen(false);
     } else if(letters.length < 21) {
         const btns1 = btnCreator.genBedsBtns(lettersArray1);
         const btns2 = btnCreator.genBedsBtns(lettersArray2);
@@ -137,6 +134,5 @@ async function editBedsImage(letters, d, bcmsMsg, imgUrl, interaction) {
         // Supprime la réponse après 5s
         await wait(5000);
         await interaction.deleteReply();
-        service.setGen(false);
     }
 }

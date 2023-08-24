@@ -9,6 +9,10 @@ const sql = require('../sql/statistics/stats');
 
 const wait = require('node:timers/promises').setTimeout;
 
+const service = require('../modules/service');
+
+const debugSql = require('../sql/debugMode/debugMode');
+
 module.exports = {
     //Dès qu'une interaction Discord avec le bot est executée
     name: 'interactionCreate',
@@ -17,6 +21,20 @@ module.exports = {
         const cID = interaction.customId;
         const cName = interaction.commandName;
         const serverIcon = `https://cdn.discordapp.com/icons/${interaction.guild.id}/${interaction.guild.icon}.webp`;
+
+        if(service.isBlackout()) {
+            if(cName != 'ping' && cName != 'report') {
+                if(interaction.user.id != '461880599594926080' && interaction.user.id != '461807010086780930' && interaction.user.id != '368259650136571904') {
+                    return;
+                } else {
+                    const debugRoleId = await debugSql.getDebugRole();
+                    if(cName != 'blackout' && cName != 'debug' && cName != 'say' && cName != 'reply' && cID != 'managementDebug' && cID != 'managementBlackout' && !interaction.member.roles.cache.has(debugRoleId[0].roleID)) {
+                        return;
+                    }
+                }
+            }
+        }
+
         // Check si l'utilisateur est chef de service ou plus
         if(interaction.member.roles.cache.has(process.env.IRIS_BCMS_ROLE)) {
             if(cName == 'lit' || cID == 'a' || cID == 'b' || cID == 'c' || cID == 'd' || cID == 'e' || cID == 'f' || cID == 'g' || cID == 'h' || cID == 'i' || cID == 'j' || cID == 'k' || cID == 'l' || cID == 'm' || cID == 'n' || cID == 'o' || cID == 'p' || cID == 'q' || cID == 'r') {
@@ -138,6 +156,7 @@ module.exports = {
             if(cID == 'followUpdateSecoursPatient') { const followUpdateSecoursPatient = require('./../buttons/suivi/followUpdateSecoursPatient'); followUpdateSecoursPatient.execute(interaction, errEmb); }
             if(cID == 'followRemoveSecoursPatient') { const followRemoveSecoursPatient = require('./../buttons/suivi/followRemoveSecoursPatient'); followRemoveSecoursPatient.execute(interaction, errEmb); }
             if(cID == 'cfxNotif') { const cfxNotif = require('./../buttons/cfx/cfxNotif'); cfxNotif.execute(interaction, errEmb); }
+            if(cID == 'managementDebug' || cID == 'managementWorkforce' || cID == 'managementBlackout') { const managementDebug = require('./../buttons/management/management'); managementDebug.execute(interaction, errEmb); }
         }
         //Lorsqu'il s'agit d'un Select Menu
         if(interaction.isChannelSelectMenu() || interaction.isStringSelectMenu()) {

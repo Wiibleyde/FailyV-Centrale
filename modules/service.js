@@ -24,6 +24,8 @@ const cfx = require('./cfxStatus');
 //Fonction pour attendre
 const wait = require('node:timers/promises').setTimeout;
 
+let blackout = false;
+
 //Boutons de regen radios
 const radioBtns = new ActionRowBuilder().addComponents(
     new ButtonBuilder().setLabel('LSMS').setCustomId('regenLSMS').setStyle(ButtonStyle.Danger).setEmoji('1133116950357213355').setDisabled(false),
@@ -72,6 +74,12 @@ module.exports = {
     isGen: () => {
         return gen;
     },
+    setBlackout: (state) => {
+        blackout = state;
+    },
+    isBlackout: () => {
+        return blackout;
+    },
     resetRadios: async (client, freqLSMS, freqFDO, interaction) => {
         //Récupération du serveur Discord LSMS
         const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
@@ -86,12 +94,12 @@ module.exports = {
             radioEmb.addFields([
                 {
                     name: `<:IrisLSMS:1133116950357213355> Radio LSMS`,
-                    value: freqLSMS,
+                    value: "`" + freqLSMS + "`",
                     inline: true
                 },
                 {
                     name: `<:IrisLSPDCS:1133117105848471552> Radio FDO`,
-                    value: freqFDO,
+                    value: "`" + freqFDO + "`",
                     inline: true
                 }
             ]);
@@ -138,12 +146,12 @@ module.exports = {
             newRadioEmb.addFields([
                 {
                     name: `<:IrisLSMS:1133116950357213355> Radio LSMS`,
-                    value: freqLSMS,
+                    value: "`" + freqLSMS + "`",
                     inline: true
                 },
                 {
                     name: `<:IrisLSPDCS:1133117105848471552> Radio FDO`,
-                    value: freqFDO,
+                    value: "`" + freqFDO + "`",
                     inline: true
                 }
             ]);
@@ -160,7 +168,7 @@ module.exports = {
                         },
                         {
                             name: `<:IrisEvent:1133705259596910624> Radio Event`,
-                            value: freqEvent,
+                            value: "`" + freqEvent + "`",
                             inline: true
                         }
                     ]);
@@ -179,7 +187,7 @@ module.exports = {
                         },
                         {
                             name: `<:IrisBCMS:1133150717125853297> Radio BCMS`,
-                            value: freqBCMS,
+                            value: "`" + freqBCMS + "`",
                             inline: true
                         }
                     ]);
@@ -226,13 +234,16 @@ async function testRegen(client) {
         IRIS_BCMS_BEDS_THREAD_ID = await awaitSQLGetChannel('bcms_beds_thread');
         //Récupération de l'image des lits
         let bedsImg;
-        client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(process.env.IRIS_BEDS_CHANNEL_ID).messages.fetch({ limit: 1 }).then(messages => {
+        let bedsChannel = process.env.IRIS_BEDS_CHANNEL_ID;
+        if(blackout) { bedsChannel = process.env.IRIS_BLACKOUT_BEDS_CHANNEL_ID; }
+        await client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(bedsChannel).messages.fetch({ limit: 1 }).then(messages => {
             if(messages.first() != null) {
                 messages.first().attachments.map(bedImg => bedsImg = bedImg.attachment);
             }
         });
         //Récupération du serveur Discord LSMS
         const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
+        const debugGuild = client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID);
         //Refresh de tous les messages du channel et check si les messages sont bien présents (service)
         let serviceChan;
         let messages;
@@ -346,6 +357,17 @@ async function testRegen(client) {
                 cfxStatusMessage = await cfxThread.messages.fetch(cfxStatusMessageId[0].id);
             } catch (err) {}
         }
+        const managementChannelId = process.env.IRIS_MANAGEMENT_CHANNEL_ID;
+        let managementChannel;
+        let managementMessage = null;
+        if(managementChannelId != null) {
+            managementChannel = debugGuild.channels.cache.get(managementChannelId);
+            await managementChannel.messages.fetch().then(m => m.map((d) => {
+                if(d.author.id == process.env.IRIS_DISCORD_ID && d.components.length != 0) {
+                    managementMessage = d;
+                }
+            }));
+        }
         //Si pas présent recréation du message
         if(!found) {
             setGen(true);
@@ -369,12 +391,12 @@ async function testRegen(client) {
             radioEmb.addFields([
                 {
                     name: `<:IrisLSMS:1133116950357213355> Radio LSMS`,
-                    value: freqLSMS,
+                    value: "`" + freqLSMS + "`",
                     inline: true
                 },
                 {
                     name: `<:IrisLSPDCS:1133117105848471552> Radio FDO`,
-                    value: freqFDO,
+                    value: "`" + freqFDO + "`",
                     inline: true
                 }
             ]);
@@ -396,7 +418,7 @@ async function testRegen(client) {
                     },
                     {
                         name: `<:IrisBCMS:1133150717125853297> Radio BCMS`,
-                        value: freqBCMS,
+                        value: "`" + freqBCMS + "`",
                         inline: true
                     },
                 ]);
@@ -409,7 +431,7 @@ async function testRegen(client) {
                     },
                     {
                         name: `<:IrisEvent:1133705259596910624> Radio Event`,
-                        value: freqEvent,
+                        value: "`" + freqEvent + "`",
                         inline: true
                     },
                 ]);
@@ -422,12 +444,12 @@ async function testRegen(client) {
                     },
                     {
                         name: `<:IrisBCMS:1133150717125853297> Radio BCMS`,
-                        value: freqBCMS,
+                        value: "`" + freqBCMS + "`",
                         inline: true
                     },
                     {
                         name: `<:IrisEvent:1133705259596910624> Radio Event`,
-                        value: freqEvent,
+                        value: "`" + freqEvent + "`",
                         inline: true
                     },
                     {
@@ -448,7 +470,7 @@ async function testRegen(client) {
                 radioFound = await getCentraleMessages(radioMessages, client);
             } else if(radioFound.embeds != null) {
                 if(radioFound.embeds[0].url != null) {
-                    if(radioFound.embeds[0].url.includes('/lit.png')) {
+                    if(radioFound.embeds[0].url.includes('/lit.png') || radioFound.embeds[0].url.includes('/lit_blackout.png')) {
                         await radioFound.delete();
                         const radioMsg = await radioChan.send({ embeds: [radioEmb], components: [radioBtns] });
                         await sqlRadio.clearRadioMessageId();
@@ -628,6 +650,17 @@ async function testRegen(client) {
             await cfx.sendStatusEmbed(client, cfxThread);
             setGen(false);
         }
+        if(managementMessage == null) {
+            setGen(true);
+            //Boutons de gestion du service
+            const managementBtns = new ActionRowBuilder().addComponents(
+                new ButtonBuilder().setLabel('Debug').setCustomId('managementDebug').setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder().setLabel('Workforce').setCustomId('managementWorkforce').setStyle(ButtonStyle.Primary),
+                new ButtonBuilder().setLabel('BLACKOUT').setCustomId('managementBlackout').setStyle(ButtonStyle.Danger)
+            );
+            await managementChannel.send({ components: [managementBtns] });
+            setGen(false);
+        }
         for(let i=time;i>=0;i--) {
             time = i;
         }
@@ -635,6 +668,12 @@ async function testRegen(client) {
 }
 
 async function sendBedsImage(letters, channel, bedsImg, bed) {
+    if(blackout) {
+        const bedsMsg = await channel.send({ content: bedsImg });
+        await sqlBeds.clearMessageId(bed);
+        await sqlBeds.setMessageId(bedsMsg.id, bed);
+        return;
+    }
     let lettersArray1 = [];
     let lettersArray2 = [];
     let lettersArray3 = [];
@@ -711,7 +750,7 @@ function getCentraleMessages(messages, client) {
                     }
                 }
             }
-            if(msg.content.includes('/lit.png')) {
+            if(msg.content.includes('/lit.png') || msg.content.includes('/lit_blackout.png')) {
                 found++;
                 existMsg = msg;
             }

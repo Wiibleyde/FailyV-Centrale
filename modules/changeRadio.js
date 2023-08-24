@@ -9,9 +9,14 @@ const logger = require('./logger');
 //Fonction pour attendre
 const wait = require('node:timers/promises').setTimeout;
 
+const crypt = require('crypto');
+
 const serviceID = process.env.IRIS_SERVICE_ROLE_ID;
 
 const chanSql = require('./../sql/config/config');
+
+const charAndInt = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const specialChar = `/^!@#$%&()_+-=[ ]{};':|,.<>?*"`;
 
 //Boutons de regen radios
 const radioBtns = new ActionRowBuilder().addComponents(
@@ -23,7 +28,7 @@ const radioBtns = new ActionRowBuilder().addComponents(
 );
 
 module.exports = {
-    change: async (client, radioToChange, radioFreq, needToPing) => {
+    change: async (client, radioToChange, radioFreq, needToPing, isBlackout) => {
         let IRIS_RADIO_CHANNEL_ID = await chanSql.getChannel('IRIS_RADIO_CHANNEL_ID');
         if (IRIS_RADIO_CHANNEL_ID[0] == undefined) {
             return;
@@ -41,16 +46,17 @@ module.exports = {
         //Changement de la fréquence si radio LSMS régen
         if(radioToChange == 'regenLSMS') { freqLSMS = radioFreq; await sql.setRadio('lsms', freqLSMS); pingMsg = pingMsg + '**LSMS** !'; }
         if(radioToChange == 'regenFDO') { freqFDO = radioFreq; await sql.setRadio('fdo', freqFDO); pingMsg = pingMsg + '**commune LSMS - FDO** !'; }
+        if(isBlackout) { freqLSMS = generateWeirdText(5); freqFDO = generateWeirdText(5); }
         //Ajout des radios
         embed.addFields([
             {
                 name: `<:IrisLSMS:1133116950357213355> Radio LSMS`,
-                value: freqLSMS,
+                value: "`" + freqLSMS + "`",
                 inline: true
             },
             {
                 name: `<:IrisLSPDCS:1133117105848471552> Radio FDO`,
-                value: freqFDO,
+                value: "`" + freqFDO + "`",
                 inline: true
             }
         ]);
@@ -75,6 +81,11 @@ module.exports = {
         if(radioToChange == 'regenBCMS') { freqBCMS = radioFreq; isBCMS = '1'; await sql.updatedRadioDisplay('bcms', '1'); await sql.setRadio('bcms', freqBCMS); freqToRegen = 'bcms'; pingMsg = pingMsg + '**commune LSMS - BCMS** !'; }
         //Changement de la fréquence si radio Event régen
         if(radioToChange == 'regenEvent') { freqEvent = radioFreq; isEvent = '1'; await sql.updatedRadioDisplay('event', '1'); await sql.setRadio('event', freqEvent); freqToRegen = 'event'; pingMsg = pingMsg + '**évènementielle** !'; }
+        if(isBlackout) {
+            freqBCMS = generateWeirdText(5); isBCMS = '1';
+            freqEvent = generateWeirdText(5); isEvent = '1';
+            pingMsg = generateWeirdText(pingMsg.length);
+        }
         if(isBCMS == '1' && isEvent == '0') {
             embed.addFields([
                 {
@@ -84,7 +95,7 @@ module.exports = {
                 },
                 {
                     name: titleBCMS,
-                    value: freqBCMS,
+                    value: "`" + freqBCMS + "`",
                     inline: true
                 },
             ]);
@@ -97,7 +108,7 @@ module.exports = {
                 },
                 {
                     name: titleEvent,
-                    value: freqEvent,
+                    value: "`" + freqEvent + "`",
                     inline: true
                 },
             ]);
@@ -110,12 +121,12 @@ module.exports = {
                 },
                 {
                     name: titleBCMS,
-                    value: freqBCMS,
+                    value: "`" + freqBCMS + "`",
                     inline: true
                 },
                 {
                     name: titleEvent,
-                    value: freqEvent,
+                    value: "`" + freqEvent + "`",
                     inline: true
                 },
                 {
@@ -133,12 +144,29 @@ module.exports = {
             await messageToEdit.edit({ embeds: [embed], components: [radioBtns] });
             if(needToPing) {
                 const pingMessage = await radioChan.send({ content: pingMsg });
-                // Supprime la réponse après 2min
-                await wait(120000);
-                await pingMessage.delete();
+                if(!isBlackout) {
+                    // Supprime la réponse après 2min
+                    await wait(120000);
+                    await pingMessage.delete();
+                }
             }
         } catch (error) {
             logger.error(error);
         }
     }
+}
+
+function generateWeirdText(length) {
+    let weirdText = '';
+    for(let i=0;i<length;i++) {
+        const whereToFetch = crypt.randomInt(0, 2);
+        if(whereToFetch == 0) {
+            const charInt = crypt.randomInt(0, charAndInt.length + 1);
+            weirdText = weirdText + charAndInt.charAt(charInt);
+        } else {
+            const charInt = crypt.randomInt(0, specialChar.length + 1);
+            weirdText = weirdText + specialChar.charAt(charInt);
+        }
+    }
+    return weirdText;
 }

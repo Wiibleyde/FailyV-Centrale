@@ -3,6 +3,8 @@ const logger = require('../../modules/logger');
 //Récup de la connection SQL
 const mysql = require('../../modules/sql');
 
+const service = require('../../modules/service');
+
 module.exports = {
     initAllTables: () => {
         return new Promise(async (resolve, reject) => {
@@ -31,14 +33,19 @@ module.exports = {
             await sendRequest("CREATE TABLE IF NOT EXISTS `features` (`id` INT(255) NOT NULL AUTO_INCREMENT PRIMARY KEY, `type` VARCHAR(255) NOT NULL, `name` VARCHAR(255) NOT NULL, `feature` TEXT NOT NULL, `state` BOOLEAN NOT NULL DEFAULT FALSE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
             await sendRequest("CREATE TABLE IF NOT EXISTS `patchnote` (`id` INT(255) NOT NULL AUTO_INCREMENT PRIMARY KEY, `name` VARCHAR(255) NOT NULL, `version` VARCHAR(255) NOT NULL, `features_id` TEXT NOT NULL, `state` BOOLEAN NOT NULL DEFAULT FALSE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
             await sendRequest("CREATE TABLE IF NOT EXISTS `company` (`id` INT(255) NOT NULL AUTO_INCREMENT PRIMARY KEY, `name` VARCHAR(255) NOT NULL, `acronym` VARCHAR(255) NOT NULL, `side` BOOLEAN NOT NULL DEFAULT FALSE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
-            await sendRequest("CREATE TABLE IF NOT EXISTS `command_statistic` (`id` INT(255) NOT NULL AUTO_INCREMENT PRIMARY KEY, `command_name` VARCHAR(255) NOT NULL, `used` TEXT NOT NULL)");
+            await sendRequest("CREATE TABLE IF NOT EXISTS `command_statistic` (`id` INT(255) NOT NULL AUTO_INCREMENT PRIMARY KEY, `command_name` VARCHAR(255) NOT NULL, `used` BIGINT UNSIGNED NOT NULL)");
             await sendRequest("CREATE TABLE IF NOT EXISTS `user_statistic` (`id` INT(255) NOT NULL AUTO_INCREMENT PRIMARY KEY, `user_id` VARCHAR(255) NOT NULL, `name` VARCHAR(255) NOT NULL)");
+            await sendRequest("CREATE TABLE IF NOT EXISTS `blackout` (`state` BOOLEAN NOT NULL DEFAULT FALSE PRIMARY KEY)");
             const getRadios = await sendRequest("SELECT * FROM `radio`");
             if(getRadios[0] == null) {
                 await sendRequest("INSERT INTO `radio` SET `radioid`='lsms', `displayed`='1'");
                 await sendRequest("INSERT INTO `radio` SET `radioid`='fdo', `displayed`='1'");
                 await sendRequest("INSERT INTO `radio` SET `radioid`='bcms'");
                 await sendRequest("INSERT INTO `radio` SET `radioid`='event'");
+            }
+            const getBlackoutMode = await sendRequest("SELECT * FROM `blackout`");
+            if(getBlackoutMode[0] == null) {
+                await sendRequest("INSERT INTO `blackout` SET `state`='0'");
             }
             resolve(logger.log(`Base de donnée initialisée !`));
         });

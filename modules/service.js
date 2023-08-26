@@ -28,10 +28,10 @@ let blackout = false;
 
 //Boutons de regen radios
 const radioBtns = new ActionRowBuilder().addComponents(
-    new ButtonBuilder().setLabel('LSMS').setCustomId('regenLSMS').setStyle(ButtonStyle.Danger).setEmoji('1133116950357213355').setDisabled(false),
-    new ButtonBuilder().setLabel('FDO').setCustomId('regenFDO').setStyle(ButtonStyle.Primary).setEmoji('1133117105848471552').setDisabled(false),
-    new ButtonBuilder().setLabel('BCMS').setCustomId('regenBCMS').setStyle(ButtonStyle.Success).setEmoji('1124910870695256106').setDisabled(false),
-    new ButtonBuilder().setLabel('Event').setCustomId('regenEvent').setStyle(ButtonStyle.Secondary).setEmoji('1121278617960329257').setDisabled(false),
+    new ButtonBuilder().setCustomId('regenLSMS').setStyle(ButtonStyle.Danger).setEmoji('1133116950357213355').setDisabled(false),
+    new ButtonBuilder().setCustomId('regenFDO').setStyle(ButtonStyle.Primary).setEmoji('1133117105848471552').setDisabled(false),
+    new ButtonBuilder().setCustomId('regenBCMS').setStyle(ButtonStyle.Success).setEmoji('1124910870695256106').setDisabled(false),
+    new ButtonBuilder().setCustomId('regenEvent').setStyle(ButtonStyle.Secondary).setEmoji('1121278617960329257').setDisabled(false),
     new ButtonBuilder().setCustomId('serviceRadioReset').setStyle(ButtonStyle.Secondary).setEmoji('➖')
 );
 //Boutons de gestion du service
@@ -43,7 +43,9 @@ const btns = new ActionRowBuilder().addComponents(
 );
 
 let gen = false;
-let time = 0;
+let client = null;
+let guild = null;
+let debugGuild = null;
 
 //Récupération des channels
 let IRIS_SERVICE_CHANNEL_ID;
@@ -60,13 +62,42 @@ function isGen() {
 }
 
 module.exports = {
-    start: (client) => {
-        //Boucle infinie pour auto-recréation en cas de supression
-        setInterval(() => {
-            if(time == 0) {
-                testRegen(client);
-            }
-        }, 1);
+    start: async (discordClient) => {
+        client = discordClient;
+        guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
+        debugGuild = client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID);
+        await regenService();
+        await regenCentrale();
+        await regenBCMS();
+        await regenAgenda();
+        await regenFollow();
+        await regenTemplate();
+        await regenCfx();
+        await regenManagement();
+    },
+    regenService: () => {
+        return regenService();
+    },
+    regenCentrale: () => {
+        return regenCentrale();
+    },
+    regenBCMS: () => {
+        return regenBCMS();
+    },
+    regenAgenda: () => {
+        return regenAgenda();
+    },
+    regenFollow: () => {
+        return regenFollow();
+    },
+    regenTemplate: () => {
+        return regenTemplate();
+    },
+    regenCfx: () => {
+        return regenCfx();
+    },
+    regenManagement: () => {
+        return regenManagement();
     },
     setGen: (state) => {
         gen = state;
@@ -225,446 +256,524 @@ module.exports = {
 
 }
 
-async function testRegen(client) {
-    if(isGen() == false) {
-        time = 2000;
-        IRIS_SERVICE_CHANNEL_ID = await awaitSQLGetChannel('IRIS_SERVICE_CHANNEL_ID');
-        IRIS_RADIO_CHANNEL_ID = await awaitSQLGetChannel('IRIS_RADIO_CHANNEL_ID');
-        IRIS_BCMS_CHANNEL_ID = await awaitSQLGetChannel('bcms_channel_id');
-        IRIS_BCMS_BEDS_THREAD_ID = await awaitSQLGetChannel('bcms_beds_thread');
-        //Récupération de l'image des lits
-        let bedsImg;
-        let bedsChannel = process.env.IRIS_BEDS_CHANNEL_ID;
-        if(blackout) { bedsChannel = process.env.IRIS_BLACKOUT_BEDS_CHANNEL_ID; }
-        await client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(bedsChannel).messages.fetch({ limit: 1 }).then(messages => {
-            if(messages.first() != null) {
-                messages.first().attachments.map(bedImg => bedsImg = bedImg.attachment);
+function regenService() {
+    return new Promise(async (resolve, reject) => {
+        if(!isGen()) {
+            if(client == null) { return reject(logger.warn('La variable "client" dans le module "service.js" n\'est pas init !')); }
+            if(guild == null) { return reject(logger.warn('La variable "guild" dans le module "service.js" n\'est pas init !')); }
+            if(debugGuild == null) { return reject(logger.warn('La variable "debugGuild" dans le module "service.js" n\'est pas init !')); }
+            IRIS_SERVICE_CHANNEL_ID = await awaitSQLGetChannel('IRIS_SERVICE_CHANNEL_ID');
+            let serviceChan;
+            let messages;
+            let found = true;
+            if(IRIS_SERVICE_CHANNEL_ID != null) {
+                serviceChan = guild.channels.cache.get(IRIS_SERVICE_CHANNEL_ID);
+                messages = await serviceChan.messages.fetch();
+                found = await getServiceMessages(messages, client);
             }
-        });
-        //Récupération du serveur Discord LSMS
-        const guild = client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID);
-        const debugGuild = client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID);
-        //Refresh de tous les messages du channel et check si les messages sont bien présents (service)
-        let serviceChan;
-        let messages;
-        let found = true;
-        if(IRIS_SERVICE_CHANNEL_ID != null) {
-            serviceChan = guild.channels.cache.get(IRIS_SERVICE_CHANNEL_ID);
-            messages = await serviceChan.messages.fetch();
-            found = await getServiceMessages(messages, client);
-        }
-        //Refresh de tous les messages du channel et check si les messages sont bien présents (radios)
-        let radioChan;
-        let radioMessages;
-        let radioFound = 2;
-        if(IRIS_RADIO_CHANNEL_ID != null) {
-            radioChan = guild.channels.cache.get(IRIS_RADIO_CHANNEL_ID);
-            radioMessages = await radioChan.messages.fetch();
-            radioFound = await getCentraleMessages(radioMessages, client);
-        }
-        //Refresh de tous les messages du channel et check si les messages sont bien présents (thread lit BCMS)
-        let bcmsBedsThread;
-        let bcmsBedsMessages;
-        let bcmsBedsFound = 1;
-        if(IRIS_BCMS_BEDS_THREAD_ID != null && IRIS_BCMS_CHANNEL_ID != null) {
-            try {
-                bcmsBedsThread = guild.channels.cache.get(IRIS_BCMS_BEDS_THREAD_ID);
-                bcmsBedsMessages = await bcmsBedsThread.messages.fetch();
-                bcmsBedsFound = await getCentraleMessages(bcmsBedsMessages, client);
-            } catch (err) {
-                logger.error(err);
+            if(!found) {
+                setGen(true);
+                //Base de l'embed
+                const serviceEmb = emb.generate(null, null, `**Pour indiquer une prise/fin de service - Appuyez sur 🔴 \n\nPour prendre/relâcher le dispatch - Appuyez sur 🔵 \n\nPour indiquer un mal de tête - Appuyez sur ⚫**`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
+                //Envois
+                await serviceChan.send({ embeds: [serviceEmb], components: [btns] });
+                setGen(false);
             }
-        } else if(IRIS_BCMS_BEDS_THREAD_ID == null && IRIS_BCMS_CHANNEL_ID != null) {
-            const bcmsChannel = guild.channels.cache.get(IRIS_BCMS_CHANNEL_ID);
-            bcmsBedsThread = await bcmsChannel.threads.create({
-                name: 'Salle de réveil LSMS',
-                autoArchiveDuration: 4320
+        }
+        resolve('Done!');
+    });
+}
+
+function regenCentrale() {
+    return new Promise(async (resolve, reject) => {
+        if(!isGen()) {
+            if(client == null) { return reject(logger.warn('La variable "client" dans le module "service.js" n\'est pas init !')); }
+            if(guild == null) { return reject(logger.warn('La variable "guild" dans le module "service.js" n\'est pas init !')); }
+            if(debugGuild == null) { return reject(logger.warn('La variable "debugGuild" dans le module "service.js" n\'est pas init !')); }
+            IRIS_RADIO_CHANNEL_ID = await awaitSQLGetChannel('IRIS_RADIO_CHANNEL_ID');
+            let bedsImg;
+            let bedsChannel = process.env.IRIS_BEDS_CHANNEL_ID;
+            if(blackout) { bedsChannel = process.env.IRIS_BLACKOUT_BEDS_CHANNEL_ID; }
+            await client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(bedsChannel).messages.fetch({ limit: 1 }).then(messages => {
+                if(messages.first() != null) {
+                    messages.first().attachments.map(bedImg => bedsImg = bedImg.attachment);
+                }
             });
-            await sql.setChannel('bcms_beds_thread', bcmsBedsThread.id);
-            bcmsBedsFound = 0;
-        }
-        //Refresh de tous les messages du channel et check si les messages sont bien présents (agenda)
-        const agendaChanId = await sqlAgenda.getAgendaChannelId();
-        let agendaChan;
-        let agendaMessages;
-        let agendaMessagesCount = 0;
-        if(agendaChanId[0] != null) {
-            agendaChan = guild.channels.cache.get(agendaChanId[0].id);
-            agendaMessages = await agendaChan.messages.fetch();
-            agendaMessagesCount = await getIrisChannelMessages(agendaMessages);
-        }
-        const agendaWaiting = await sqlAgenda.getAllWaiting();
-        //Refresh de tous les messages du channel et check si les messages sont bien présents (suivi)
-        const followChanId = await sqlFollow.getFollowChannelId();
-        const ppaThreadId = await sqlFollow.getFollowThreadPPAId();
-        const secoursThreadId = await sqlFollow.getFollowThreadSecoursId();
-        let followChan;
-        let followMessages;
-        let followMessagesCount = 11;
-        let ppaThread;
-        let ppaMessages;
-        let ppaMessagesCount = 11;
-        let secoursThread;
-        let secoursMessages;
-        let secoursMessagesCount = 13;
-        if(followChanId[0] != null) {
-            followChan = guild.channels.cache.get(followChanId[0].id);
-            followMessages = await followChan.messages.fetch();
-            followMessagesCount = await getIrisChannelMessages(followMessages);
-        }
-        if(followChanId[0] != null && ppaThreadId[0] != null) {
-            ppaThread = await followChan.threads.cache.get(ppaThreadId[0].id);
-            ppaMessages = await ppaThread.messages.fetch();
-            ppaMessagesCount = await getIrisChannelMessages(ppaMessages);
-        }
-        if(followChanId[0] != null && secoursThreadId[0] != null) {
-            secoursThread = await followChan.threads.cache.get(secoursThreadId[0].id);
-            secoursMessages = await secoursThread.messages.fetch();
-            secoursMessagesCount = await getIrisChannelMessages(secoursMessages);
-        }
-        const doctorCardData = await doctorCardSql.getDoctorCard();
-        const templateFormId = await awaitSQLGetChannel('template_form');
-        let doctorCardLength = 0;
-        let templateFormMessages = [];
-        let templateFormLength = 0;
-        let templateFormChannel;
-        if(templateFormId != null) {
-            templateFormChannel = guild.channels.cache.get(templateFormId);
-            for (const [_, value] of Object.entries(doctorCardData)) {
-                if (value.position === 0) {
-                    doctorCardLength++;
-                } else {
-                    doctorCardLength++;
-                }
-                for (const i in value.elements) {
-                    doctorCardLength++;
-                }
-            }
-            await templateFormChannel.messages.fetch().then(msg => msg.map(d => {
-                templateFormMessages.push(d);
-                if(d.author.id == client.user.id) {
-                    templateFormLength++;
-                }
-            }));
-        }
-        const cfxThreadId = await awaitSQLGetChannel('cfx_thread');
-        const cfxStatusMessageId = await sql.getMessage('cfx_status');
-        let cfxThread;
-        let cfxStatusMessage = null;
-        if(cfxThreadId != null) {
-            cfxThread = guild.channels.cache.get(cfxThreadId);
-            try {
-                cfxStatusMessage = await cfxThread.messages.fetch(cfxStatusMessageId[0].id);
-            } catch (err) {}
-        }
-        const managementChannelId = process.env.IRIS_MANAGEMENT_CHANNEL_ID;
-        let managementChannel;
-        let managementMessage = null;
-        if(managementChannelId != null) {
-            managementChannel = debugGuild.channels.cache.get(managementChannelId);
-            await managementChannel.messages.fetch().then(m => m.map((d) => {
-                if(d.author.id == process.env.IRIS_DISCORD_ID && d.components.length != 0) {
-                    managementMessage = d;
-                }
-            }));
-        }
-        //Si pas présent recréation du message
-        if(!found) {
-            setGen(true);
-            //Base de l'embed
-            const serviceEmb = emb.generate(null, null, `**Pour indiquer une prise/fin de service - Appuyez sur 🔴 \n\nPour prendre/relâcher le dispatch - Appuyez sur 🔵 \n\nPour indiquer un mal de tête - Appuyez sur ⚫**`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion du service`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
-            //Envois
-            await serviceChan.send({ embeds: [serviceEmb], components: [btns] });
-            setGen(false);
-        }
-        if(radioFound != 2) {
-            setGen(true);
-            ws.askRadioInfo('lsms-lspd-lscs');
-            ws.askRadioInfo('lsms-bcms');
-            //Base de l'embed
-            const radioEmb = emb.generate(null, null, `**Note: Ctrl+R à chaque prise de service !**\n\u200b`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
-            //Radios
-            var freqLSMS = await sqlRadio.getRadio('lsms');
-            freqLSMS = freqLSMS[0].radiofreq;
-            var freqFDO = await sqlRadio.getRadio('fdo');
-            freqFDO = freqFDO[0].radiofreq;
-            radioEmb.addFields([
-                {
-                    name: `<:IrisLSMS:1133116950357213355> Radio LSMS`,
-                    value: "`" + freqLSMS + "`",
-                    inline: true
-                },
-                {
-                    name: `<:IrisLSPDCS:1133117105848471552> Radio FDO`,
-                    value: "`" + freqFDO + "`",
-                    inline: true
-                }
-            ]);
-            //Check de si les radios optionnelles doivent être affichées
-            var genBCMS = await sqlRadio.isRadioDisplayed('bcms');
-            genBCMS = genBCMS[0].displayed;
-            var genEvent = await sqlRadio.isRadioDisplayed('event');
-            genEvent = genEvent[0].displayed;
-            var freqBCMS = await sqlRadio.getRadio('bcms');
-            freqBCMS = freqBCMS[0].radiofreq;
-            var freqEvent = await sqlRadio.getRadio('event');
-            freqEvent = freqEvent[0].radiofreq;
-            if(genBCMS == '1' && genEvent == '0') {
-                radioEmb.addFields([
-                    {
-                        name: `\u200b`,
-                        value: `\u200b`,
-                        inline: true
-                    },
-                    {
-                        name: `<:IrisBCMS:1133150717125853297> Radio BCMS`,
-                        value: "`" + freqBCMS + "`",
-                        inline: true
-                    },
-                ]);
-            } else if(genBCMS == '0' && genEvent == '1') {
-                radioEmb.addFields([
-                    {
-                        name: `\u200b`,
-                        value: `\u200b`,
-                        inline: true
-                    },
-                    {
-                        name: `<:IrisEvent:1133705259596910624> Radio Event`,
-                        value: "`" + freqEvent + "`",
-                        inline: true
-                    },
-                ]);
-            } else if(genBCMS == '1' && genEvent == '1') {
-                radioEmb.addFields([
-                    {
-                        name: `\u200b`,
-                        value: `\u200b`,
-                        inline: true
-                    },
-                    {
-                        name: `<:IrisBCMS:1133150717125853297> Radio BCMS`,
-                        value: "`" + freqBCMS + "`",
-                        inline: true
-                    },
-                    {
-                        name: `<:IrisEvent:1133705259596910624> Radio Event`,
-                        value: "`" + freqEvent + "`",
-                        inline: true
-                    },
-                    {
-                        name: `\u200b`,
-                        value: `\u200b`,
-                        inline: true
-                    }
-                ]);
-            }
-            let letters = await sqlBeds.getLetters();
-            //Envois
-            if(radioFound == 0) {
-                const radioMsg = await radioChan.send({ embeds: [radioEmb], components: [radioBtns] });
-                await sqlRadio.clearRadioMessageId();
-                await sqlRadio.setRadioMessageId(radioMsg.id);
-                await sendBedsImage(letters, radioChan, bedsImg, 'lit');
+            let radioChan;
+            let radioMessages;
+            let radioFound = 2;
+            if(IRIS_RADIO_CHANNEL_ID != null) {
+                radioChan = guild.channels.cache.get(IRIS_RADIO_CHANNEL_ID);
                 radioMessages = await radioChan.messages.fetch();
                 radioFound = await getCentraleMessages(radioMessages, client);
-            } else if(radioFound.embeds != null) {
-                if(radioFound.embeds[0].url != null) {
-                    if(radioFound.embeds[0].url.includes('/lit.png') || radioFound.embeds[0].url.includes('/lit_blackout.png')) {
-                        await radioFound.delete();
-                        const radioMsg = await radioChan.send({ embeds: [radioEmb], components: [radioBtns] });
-                        await sqlRadio.clearRadioMessageId();
-                        await sqlRadio.setRadioMessageId(radioMsg.id);
-                        await sendBedsImage(letters, radioChan, bedsImg, 'lit');
-                        radioMessages = await radioChan.messages.fetch();
-                        radioFound = await getCentraleMessages(radioMessages, client);
+            }
+            if(radioFound != 2) {
+                setGen(true);
+                ws.askRadioInfo('lsms-lspd-lscs');
+                ws.askRadioInfo('lsms-bcms');
+                //Base de l'embed
+                const radioEmb = emb.generate(null, null, `**Note: Ctrl+R à chaque prise de service !**\n\u200b`, process.env.LSMS_COLORCODE, process.env.LSMS_LOGO_V2, null, `Gestion des radios`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID).icon}.webp`, null, null, null, false);
+                //Radios
+                var freqLSMS = await sqlRadio.getRadio('lsms');
+                freqLSMS = freqLSMS[0].radiofreq;
+                var freqFDO = await sqlRadio.getRadio('fdo');
+                freqFDO = freqFDO[0].radiofreq;
+                radioEmb.addFields([
+                    {
+                        name: `<:IrisLSMS:1133116950357213355> Radio LSMS`,
+                        value: "`" + freqLSMS + "`",
+                        inline: true
+                    },
+                    {
+                        name: `<:IrisLSPDCS:1133117105848471552> Radio FDO`,
+                        value: "`" + freqFDO + "`",
+                        inline: true
                     }
-                } else if(radioFound.embeds[0].author != null) {
-                    if(radioFound.embeds[0].author.name == 'Gestion des radios') {
-                        await sendBedsImage(letters, radioChan, bedsImg, 'lit');
-                        radioMessages = await radioChan.messages.fetch();
-                        radioFound = await getCentraleMessages(radioMessages, client);
+                ]);
+                //Check de si les radios optionnelles doivent être affichées
+                var genBCMS = await sqlRadio.isRadioDisplayed('bcms');
+                genBCMS = genBCMS[0].displayed;
+                var genEvent = await sqlRadio.isRadioDisplayed('event');
+                genEvent = genEvent[0].displayed;
+                var freqBCMS = await sqlRadio.getRadio('bcms');
+                freqBCMS = freqBCMS[0].radiofreq;
+                var freqEvent = await sqlRadio.getRadio('event');
+                freqEvent = freqEvent[0].radiofreq;
+                if(genBCMS == '1' && genEvent == '0') {
+                    radioEmb.addFields([
+                        {
+                            name: `\u200b`,
+                            value: `\u200b`,
+                            inline: true
+                        },
+                        {
+                            name: `<:IrisBCMS:1133150717125853297> Radio BCMS`,
+                            value: "`" + freqBCMS + "`",
+                            inline: true
+                        },
+                    ]);
+                } else if(genBCMS == '0' && genEvent == '1') {
+                    radioEmb.addFields([
+                        {
+                            name: `\u200b`,
+                            value: `\u200b`,
+                            inline: true
+                        },
+                        {
+                            name: `<:IrisEvent:1133705259596910624> Radio Event`,
+                            value: "`" + freqEvent + "`",
+                            inline: true
+                        },
+                    ]);
+                } else if(genBCMS == '1' && genEvent == '1') {
+                    radioEmb.addFields([
+                        {
+                            name: `\u200b`,
+                            value: `\u200b`,
+                            inline: true
+                        },
+                        {
+                            name: `<:IrisBCMS:1133150717125853297> Radio BCMS`,
+                            value: "`" + freqBCMS + "`",
+                            inline: true
+                        },
+                        {
+                            name: `<:IrisEvent:1133705259596910624> Radio Event`,
+                            value: "`" + freqEvent + "`",
+                            inline: true
+                        },
+                        {
+                            name: `\u200b`,
+                            value: `\u200b`,
+                            inline: true
+                        }
+                    ]);
+                }
+                let letters = await sqlBeds.getLetters();
+                //Envois
+                if(radioFound == 0) {
+                    const radioMsg = await radioChan.send({ embeds: [radioEmb], components: [radioBtns] });
+                    await sqlRadio.clearRadioMessageId();
+                    await sqlRadio.setRadioMessageId(radioMsg.id);
+                    await sendBedsImage(letters, radioChan, bedsImg, 'lit');
+                    radioMessages = await radioChan.messages.fetch();
+                    radioFound = await getCentraleMessages(radioMessages, client);
+                } else if(radioFound.embeds != null) {
+                    if(radioFound.embeds[0].url != null) {
+                        if(radioFound.embeds[0].url.includes('/lit.png') || radioFound.embeds[0].url.includes('/lit_blackout.png')) {
+                            await radioFound.delete();
+                            const radioMsg = await radioChan.send({ embeds: [radioEmb], components: [radioBtns] });
+                            await sqlRadio.clearRadioMessageId();
+                            await sqlRadio.setRadioMessageId(radioMsg.id);
+                            await sendBedsImage(letters, radioChan, bedsImg, 'lit');
+                            radioMessages = await radioChan.messages.fetch();
+                            radioFound = await getCentraleMessages(radioMessages, client);
+                        }
+                    } else if(radioFound.embeds[0].author != null) {
+                        if(radioFound.embeds[0].author.name == 'Gestion des radios') {
+                            await sendBedsImage(letters, radioChan, bedsImg, 'lit');
+                            radioMessages = await radioChan.messages.fetch();
+                            radioFound = await getCentraleMessages(radioMessages, client);
+                        }
                     }
                 }
+                setGen(false);
             }
-            setGen(false);
         }
-        if(bcmsBedsFound == 0) {
-            setGen(true);
-            let letters = await sqlBeds.getLetters();
-            //Envois
-            await sendBedsImage(letters, bcmsBedsThread, bedsImg, 'lit_bcms');
-            bcmsBedsMessages = await bcmsBedsThread.messages.fetch();
-            bcmsBedsFound = await getCentraleMessages(bcmsBedsMessages, client);
-            setGen(false);
-        }
-        if(agendaMessagesCount != agendaWaiting.length) {
-            setGen(true);
-            agendaMessages.forEach(async msg => {
-                if(msg.author.id == process.env.IRIS_DISCORD_ID) {
-                    await msg.delete();
+        resolve('Done!');
+    });
+}
+
+function regenBCMS() {
+    return new Promise(async (resolve, reject) => {
+        if(!isGen()) {
+            if(client == null) { return reject(logger.warn('La variable "client" dans le module "service.js" n\'est pas init !')); }
+            if(guild == null) { return reject(logger.warn('La variable "guild" dans le module "service.js" n\'est pas init !')); }
+            if(debugGuild == null) { return reject(logger.warn('La variable "debugGuild" dans le module "service.js" n\'est pas init !')); }
+            IRIS_BCMS_CHANNEL_ID = await awaitSQLGetChannel('bcms_channel_id');
+            IRIS_BCMS_BEDS_THREAD_ID = await awaitSQLGetChannel('bcms_beds_thread');
+            let bedsImg;
+            let bedsChannel = process.env.IRIS_BEDS_CHANNEL_ID;
+            if(blackout) { bedsChannel = process.env.IRIS_BLACKOUT_BEDS_CHANNEL_ID; }
+            await client.guilds.cache.get(process.env.IRIS_DEBUG_GUILD_ID).channels.cache.get(bedsChannel).messages.fetch({ limit: 1 }).then(messages => {
+                if(messages.first() != null) {
+                    messages.first().attachments.map(bedImg => bedsImg = bedImg.attachment);
                 }
             });
-            for(i=0;i<agendaWaiting.length;i++) {
-                const buttons = new ActionRowBuilder().addComponents(
-                    new ButtonBuilder().setLabel(`Définir la date`).setCustomId(`agEventDefine`).setStyle(ButtonStyle.Success).setEmoji(`📆`).setDisabled(false),
-                    new ButtonBuilder().setLabel(`Responsables contactés`).setCustomId(`agRespContact`).setStyle(ButtonStyle.Primary).setEmoji(`📱`).setDisabled(false),
-                    new ButtonBuilder().setLabel(`Supprimer`).setCustomId(`agDelete`).setStyle(ButtonStyle.Danger).setEmoji(`896393106633687040`).setDisabled(false)
-                );
-
-                const date = new Date(agendaWaiting[i].date);
-                const year = date.getFullYear();
-                let month = date.getMonth() + 1;
-                if (month < 10) month = '0' + month;
-                let day = date.getDate();
-                if (day < 10) day = '0' + day;
-                const formatedDate = day + '/' + month + '/' + year;
-
-                let service;
-                if(agendaWaiting[i].by == 'LSMS') {
-                    service = '<:IrisLSMS:1133116950357213355> LSMS';
-                } else {
-                    service = '<:IrisBCMS:1133150717125853297> BCMS';
+            let bcmsBedsThread;
+            let bcmsBedsMessages;
+            let bcmsBedsFound = 1;
+            if(IRIS_BCMS_BEDS_THREAD_ID != null && IRIS_BCMS_CHANNEL_ID != null) {
+                try {
+                    bcmsBedsThread = guild.channels.cache.get(IRIS_BCMS_BEDS_THREAD_ID);
+                    bcmsBedsMessages = await bcmsBedsThread.messages.fetch();
+                    bcmsBedsFound = await getCentraleMessages(bcmsBedsMessages, client);
+                } catch (err) {
+                    logger.error(err);
                 }
-                
-                let confi;
-                if(agendaWaiting[i].confidentiality == '1') {
-                    confi = `Décès publique`;
-                } else {
-                    confi = `Décès privé`;
-                }
-                
-                let don;
-                if(agendaWaiting[i].donor == '1') {
-                    don = 'Oui';
-                } else {
-                    don = 'Non';
-                }
+            } else if(IRIS_BCMS_BEDS_THREAD_ID == null && IRIS_BCMS_CHANNEL_ID != null) {
+                const bcmsChannel = guild.channels.cache.get(IRIS_BCMS_CHANNEL_ID);
+                bcmsBedsThread = await bcmsChannel.threads.create({
+                    name: 'Salle de réveil LSMS',
+                    autoArchiveDuration: 4320
+                });
+                await sql.setChannel('bcms_beds_thread', bcmsBedsThread.id);
+                bcmsBedsFound = 0;
+            }
+            
+            if(bcmsBedsFound == 0) {
+                setGen(true);
+                let letters = await sqlBeds.getLetters();
+                //Envois
+                await sendBedsImage(letters, bcmsBedsThread, bedsImg, 'lit_bcms');
+                bcmsBedsMessages = await bcmsBedsThread.messages.fetch();
+                bcmsBedsFound = await getCentraleMessages(bcmsBedsMessages, client);
+                setGen(false);
+            }
+        }
+        resolve('Done!');
+    });
+}
 
-                const agendaEmbed = emb.generate(null, null, null, `#000001`, process.env.LSMS_DELTA_LOGO, null, `Gestion décès`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, agendaWaiting[i].writter, null, false);
-                agendaEmbed.addFields(
-                    {
-                        name: `**Identité**`,
-                        value: agendaWaiting[i].name,
-                        inline: true
-                    },
-                    {
-                        name: `**Date du décès**`,
-                        value: formatedDate,
-                        inline: true
-                    },
-                    {
-                        name: `**Traité par**`,
-                        value: service,
-                        inline: true
-                    },
-                    {
-                        name: `**Personnes responsables**`,
-                        value: agendaWaiting[i].responsibles,
-                        inline: false
-                    },
-                    {
-                        name: `**Personnes autorisées**`,
-                        value: agendaWaiting[i].allowed,
-                        inline: false
-                    },
-                    {
-                        name: `**Confidentialité**`,
-                        value: confi,
-                        inline: true
-                    },
-                    {
-                        name: `**Donneur·se**`,
-                        value: don,
-                        inline: true
-                    },
-                    {
-                        name: `**Traitement**`,
-                        value: agendaWaiting[i].management,
-                        inline: false
-                    },
-                    {
-                        name: `**Cause du décès**`,
-                        value: agendaWaiting[i].cause,
-                        inline: false
-                    },
-                );
-                if(agendaWaiting[i].other != null) {
+function regenAgenda() {
+    return new Promise(async (resolve, reject) => {
+        if(!isGen()) {
+            if(client == null) { return reject(logger.warn('La variable "client" dans le module "service.js" n\'est pas init !')); }
+            if(guild == null) { return reject(logger.warn('La variable "guild" dans le module "service.js" n\'est pas init !')); }
+            if(debugGuild == null) { return reject(logger.warn('La variable "debugGuild" dans le module "service.js" n\'est pas init !')); }
+            const agendaChanId = await sqlAgenda.getAgendaChannelId();
+            let agendaChan;
+            let agendaMessages;
+            let agendaMessagesCount = 0;
+            if(agendaChanId[0] != null) {
+                agendaChan = guild.channels.cache.get(agendaChanId[0].id);
+                agendaMessages = await agendaChan.messages.fetch();
+                agendaMessagesCount = await getIrisChannelMessages(agendaMessages);
+            }
+            const agendaWaiting = await sqlAgenda.getAllWaiting();
+            if(agendaMessagesCount != agendaWaiting.length) {
+                setGen(true);
+                agendaMessages.forEach(async msg => {
+                    if(msg.author.id == process.env.IRIS_DISCORD_ID) {
+                        await msg.delete();
+                    }
+                });
+                for(i=0;i<agendaWaiting.length;i++) {
+                    const buttons = new ActionRowBuilder().addComponents(
+                        new ButtonBuilder().setLabel(`Définir la date`).setCustomId(`agEventDefine`).setStyle(ButtonStyle.Success).setEmoji(`📆`).setDisabled(false),
+                        new ButtonBuilder().setLabel(`Responsables contactés`).setCustomId(`agRespContact`).setStyle(ButtonStyle.Primary).setEmoji(`📱`).setDisabled(false),
+                        new ButtonBuilder().setLabel(`Supprimer`).setCustomId(`agDelete`).setStyle(ButtonStyle.Danger).setEmoji(`896393106633687040`).setDisabled(false)
+                    );
+        
+                    const date = new Date(agendaWaiting[i].date);
+                    const year = date.getFullYear();
+                    let month = date.getMonth() + 1;
+                    if (month < 10) month = '0' + month;
+                    let day = date.getDate();
+                    if (day < 10) day = '0' + day;
+                    const formatedDate = day + '/' + month + '/' + year;
+        
+                    let service;
+                    if(agendaWaiting[i].by == 'LSMS') {
+                        service = '<:IrisLSMS:1133116950357213355> LSMS';
+                    } else {
+                        service = '<:IrisBCMS:1133150717125853297> BCMS';
+                    }
+                    
+                    let confi;
+                    if(agendaWaiting[i].confidentiality == '1') {
+                        confi = `Décès publique`;
+                    } else {
+                        confi = `Décès privé`;
+                    }
+                    
+                    let don;
+                    if(agendaWaiting[i].donor == '1') {
+                        don = 'Oui';
+                    } else {
+                        don = 'Non';
+                    }
+        
+                    const agendaEmbed = emb.generate(null, null, null, `#000001`, process.env.LSMS_DELTA_LOGO, null, `Gestion décès`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${guild.icon}.webp`, null, agendaWaiting[i].writter, null, false);
                     agendaEmbed.addFields(
                         {
-                            name: `**Infos complémentaires**`,
-                            value: agendaWaiting[i].other,
-                            inline: false
-                        }
-                    );
-                }
-                if(agendaWaiting[i].contact != null) {
-                    agendaEmbed.addFields(
+                            name: `**Identité**`,
+                            value: agendaWaiting[i].name,
+                            inline: true
+                        },
                         {
-                            name: `**Responsables contactés**`,
-                            value: agendaWaiting[i].contact,
+                            name: `**Date du décès**`,
+                            value: formatedDate,
+                            inline: true
+                        },
+                        {
+                            name: `**Traité par**`,
+                            value: service,
+                            inline: true
+                        },
+                        {
+                            name: `**Personnes responsables**`,
+                            value: agendaWaiting[i].responsibles,
                             inline: false
-                        }
+                        },
+                        {
+                            name: `**Personnes autorisées**`,
+                            value: agendaWaiting[i].allowed,
+                            inline: false
+                        },
+                        {
+                            name: `**Confidentialité**`,
+                            value: confi,
+                            inline: true
+                        },
+                        {
+                            name: `**Donneur·se**`,
+                            value: don,
+                            inline: true
+                        },
+                        {
+                            name: `**Traitement**`,
+                            value: agendaWaiting[i].management,
+                            inline: false
+                        },
+                        {
+                            name: `**Cause du décès**`,
+                            value: agendaWaiting[i].cause,
+                            inline: false
+                        },
                     );
+                    if(agendaWaiting[i].other != null) {
+                        agendaEmbed.addFields(
+                            {
+                                name: `**Infos complémentaires**`,
+                                value: agendaWaiting[i].other,
+                                inline: false
+                            }
+                        );
+                    }
+                    if(agendaWaiting[i].contact != null) {
+                        agendaEmbed.addFields(
+                            {
+                                name: `**Responsables contactés**`,
+                                value: agendaWaiting[i].contact,
+                                inline: false
+                            }
+                        );
+                    }
+                    const newAgendaMsg = await agendaChan.send({ embeds: [agendaEmbed], components: [buttons] });
+                    await sqlAgenda.updateMessageId(agendaWaiting[i].agendaID, newAgendaMsg.id);
                 }
-                const newAgendaMsg = await agendaChan.send({ embeds: [agendaEmbed], components: [buttons] });
-                await sqlAgenda.updateMessageId(agendaWaiting[i].agendaID, newAgendaMsg.id);
+                setGen(false);
             }
-            setGen(false);
         }
-        if(followMessagesCount + ppaMessagesCount + secoursMessagesCount != 35) {
-            setGen(true);
-            const ended = await follow.regen(client);
-            setGen(ended);
-        }
-        if(templateFormLength != doctorCardLength) {
-            setGen(true);
-            for(let i=0;i<templateFormMessages.length;i++) {
-                await templateFormMessages[i].delete();
+        resolve('Done!');
+    });
+}
+
+function regenFollow() {
+    return new Promise(async (resolve, reject) => {
+        if(!isGen()) {
+            if(client == null) { return reject(logger.warn('La variable "client" dans le module "service.js" n\'est pas init !')); }
+            if(guild == null) { return reject(logger.warn('La variable "guild" dans le module "service.js" n\'est pas init !')); }
+            if(debugGuild == null) { return reject(logger.warn('La variable "debugGuild" dans le module "service.js" n\'est pas init !')); }
+            const followChanId = await sqlFollow.getFollowChannelId();
+            const ppaThreadId = await sqlFollow.getFollowThreadPPAId();
+            const secoursThreadId = await sqlFollow.getFollowThreadSecoursId();
+            let followChan;
+            let followMessages;
+            let followMessagesCount = 11;
+            let ppaThread;
+            let ppaMessages;
+            let ppaMessagesCount = 11;
+            let secoursThread;
+            let secoursMessages;
+            let secoursMessagesCount = 13;
+            if(followChanId[0] != null) {
+                followChan = guild.channels.cache.get(followChanId[0].id);
+                followMessages = await followChan.messages.fetch();
+                followMessagesCount = await getIrisChannelMessages(followMessages);
             }
-            let message;
-            for (const [_, value] of Object.entries(doctorCardData)) {
-                const embed = emb.generate(value.name, null, null, value.color, null, null, null, null, null, null, null, false);
-                if (value.position === 0) {
-                    message = await templateFormChannel.send({ embeds: [embed] });
-                } else {
-                    await templateFormChannel.send({ embeds: [embed] });
-                }
-                for (const i in value.elements) {
-                    await templateFormChannel.send(`- ${value.elements[i]}`);
-                }
+            if(followChanId[0] != null && ppaThreadId[0] != null) {
+                ppaThread = await followChan.threads.cache.get(ppaThreadId[0].id);
+                ppaMessages = await ppaThread.messages.fetch();
+                ppaMessagesCount = await getIrisChannelMessages(ppaMessages);
             }
-            await message.pin();
-            templateFormChannel.messages.fetch({ limit: 1 }).then(messages => {
-                let lastMessage = messages.first();
-                
-                if (lastMessage.author.bot) {
-                    lastMessage.delete();
+            if(followChanId[0] != null && secoursThreadId[0] != null) {
+                secoursThread = await followChan.threads.cache.get(secoursThreadId[0].id);
+                secoursMessages = await secoursThread.messages.fetch();
+                secoursMessagesCount = await getIrisChannelMessages(secoursMessages);
+            }
+            if(followMessagesCount + ppaMessagesCount + secoursMessagesCount != 35) {
+                setGen(true);
+                const ended = await follow.regen(client);
+                setGen(ended);
+            }
+        }
+        resolve('Done!');
+    });
+}
+
+function regenTemplate() {
+    return new Promise(async (resolve, reject) => {
+        if(!isGen()) {
+            if(client == null) { return reject(logger.warn('La variable "client" dans le module "service.js" n\'est pas init !')); }
+            if(guild == null) { return reject(logger.warn('La variable "guild" dans le module "service.js" n\'est pas init !')); }
+            if(debugGuild == null) { return reject(logger.warn('La variable "debugGuild" dans le module "service.js" n\'est pas init !')); }
+            const doctorCardData = await doctorCardSql.getDoctorCard();
+            const templateFormId = await awaitSQLGetChannel('template_form');
+            let doctorCardLength = 0;
+            let templateFormMessages = [];
+            let templateFormLength = 0;
+            let templateFormChannel;
+            if(templateFormId != null) {
+                templateFormChannel = guild.channels.cache.get(templateFormId);
+                for (const [_, value] of Object.entries(doctorCardData)) {
+                    if (value.position === 0) {
+                        doctorCardLength++;
+                    } else {
+                        doctorCardLength++;
+                    }
+                    for (const i in value.elements) {
+                        doctorCardLength++;
+                    }
                 }
-            })
-            .catch(logger.error);
-            setGen(false);
+                await templateFormChannel.messages.fetch().then(msg => msg.map(d => {
+                    templateFormMessages.push(d);
+                    if(d.author.id == client.user.id) {
+                        templateFormLength++;
+                    }
+                }));
+            }
+            if(templateFormLength != doctorCardLength) {
+                setGen(true);
+                for(let i=0;i<templateFormMessages.length;i++) {
+                    await templateFormMessages[i].delete();
+                }
+                let message;
+                for (const [_, value] of Object.entries(doctorCardData)) {
+                    const embed = emb.generate(value.name, null, null, value.color, null, null, null, null, null, null, null, false);
+                    if (value.position === 0) {
+                        message = await templateFormChannel.send({ embeds: [embed] });
+                    } else {
+                        await templateFormChannel.send({ embeds: [embed] });
+                    }
+                    for (const i in value.elements) {
+                        await templateFormChannel.send(`- ${value.elements[i]}`);
+                    }
+                }
+                await message.pin();
+                templateFormChannel.messages.fetch({ limit: 1 }).then(messages => {
+                    let lastMessage = messages.first();
+                    
+                    if (lastMessage.author.bot) {
+                        lastMessage.delete();
+                    }
+                })
+                .catch(logger.error);
+                setGen(false);
+            }
         }
-        if(cfxStatusMessage == null && cfxThreadId != null) {
-            setGen(true);
-            await cfx.sendStatusEmbed(client, cfxThread);
-            setGen(false);
+        resolve('Done!');
+    });
+}
+
+function regenCfx() {
+    return new Promise(async (resolve, reject) => {
+        if(!isGen()) {
+            if(client == null) { return reject(logger.warn('La variable "client" dans le module "service.js" n\'est pas init !')); }
+            if(guild == null) { return reject(logger.warn('La variable "guild" dans le module "service.js" n\'est pas init !')); }
+            if(debugGuild == null) { return reject(logger.warn('La variable "debugGuild" dans le module "service.js" n\'est pas init !')); }
+            const cfxThreadId = await awaitSQLGetChannel('cfx_thread');
+            const cfxStatusMessageId = await sql.getMessage('cfx_status');
+            let cfxThread;
+            let cfxStatusMessage = null;
+            if(cfxThreadId != null) {
+                cfxThread = guild.channels.cache.get(cfxThreadId);
+                try {
+                    cfxStatusMessage = await cfxThread.messages.fetch(cfxStatusMessageId[0].id);
+                } catch (err) {}
+            }
+            if(cfxStatusMessage == null && cfxThreadId != null) {
+                setGen(true);
+                await cfx.sendStatusEmbed(client, cfxThread);
+                setGen(false);
+            }
         }
-        if(managementMessage == null) {
-            setGen(true);
-            //Boutons de gestion du service
-            const managementBtns = new ActionRowBuilder().addComponents(
-                new ButtonBuilder().setLabel('Debug').setCustomId('managementDebug').setStyle(ButtonStyle.Secondary),
-                new ButtonBuilder().setLabel('Workforce').setCustomId('managementWorkforce').setStyle(ButtonStyle.Primary),
-                new ButtonBuilder().setLabel('BLACKOUT').setCustomId('managementBlackout').setStyle(ButtonStyle.Danger)
-            );
-            await managementChannel.send({ components: [managementBtns] });
-            setGen(false);
+        resolve('Done!');
+    });
+}
+
+function regenManagement() {
+    return new Promise(async (resolve, reject) => {
+        if(!isGen()) {
+            if(client == null) { return reject(logger.warn('La variable "client" dans le module "service.js" n\'est pas init !')); }
+            if(guild == null) { return reject(logger.warn('La variable "guild" dans le module "service.js" n\'est pas init !')); }
+            if(debugGuild == null) { return reject(logger.warn('La variable "debugGuild" dans le module "service.js" n\'est pas init !')); }
+            const managementChannelId = process.env.IRIS_MANAGEMENT_CHANNEL_ID;
+            let managementChannel;
+            let managementMessage = null;
+            if(managementChannelId != null) {
+                managementChannel = debugGuild.channels.cache.get(managementChannelId);
+                await managementChannel.messages.fetch().then(m => m.map((d) => {
+                    if(d.author.id == process.env.IRIS_DISCORD_ID && d.components.length != 0) {
+                        managementMessage = d;
+                    }
+                }));
+            }
+            if(managementMessage == null) {
+                setGen(true);
+                //Boutons de gestion du service
+                const managementBtns = new ActionRowBuilder().addComponents(
+                    new ButtonBuilder().setLabel('Debug').setCustomId('managementDebug').setStyle(ButtonStyle.Secondary),
+                    new ButtonBuilder().setLabel('Workforce').setCustomId('managementWorkforce').setStyle(ButtonStyle.Primary),
+                    new ButtonBuilder().setLabel('BLACKOUT').setCustomId('managementBlackout').setStyle(ButtonStyle.Danger)
+                );
+                await managementChannel.send({ components: [managementBtns] });
+                setGen(false);
+            }
         }
-        for(let i=time;i>=0;i--) {
-            time = i;
-        }
-    }
+        resolve('Done!');
+    });
 }
 
 async function sendBedsImage(letters, channel, bedsImg, bed) {
@@ -783,3 +892,16 @@ async function awaitSQLGetChannel(request) {
         return reponse[0].id;
     }
 }
+
+/*
+function regen() {
+    return new Promise(async (resolve, reject) => {
+        if(!isGen()) {
+            if(client == null) { return reject(logger.warn('La variable "client" dans le module "service.js" n\'est pas init !')); }
+            if(guild == null) { return reject(logger.warn('La variable "guild" dans le module "service.js" n\'est pas init !')); }
+            if(debugGuild == null) { return reject(logger.warn('La variable "debugGuild" dans le module "service.js" n\'est pas init !')); }
+        }
+        resolve('Done!');
+    });
+}
+*/

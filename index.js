@@ -28,6 +28,8 @@ const wait = require('node:timers/promises').setTimeout;
 
 const emb = require('./modules/embeds');
 
+const service = require('./modules/service');
+
 let discordClient = null;
 
 //Discord init
@@ -115,13 +117,13 @@ client.on(Events.MessageCreate, async (message) => {
         // if(message.channelId == IRIS_SERVICE_CHANNEL_ID || message.channelId == IRIS_RADIO_CHANNEL_ID || message.channelId == IRIS_FOLLOW_CHANNEL_ID) {
         if (message.channelId == IRIS_SERVICE_CHANNEL_ID || message.channelId == IRIS_RADIO_CHANNEL_ID || message.channelId == IRIS_FOLLOW_CHANNEL_ID || message.channelId == IRIS_FOLLOW_THREAD_PPA_ID || message.channelId == IRIS_FOLLOW_THREAD_SECOURS_ID || message.channelId == templateFormId) {
             if(message.author != process.env.IRIS_DISCORD_ID) {
-                logger.warn(`${message.member.nickname} - ${message.author.username}#${message.author.discriminator} (<@${message.author.id}>)\n\nà envoyé un message dans le salon interdit "#${client.guilds.cache.get(message.guildId).channels.cache.get(message.channelId).name} <#${message.channelId}>"\n\nContenu: "${message.content}"`);
+                logger.warn(`${message.member.nickname} - ${message.author.username}#${message.author.discriminator} (<@${message.author.id}>)\n\nà envoyé un message dans le salon interdit "#${client.guilds.cache.get(message.guildId).channels.cache.get(message.channelId).name}" <#${message.channelId}>\n\nContenu: "${message.content}"`);
                 await message.delete();
             }
         }
         if(message.channelId == IRIS_BCMS_BEDS_THREAD_ID) {
             if(message.author != process.env.IRIS_DISCORD_ID) {
-                logger.warn(`${message.member.nickname} - ${message.author.username}#${message.author.discriminator} (<@${message.author.id}>)\n\nà envoyé un message dans le salon interdit "#${client.guilds.cache.get(message.guildId).channels.cache.get(message.channelId).name} <#${message.channelId}>"\n\nContenu: "${message.content}"`);
+                logger.warn(`${message.member.nickname} - ${message.author.username}#${message.author.discriminator} (<@${message.author.id}>)\n\nà envoyé un message dans le salon interdit "#${client.guilds.cache.get(message.guildId).channels.cache.get(message.channelId).name}" <#${message.channelId}>\n\nContenu: "${message.content}"`);
                 await message.delete();
                 const warnMsg = await message.channel.send({ content: `<@${message.member.id}>`, embeds: [emb.generate(`Oups :(`, null, `Vous ne pouvez pas écrire dans ce fil, si vous souhaitez utiliser la salle de réveil veuillez passer par la commande </lit:${process.env.IRIS_BEDS_COMMAND_ID}> pour ajouter un patient ou par les boutons pour en retirer !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Gestion de la salle de réveil`, `https://cdn.discordapp.com/icons/${message.guild.id}/${message.guild.icon}.webp`, null, null, null, false)] });
                 await wait(8000);
@@ -129,6 +131,102 @@ client.on(Events.MessageCreate, async (message) => {
             }
         }
     }
+});
+
+client.on(Events.MessageDelete, async (message) => {
+    if(message.guildId == process.env.IRIS_PRIVATE_GUILD_ID) {
+        let IRIS_SERVICE_CHANNEL_ID = await sql.getChannel('IRIS_SERVICE_CHANNEL_ID');
+        if (IRIS_SERVICE_CHANNEL_ID[0] == null) {
+            IRIS_SERVICE_CHANNEL_ID = null;
+        } else {
+            IRIS_SERVICE_CHANNEL_ID = IRIS_SERVICE_CHANNEL_ID[0].id;
+        }
+        let IRIS_RADIO_CHANNEL_ID = await sql.getChannel('IRIS_RADIO_CHANNEL_ID');
+        if (IRIS_RADIO_CHANNEL_ID[0] == null) {
+            IRIS_RADIO_CHANNEL_ID = null;
+        } else {
+            IRIS_RADIO_CHANNEL_ID = IRIS_RADIO_CHANNEL_ID[0].id;
+        }
+        let IRIS_BCMS_BEDS_THREAD_ID = await sql.getChannel('bcms_beds_thread');
+        if (IRIS_BCMS_BEDS_THREAD_ID[0] == null) {
+            IRIS_BCMS_BEDS_THREAD_ID = null;
+        } else {
+            IRIS_BCMS_BEDS_THREAD_ID = IRIS_BCMS_BEDS_THREAD_ID[0].id;
+        }
+        let IRIS_AGENDA_CHANNEL_ID = await sql.getChannel('agenda');
+        if (IRIS_AGENDA_CHANNEL_ID[0] == null) {
+            IRIS_AGENDA_CHANNEL_ID = null;
+        } else {
+            IRIS_AGENDA_CHANNEL_ID = IRIS_AGENDA_CHANNEL_ID[0].id;
+        }
+        let IRIS_FOLLOW_CHANNEL_ID = await sql.getChannel('follow');
+        if (IRIS_FOLLOW_CHANNEL_ID[0] == null) {
+            IRIS_FOLLOW_CHANNEL_ID = null;
+        } else {
+            IRIS_FOLLOW_CHANNEL_ID = IRIS_FOLLOW_CHANNEL_ID[0].id;
+        }
+        let IRIS_FOLLOW_THREAD_PPA_ID = await sql.getChannel('follow_thread_ppa');
+        if (IRIS_FOLLOW_THREAD_PPA_ID[0] == null) {
+            IRIS_FOLLOW_THREAD_PPA_ID = null;
+        } else {
+            IRIS_FOLLOW_THREAD_PPA_ID = IRIS_FOLLOW_THREAD_PPA_ID[0].id;
+        }
+        let IRIS_FOLLOW_THREAD_SECOURS_ID = await sql.getChannel('follow_thread_secours');
+        if (IRIS_FOLLOW_THREAD_SECOURS_ID[0] == null) {
+            IRIS_FOLLOW_THREAD_SECOURS_ID = null;
+        } else {
+            IRIS_FOLLOW_THREAD_SECOURS_ID = IRIS_FOLLOW_THREAD_SECOURS_ID[0].id;
+        }
+        let IRIS_TEMPLATE_FORM_CHANNEL_ID = await sql.getChannel('template_form');
+        if (IRIS_TEMPLATE_FORM_CHANNEL_ID[0] == null) {
+            IRIS_TEMPLATE_FORM_CHANNEL_ID = null;
+        } else {
+            IRIS_TEMPLATE_FORM_CHANNEL_ID = IRIS_TEMPLATE_FORM_CHANNEL_ID[0].id;
+        }
+        let IRIS_CFX_THREAD_ID = await sql.getChannel('cfx_thread');
+        if (IRIS_CFX_THREAD_ID[0] == null) {
+            IRIS_CFX_THREAD_ID = null;
+        } else {
+            IRIS_CFX_THREAD_ID = IRIS_CFX_THREAD_ID[0].id;
+        }
+        switch(message.channelId) {
+            case IRIS_SERVICE_CHANNEL_ID:
+                service.regenService();
+                break;
+            case IRIS_RADIO_CHANNEL_ID:
+                service.regenCentrale();
+                break;
+            case IRIS_BCMS_BEDS_THREAD_ID:
+                service.regenBCMS();
+                break;
+            case IRIS_AGENDA_CHANNEL_ID:
+                service.regenAgenda();
+                break;
+            case IRIS_FOLLOW_CHANNEL_ID:
+                service.regenFollow();
+                break;
+            case IRIS_TEMPLATE_FORM_CHANNEL_ID:
+                service.regenTemplate();
+                break;
+            case IRIS_CFX_THREAD_ID:
+                service.regenCfx();
+                break;
+            default:
+                break;
+        }
+    }
+    
+    if(message.guildId == process.env.IRIS_DEBUG_GUILD_ID) {
+        switch(message.channelId) {
+            case process.env.IRIS_MANAGEMENT_CHANNEL_ID:
+                service.regenManagement();
+                break;
+            default:
+                break;
+        }
+    }
+
+    logger.warn(`Message de ${message.author} supprimé dans le salon "#${client.guilds.cache.get(message.guildId).channels.cache.get(message.channelId).name}" <#${message.channelId}> du serveur "**${client.guilds.cache.get(message.guildId).name}**"\n\nContenu: "${message.content}"`);
 });
 
 client.on(Events.MessageReactionAdd, async (reaction, user) => {
@@ -295,8 +393,6 @@ async function updateRadios(client, ws, data, sqlRadio) {
     const radio = require('./modules/changeRadio');
     //Récup du service de kick
     const userservice = require('./modules/kickservice');
-    //Déployement des commandes
-    const service = require('./modules/service');
 
     const sqlBlackout = require('./sql/config/config');
 

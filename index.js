@@ -145,6 +145,9 @@ client.on(Events.MessageCreate, async (message) => {
 });
 
 client.on(Events.MessageDelete, async (message) => {
+    if(message.type == 19 || message.author.id != process.env.IRIS_DISCORD_ID) {
+        return;
+    }
     if(message.guildId == process.env.IRIS_PRIVATE_GUILD_ID) {
         let IRIS_SERVICE_CHANNEL_ID = await sql.getChannel('IRIS_SERVICE_CHANNEL_ID');
         if (IRIS_SERVICE_CHANNEL_ID[0] == null) {

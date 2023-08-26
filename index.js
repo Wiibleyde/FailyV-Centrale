@@ -84,6 +84,18 @@ client.on(Events.MessageCreate, async (message) => {
         } else {
             IRIS_RADIO_CHANNEL_ID = IRIS_RADIO_CHANNEL_ID[0].id;
         }
+        let IRIS_BCMS_BEDS_THREAD_ID = await sql.getChannel('bcms_beds_thread');
+        if (IRIS_BCMS_BEDS_THREAD_ID[0] == null) {
+            IRIS_BCMS_BEDS_THREAD_ID = null;
+        } else {
+            IRIS_BCMS_BEDS_THREAD_ID = IRIS_BCMS_BEDS_THREAD_ID[0].id;
+        }
+        let IRIS_WORKFORCE_CHANNEL_ID = await sql.getChannel('IRIS_WORKFORCE_CHANNEL_ID');
+        if (IRIS_WORKFORCE_CHANNEL_ID[0] == null) {
+            IRIS_WORKFORCE_CHANNEL_ID = null;
+        } else {
+            IRIS_WORKFORCE_CHANNEL_ID = IRIS_WORKFORCE_CHANNEL_ID[0].id;
+        }
         let IRIS_FOLLOW_CHANNEL_ID = await sql.getChannel('follow');
         if (IRIS_FOLLOW_CHANNEL_ID[0] == null) {
             IRIS_FOLLOW_CHANNEL_ID = null;
@@ -102,20 +114,19 @@ client.on(Events.MessageCreate, async (message) => {
         } else {
             IRIS_FOLLOW_THREAD_SECOURS_ID = IRIS_FOLLOW_THREAD_SECOURS_ID[0].id;
         }
-        let IRIS_BCMS_BEDS_THREAD_ID = await sql.getChannel('bcms_beds_thread');
-        if (IRIS_BCMS_BEDS_THREAD_ID[0] == null) {
-            IRIS_BCMS_BEDS_THREAD_ID = null;
+        let IRIS_TEMPLATE_FORM_CHANNEL_ID = await sql.getChannel('template_form');
+        if (IRIS_TEMPLATE_FORM_CHANNEL_ID[0] == null) {
+            IRIS_TEMPLATE_FORM_CHANNEL_ID = null;
         } else {
-            IRIS_BCMS_BEDS_THREAD_ID = IRIS_BCMS_BEDS_THREAD_ID[0].id;
+            IRIS_TEMPLATE_FORM_CHANNEL_ID = IRIS_TEMPLATE_FORM_CHANNEL_ID[0].id;
         }
-        let templateFormId = await sql.getChannel('template_form');
-        if (templateFormId[0] == null) {
-            templateFormId = null;
+        let IRIS_CFX_THREAD_ID = await sql.getChannel('cfx_thread');
+        if (IRIS_CFX_THREAD_ID[0] == null) {
+            IRIS_CFX_THREAD_ID = null;
         } else {
-            templateFormId = templateFormId[0].id;
+            IRIS_CFX_THREAD_ID = IRIS_CFX_THREAD_ID[0].id;
         }
-        // if(message.channelId == IRIS_SERVICE_CHANNEL_ID || message.channelId == IRIS_RADIO_CHANNEL_ID || message.channelId == IRIS_FOLLOW_CHANNEL_ID) {
-        if (message.channelId == IRIS_SERVICE_CHANNEL_ID || message.channelId == IRIS_RADIO_CHANNEL_ID || message.channelId == IRIS_FOLLOW_CHANNEL_ID || message.channelId == IRIS_FOLLOW_THREAD_PPA_ID || message.channelId == IRIS_FOLLOW_THREAD_SECOURS_ID || message.channelId == templateFormId) {
+        if (message.channelId == IRIS_SERVICE_CHANNEL_ID || message.channelId == IRIS_RADIO_CHANNEL_ID || message.channelId == IRIS_WORKFORCE_CHANNEL_ID || message.channelId == IRIS_FOLLOW_CHANNEL_ID || message.channelId == IRIS_FOLLOW_THREAD_PPA_ID || message.channelId == IRIS_FOLLOW_THREAD_SECOURS_ID || message.channelId == IRIS_TEMPLATE_FORM_CHANNEL_ID || message.channelId == IRIS_CFX_THREAD_ID) {
             if(message.author != process.env.IRIS_DISCORD_ID) {
                 logger.warn(`${message.member.nickname} - ${message.author.username}#${message.author.discriminator} (<@${message.author.id}>)\n\nà envoyé un message dans le salon interdit "#${client.guilds.cache.get(message.guildId).channels.cache.get(message.channelId).name}" <#${message.channelId}>\n\nContenu: "${message.content}"`);
                 await message.delete();

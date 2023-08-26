@@ -9,6 +9,7 @@ const sqlRadio = require('./../sql/radio/radios');
 const sqlAgenda = require('./../sql/agenda/agenda');
 const sqlFollow = require('./../sql/suivi/suivi');
 const sqlBeds = require('./../sql/lit/lit');
+const doctorRankSql = require('./../sql/doctorManagement/doctorRank');
 const doctorCardSql = require('./../sql/doctorManagement/doctorCard');
 //Récup des réactions
 const btnCreator = require('./btnCreator');
@@ -16,6 +17,8 @@ const btnCreator = require('./btnCreator');
 const follow = require('./suiviMessages');
 
 const sql = require('./../sql/config/config');
+
+const workforce = require('./workforce');
 
 const ws = require('./commonRadioServer');
 
@@ -69,6 +72,7 @@ module.exports = {
         await regenService();
         await regenCentrale();
         await regenBCMS();
+        await regenDoctors();
         await regenAgenda();
         await regenFollow();
         await regenTemplate();
@@ -83,6 +87,9 @@ module.exports = {
     },
     regenBCMS: () => {
         return regenBCMS();
+    },
+    regenDoctors: () => {
+        return regenDoctors();
     },
     regenAgenda: () => {
         return regenAgenda();
@@ -468,6 +475,33 @@ function regenBCMS() {
                 await sendBedsImage(letters, bcmsBedsThread, bedsImg, 'lit_bcms');
                 bcmsBedsMessages = await bcmsBedsThread.messages.fetch();
                 bcmsBedsFound = await getCentraleMessages(bcmsBedsMessages, client);
+                setGen(false);
+            }
+        }
+        resolve('Done!');
+    });
+}
+
+function regenDoctors() {
+    return new Promise(async (resolve, reject) => {
+        if(!isGen()) {
+            if(client == null) { return reject(logger.warn('La variable "client" dans le module "service.js" n\'est pas init !')); }
+            if(guild == null) { return reject(logger.warn('La variable "guild" dans le module "service.js" n\'est pas init !')); }
+            if(debugGuild == null) { return reject(logger.warn('La variable "debugGuild" dans le module "service.js" n\'est pas init !')); }
+            const doctorChannelId = await sql.getChannel('IRIS_WORKFORCE_CHANNEL_ID');
+            if(doctorChannelId[0] == null) { resolve('End'); return; }
+            const ranks = await doctorRankSql.getRawDoctorRank(); //ranks.length
+            const doctorChannel = guild.channels.cache.get(doctorChannelId[0].id);
+            const doctorMessages = await doctorChannel.messages.fetch();
+            let irisMessagesCount = 0;
+            doctorMessages.map((msg) => {
+                if(msg.author.id == process.env.IRIS_DISCORD_ID) {
+                    irisMessagesCount++;
+                }
+            });
+            if(((ranks.length * 2) + 1) != irisMessagesCount) {
+                setGen(true);
+                await workforce.generateWorkforce(guild, null);
                 setGen(false);
             }
         }

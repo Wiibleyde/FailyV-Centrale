@@ -178,7 +178,7 @@ module.exports = {
                 return await interaction.followUp({ embeds: [embed], ephemeral: true });
             }
             await doctor.updateRank(user.id, rank[0].id);
-            workforce.generateWorkforce(interaction.guild);
+            workforce.generateWorkforce(interaction.guild, interaction);
             text = `⬇️ Rétrogradation **${memberData[0].name}** au grade de ${role}`;
             privateText = `Passage ${role}`;
             demoteType = authorText + ` de **${user}** au rôle de ${role} effectué !`;

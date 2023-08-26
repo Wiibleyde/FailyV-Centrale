@@ -54,7 +54,7 @@ module.exports = {
 
         const switchMode = await rolesManager.switchVacacionMode(user, member, interaction.guild, interaction.member);
 
-        workforce.generateWorkforce(interaction.guild);
+        await workforce.generateWorkforce(interaction.guild, interaction);
 
         if(switchMode != 'returned' && switchMode != 'gone') {
             logger.error(switchMode);

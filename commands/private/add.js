@@ -183,7 +183,7 @@ module.exports = {
             await doctorSql.reAddDoctor(tag.id, name, grade, arrivalDate, phoneNumber);
         }
 
-        workforce.generateWorkforce(interaction.guild);
+        workforce.generateWorkforce(interaction.guild, interaction);
 
         // Message de bienvenue
         const welcomeEmbed = emb.generate(

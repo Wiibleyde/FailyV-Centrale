@@ -36,6 +36,6 @@ module.exports = {
         await interaction.followUp({ embeds: [emb.generate(null, null, `Effectif régénéré !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, true)], ephemeral: true });
         await wait(5000);
         await interaction.deleteReply();
-        await workforce.generateWorkforce(interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID));
+        await workforce.generateWorkforce(interaction.client.guilds.cache.get(process.env.IRIS_PRIVATE_GUILD_ID), interaction);
     }
 }

@@ -153,6 +153,12 @@ client.on(Events.MessageDelete, async (message) => {
         } else {
             IRIS_BCMS_BEDS_THREAD_ID = IRIS_BCMS_BEDS_THREAD_ID[0].id;
         }
+        let IRIS_WORKFORCE_CHANNEL_ID = await sql.getChannel('IRIS_WORKFORCE_CHANNEL_ID');
+        if (IRIS_WORKFORCE_CHANNEL_ID[0] == null) {
+            IRIS_WORKFORCE_CHANNEL_ID = null;
+        } else {
+            IRIS_WORKFORCE_CHANNEL_ID = IRIS_WORKFORCE_CHANNEL_ID[0].id;
+        }
         let IRIS_AGENDA_CHANNEL_ID = await sql.getChannel('agenda');
         if (IRIS_AGENDA_CHANNEL_ID[0] == null) {
             IRIS_AGENDA_CHANNEL_ID = null;
@@ -198,6 +204,9 @@ client.on(Events.MessageDelete, async (message) => {
                 break;
             case IRIS_BCMS_BEDS_THREAD_ID:
                 service.regenBCMS();
+                break;
+            case IRIS_WORKFORCE_CHANNEL_ID:
+                service.regenDoctors();
                 break;
             case IRIS_AGENDA_CHANNEL_ID:
                 service.regenAgenda();

@@ -1,6 +1,6 @@
 {
   "name": "iris-lsms",
-  "version": "1.0.0-DEV",
+  "version": "1.8.12-DEV",
   "description": "Discord bot manager of the LSMS server",
   "main": "index.js",
   "scripts": {

@@ -254,9 +254,9 @@ module.exports = {
             await interaction.deleteReply();
         }
 
-        workforce.generateWorkforce(interaction.guild);
-
         await member.roles.add(process.env.IRIS_LEFT_ROLE_ID);
+        
+        await workforce.generateWorkforce(interaction.guild, interaction);
         
         const embed = emb.generate(null, null, `${user} à bien été retiré de l'effectif !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
         await interaction.followUp({ embeds: [embed], ephemeral: true });

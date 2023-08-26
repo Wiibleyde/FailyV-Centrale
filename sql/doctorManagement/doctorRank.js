@@ -28,6 +28,20 @@ module.exports = {
             });
         });
     },
+    getRawDoctorRank: () => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                sql: "SELECT * FROM `doctor_rank`"
+            }, (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                    return;
+                }
+                resolve(result);
+            });
+        });
+    },
     getDoctorRankById: (id) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({

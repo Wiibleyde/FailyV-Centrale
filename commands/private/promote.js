@@ -171,7 +171,7 @@ module.exports = {
             await member.roles.add(role.id);
             await member.roles.remove(currentRank[0].role_id);
             await doctor.updateRank(user.id, rank[0].id);
-            workforce.generateWorkforce(interaction.guild);
+            workforce.generateWorkforce(interaction.guild, interaction);
             text = `⬆️ Félicitation à **${memberData[0].name}** qui devient ${role} !`;
             privateText = `Passage ${role}`;
             promoType = `**${user}** à bien été promu ${role} !`;

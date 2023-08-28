@@ -316,7 +316,7 @@ client.on(Events.GuildScheduledEventUpdate, async (guildScheduledEvent) => {
         const agendaChannelId = await sqlAgenda.getAgendaChannelId();
         if(agendaChannelId[0] != null) {
             if(guildScheduledEvent.status == 1) {
-                logger.log(`Événement "**${guildScheduledEvent.name}**" démarré`);
+                logger.log(`Événement "**${guildScheduledEvent.name}**" modifié/démarré`);
             }
             if(guildScheduledEvent.status == 2) {
                 logger.log(`Événement "**${guildScheduledEvent.name}**" terminé`);

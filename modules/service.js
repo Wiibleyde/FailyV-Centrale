@@ -799,7 +799,6 @@ function regenManagement() {
                 //Boutons de gestion du service
                 const managementBtns = new ActionRowBuilder().addComponents(
                     new ButtonBuilder().setLabel('Debug').setCustomId('managementDebug').setStyle(ButtonStyle.Secondary),
-                    new ButtonBuilder().setLabel('Workforce').setCustomId('managementWorkforce').setStyle(ButtonStyle.Primary),
                     new ButtonBuilder().setLabel('BLACKOUT').setCustomId('managementBlackout').setStyle(ButtonStyle.Danger)
                 );
                 await managementChannel.send({ components: [managementBtns] });

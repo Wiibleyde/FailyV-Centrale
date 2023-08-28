@@ -145,7 +145,7 @@ client.on(Events.MessageCreate, async (message) => {
 });
 
 client.on(Events.MessageDelete, async (message) => {
-    if(message.type == 19) {
+    if(message.type == 19 || message.type == 20) {
         return;
     }
     if(message.author != null && message.author.id != process.env.IRIS_DISCORD_ID) {

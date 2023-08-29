@@ -11,6 +11,8 @@ const channels = require('../../sql/config/config');
 const roles = require('../../sql/doctorManagement/doctorRank');
 const doctor = require('../../sql/doctorManagement/doctor');
 
+const service = require('../../modules/service');
+
 const workforce = require('../../modules/workforce');
 
 const wait = require('node:timers/promises').setTimeout;
@@ -152,6 +154,13 @@ module.exports = {
                 return await interaction.deleteReply();
             }
 
+            if(service.isGen()) {
+                const embed = emb.generate(`Désolé :(`, null, `Il y a déjà quelque chose en cours de régénération, veuillez patienter quelques secondes puis réessayez !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+                await interaction.followUp({ embeds: [embed], ephemeral: true });
+                await wait(5000);
+                return await interaction.deleteReply();
+            }
+
             const currentRank = await roles.getDoctorRankByName(memberData[0].rank_id);
             const currentRole = await interaction.guild.roles.cache.get(currentRank[0].role_id);
             if(rank[0].position>currentRank[0].position) {
@@ -160,18 +169,25 @@ module.exports = {
                 await wait(5000);
                 return await interaction.deleteReply();
             }
+            service.setGen(true);
 
             try {
+                let pos = await doctor.getAllDoctorInRank(rank[0].id);
+                pos = pos.length;
+                if(rank[0].id == 'intern') {
+                    pos++;
+                }
                 await memberChannel.setParent(rank[0].parent_channel_id);
+                await memberChannel.setPosition(pos);
             } catch (err) {
                 logger.error(err);
                 const embed = emb.generate(`Oups :(`, null, `Il semblerait que la catégorie pour les fiches de suivi des ${role} n'ait pas été définie/n'existe plus, si le problème persiste merci de bien vouloir le signaler à l'aide de la commande </report:${process.env.IRIS_DEBUG_COMMAND_ID}> !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
                 return await interaction.followUp({ embeds: [embed], ephemeral: true });
             }
+            await workforce.generateWorkforce(interaction.guild, interaction);
             await member.roles.add(role.id);
             await member.roles.remove(currentRank[0].role_id);
             await doctor.updateRank(user.id, rank[0].id);
-            workforce.generateWorkforce(interaction.guild, interaction);
             text = `⬆️ Félicitation à **${memberData[0].name}** qui devient ${role} !`;
             privateText = `Passage ${role}`;
             promoType = `**${user}** à bien été promu ${role} !`;
@@ -205,6 +221,7 @@ module.exports = {
         
         const embed = emb.generate(null, null, promoType, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
         await interaction.followUp({ embeds: [embed], ephemeral: true });
+        service.setGen(false);
         await wait(5000);
         await interaction.deleteReply();
     },

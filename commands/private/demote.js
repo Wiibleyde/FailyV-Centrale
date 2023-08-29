@@ -13,6 +13,8 @@ const doctor = require('../../sql/doctorManagement/doctor');
 
 const workforce = require('../../modules/workforce');
 
+const service = require('../../modules/service');
+
 const wait = require('node:timers/promises').setTimeout;
 
 module.exports = {
@@ -161,8 +163,16 @@ module.exports = {
                 await wait(5000);
                 return await interaction.deleteReply();
             }
+
             if(rank[0].position == currentRank[0].position) {
                 const embed = emb.generate(`Désolé :(`, null, `${user} a déjà le rôle ${role}, veuillez vérifier le nouveau grade que vous souhaitez lui attribuer puis réessayez !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+                await interaction.followUp({ embeds: [embed], ephemeral: true });
+                await wait(5000);
+                return await interaction.deleteReply();
+            }
+
+            if(service.isGen()) {
+                const embed = emb.generate(`Désolé :(`, null, `Il y a déjà quelque chose en cours de régénération, veuillez patienter quelques secondes puis réessayez !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
                 await interaction.followUp({ embeds: [embed], ephemeral: true });
                 await wait(5000);
                 return await interaction.deleteReply();
@@ -171,14 +181,22 @@ module.exports = {
             await member.roles.add(role.id);
             await member.roles.remove(currentRank[0].role_id);
             try {
+                let pos = await doctor.getAllDoctorInRank(rank[0].id);
+                pos = pos.length;
+                if(rank[0].id == 'intern') {
+                    pos++;
+                }
                 await memberChannel.setParent(rank[0].parent_channel_id);
+                await memberChannel.setPosition(pos);
             } catch (err) {
                 logger.error(err);
                 const embed = emb.generate(`Oups :(`, null, `Il semblerait que la catégorie pour les fiches de suivi des ${role} n'ait pas été définie/n'existe plus, si le problème persiste merci de bien vouloir le signaler à l'aide de la commande </report:${process.env.IRIS_DEBUG_COMMAND_ID}> !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
                 return await interaction.followUp({ embeds: [embed], ephemeral: true });
             }
             await doctor.updateRank(user.id, rank[0].id);
-            workforce.generateWorkforce(interaction.guild, interaction);
+            service.setGen(true);
+            await workforce.generateWorkforce(interaction.guild, interaction);
+            service.setGen(false);
             text = `⬇️ Rétrogradation **${memberData[0].name}** au grade de ${role}`;
             privateText = `Passage ${role}`;
             demoteType = authorText + ` de **${user}** au rôle de ${role} effectué !`;

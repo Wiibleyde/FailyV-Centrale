@@ -5,17 +5,34 @@ const mysql = require('../../modules/sql');
 
 module.exports = {
     // Création d'un docteur
-    addDoctor: (name, phone, grade, discord_id, arrivalDate, channel_id) => {
+    addDoctor: (name, phone, grade, discord_id, arrivalDate) => {
         return new Promise((resolve, reject) => {
             mysql.sql().query({
-                sql: `INSERT INTO doctor SET name = ?, phone_number = ?, rank_id = ?, discord_id = ?, arrival_date = ?, channel_id = ?;`,
+                sql: `INSERT INTO doctor SET name = ?, phone_number = ?, rank_id = ?, discord_id = ?, arrival_date = ?, channel_id = '0';`,
                 values: [
                     name,
                     phone,
                     grade,
                     discord_id,
-                    arrivalDate,
-                    channel_id
+                    arrivalDate
+                ]
+            }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                    return;
+                }
+                resolve(result);
+            });
+        });
+    },
+    addDoctorChannel: (phone, channel) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                sql: "UPDATE `doctor` SET `channel_id`=? WHERE `phone_number`=?",
+                values: [
+                    channel,
+                    phone
                 ]
             }, async (reqErr, result, fields) => {
                 if(reqErr) {
@@ -153,6 +170,37 @@ module.exports = {
                     });
                 });
                 resolve(returnResult);
+            });
+        });
+    },
+    getAllDoctorInRank: (rank) => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                sql: "SELECT * FROM `doctor` WHERE `rank_id`=?",
+                timeout: 40000,
+                values: [rank]
+            }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                    return;
+                }
+                resolve(result);
+            });
+        });
+    },
+    getAllDoctorRemoved: () => {
+        return new Promise((resolve, reject) => {
+            mysql.sql().query({
+                sql: "SELECT * FROM `doctor` WHERE `departure_date` IS NOT NULL",
+                timeout: 40000
+            }, async (reqErr, result, fields) => {
+                if(reqErr) {
+                    logger.error(reqErr);
+                    reject(reqErr);
+                    return;
+                }
+                resolve(result);
             });
         });
     },

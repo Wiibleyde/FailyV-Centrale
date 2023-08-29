@@ -12,6 +12,8 @@ const { Rank, hasAuthorization } = require('../../modules/rankAuthorization');
 const rolesManager = require('../../modules/rolesManager');
 const workforce = require('../../modules/workforce');
 
+const service = require('../../modules/service');
+
 module.exports = {
     //Création de la commande
     data: new SlashCommandBuilder()
@@ -33,6 +35,14 @@ module.exports = {
             await wait(5000);
             return await interaction.deleteReply();
         }
+
+        if(service.isGen()) {
+            const embed = emb.generate(`Désolé :(`, null, `Il y a déjà quelque chose en cours de régénération, veuillez patienter quelques secondes puis réessayez !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+            await interaction.followUp({ embeds: [embed], ephemeral: true });
+            await wait(5000);
+            return await interaction.deleteReply();
+        }
+
         //Récupération du docteur
         const user = interaction.options.getUser('membre');
         const member = interaction.guild.members.cache.get(user.id);
@@ -54,7 +64,9 @@ module.exports = {
 
         const switchMode = await rolesManager.switchVacacionMode(user, member, interaction.guild, interaction.member);
 
+        service.setGen(true);
         await workforce.generateWorkforce(interaction.guild, interaction);
+        service.setGen(false);
 
         if(switchMode != 'returned' && switchMode != 'gone') {
             logger.error(switchMode);

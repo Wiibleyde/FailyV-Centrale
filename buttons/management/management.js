@@ -7,9 +7,6 @@ module.exports = {
         if(interaction.customId == 'managementDebug') {
             const debug = require('../../modules/debug');
             debug.execute(interaction);
-        } else if(interaction.customId == 'managementWorkforce') {
-            const workforce = require('../../modules/regenerateWorkforce');
-            workforce.execute(interaction);
         } else if(interaction.customId == 'managementBlackout') {
             if(service.isGen()) {
                 const title = `BLACKOUT`;

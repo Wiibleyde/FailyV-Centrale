@@ -14,6 +14,8 @@ const doctor = require('../../sql/doctorManagement/doctor');
 
 const workforce = require('../../modules/workforce');
 
+const service = require('../../modules/service');
+
 const wait = require('node:timers/promises').setTimeout;
 
 module.exports = {
@@ -57,6 +59,13 @@ module.exports = {
 
         if(!hasAuthorization(Rank.DepartementManager, interaction.member.roles.cache)) {
             const embed = emb.generate(`Désolé :(`, null, `Vous n'avez pas les permissions suffisantes pour utiliser cette commande. Il faut être <@&${process.env.IRIS_DEPARTEMENT_MANAGER_ROLE}> ou plus pour pouvoir vous en servir !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+            await interaction.followUp({ embeds: [embed], ephemeral: true });
+            await wait(5000);
+            return await interaction.deleteReply();
+        }
+
+        if(service.isGen()) {
+            const embed = emb.generate(`Désolé :(`, null, `Il y a déjà quelque chose en cours de régénération, veuillez patienter quelques secondes puis réessayez !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
             await interaction.followUp({ embeds: [embed], ephemeral: true });
             await wait(5000);
             return await interaction.deleteReply();
@@ -135,6 +144,8 @@ module.exports = {
         }
 
         try {
+            let pos = await doctor.getAllDoctorRemoved();
+            pos = pos.length;
             await memberChannel.setParent(archivesCatId[0].id);
             if(memberData[0].rank_id == 'intern') {
                 await memberChannel.permissionOverwrites.set([
@@ -177,6 +188,7 @@ module.exports = {
                     { id: process.env.IRIS_DIRECTOR_ROLE, allow: [PermissionsBitField.Flags.ViewChannel] }
                 ]);
             }
+            await memberChannel.setPosition(pos);
         } catch (err) {
             logger.error(err);
             const embed = emb.generate(`Oups :(`, null, `Il semblerait que la catégorie pour les **archives** n'existe plus, si le problème persiste merci de bien vouloir le signaler à l'aide de la commande </report:${process.env.IRIS_DEBUG_COMMAND_ID}> !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
@@ -255,9 +267,11 @@ module.exports = {
         }
 
         await member.roles.add(process.env.IRIS_LEFT_ROLE_ID);
-        
+
+        service.setGen(true);
         await workforce.generateWorkforce(interaction.guild, interaction);
-        
+        service.setGen(false);
+
         const embed = emb.generate(null, null, `${user} à bien été retiré de l'effectif !`, `#0DE600`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
         await interaction.followUp({ embeds: [embed], ephemeral: true });
         await wait(5000);

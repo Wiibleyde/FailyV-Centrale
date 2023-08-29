@@ -17,6 +17,8 @@ const sql = require('../../sql/config/config');
 
 const format = require('../../modules/formatName');
 
+const service = require('../../modules/service');
+
 const wait = require('node:timers/promises').setTimeout;
 
 module.exports = {
@@ -85,6 +87,13 @@ module.exports = {
             return await interaction.followUp({ embeds: [embed], ephemeral: true });
         }
 
+        if(service.isGen()) {
+            const embed = emb.generate(`Désolé :(`, null, `Il y a déjà quelque chose en cours de régénération, veuillez patienter quelques secondes puis réessayez !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
+            await interaction.followUp({ embeds: [embed], ephemeral: true });
+            await wait(5000);
+            return await interaction.deleteReply();
+        }
+
         const tag = interaction.options.getUser(`tag`);
 
         // Check si le tag discord pour le docteur n'est pas le bot
@@ -143,6 +152,27 @@ module.exports = {
         const arrivalDate = new Date();
 
         const isDocteurExists = await doctorSql.getOldDataByPhone(phoneNumber);
+        
+        // Renomage de l'utilisateur et ajout des rôles LSMS et correspondant au grade du docteur
+        const newMember = interaction.guild.members.cache.get(tag.id);
+        try {
+            await newMember.setNickname(`${name}`);
+        } catch (err) {
+            logger.error(err);
+        }
+        await newMember.roles.add([process.env.IRIS_LSMS_ROLE, doctorRankData[grade].role_id]);
+
+        // Ajout des information du docteur en base de donnée
+        if(isDocteurExists[0] == null) {
+            await doctorSql.addDoctor(name, phoneNumber, grade, tag.id, arrivalDate);
+        } else {
+            await doctorSql.reAddDoctor(tag.id, name, grade, arrivalDate, phoneNumber);
+        }
+
+        service.setGen(true);
+        await workforce.generateWorkforce(interaction.guild, interaction);
+        service.setGen(false);
+        
         if(isDocteurExists[0] == null) {
             // Creation de la fiche du docteur
             try {
@@ -152,6 +182,7 @@ module.exports = {
                     parent: doctorRankData[grade].parent_channel_id,
                     topic: `Rentré au LSMS le : ${arrivalDate.toLocaleDateString(`fr-FR`)}`
                 });
+                await doctorSql.addDoctorChannel(phoneNumber, channel.id);
             } catch (err) {
                 logger.error(err);
                 const embed = emb.generate(`Oups :(`, null, `Il semblerait que la catégorie pour les fiches de suivi du grade **${doctorRankData[grade].name}** n'ait pas été définie/n'existe plus, si le problème persiste merci de bien vouloir le signaler à l'aide de la commande </report:${process.env.IRIS_DEBUG_COMMAND_ID}> !`, `#FF0000`, process.env.LSMS_LOGO_V2, null, title, serverIcon, null, null, null, false);
@@ -166,24 +197,6 @@ module.exports = {
             await channel.send({ embeds: [embed] });
             welcomeEmbedText = `🆕 Re-bienvenue à **${name}** nous re-rejoint en tant que <@&${doctorRankData[grade].role_id}> !`;
         }
-        
-        // Renomage de l'utilisateur et ajout des rôles LSMS et correspondant au grade du docteur
-        const newMember = interaction.guild.members.cache.get(tag.id);
-        try {
-            await newMember.setNickname(`${name}`);
-        } catch (err) {
-            logger.error(err);
-        }
-        await newMember.roles.add([process.env.IRIS_LSMS_ROLE, doctorRankData[grade].role_id]);
-
-        // Ajout des information du docteur en base de donnée
-        if(isDocteurExists[0] == null) {
-            await doctorSql.addDoctor(name, phoneNumber, grade, tag.id, arrivalDate, channel.id);
-        } else {
-            await doctorSql.reAddDoctor(tag.id, name, grade, arrivalDate, phoneNumber);
-        }
-
-        workforce.generateWorkforce(interaction.guild, interaction);
 
         // Message de bienvenue
         const welcomeEmbed = emb.generate(

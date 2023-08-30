@@ -197,24 +197,28 @@ module.exports = {
 
         await doctor.removeDoctor(user.id, new Date());
         
-        let roles = member.roles.cache;
-
-        if(member.roles.cache.has(process.env.IRIS_SERVICE_ROLE_ID)) {
-            //Kick le docteur du service
-            await kickservice.kickSomeone(member, interaction.guild, interaction.member, false);
-            //Refresh la liste des rôles
-            roles = member.roles.cache;
-        }
-        //Parse json to array process.env.IRIS_VACANCES_EXCLUDE_ROLES_ID
-        let excludeRoles = process.env.IRIS_VACANCES_EXCLUDE_ROLES_ID.split(',');
-        //Pour chaque rôle de la guild
-        roles.forEach(async role => {
-            if (role.id != process.env.IRIS_PRIVATE_GUILD_ID) {
-                if (!excludeRoles.includes(role.id)) {
-                    await member.roles.remove(role.id);
-                }
+        try {
+            let roles = member.roles.cache;
+    
+            if(member.roles.cache.has(process.env.IRIS_SERVICE_ROLE_ID)) {
+                //Kick le docteur du service
+                await kickservice.kickSomeone(member, interaction.guild, interaction.member, false);
+                //Refresh la liste des rôles
+                roles = member.roles.cache;
             }
-        });
+            //Parse json to array process.env.IRIS_VACANCES_EXCLUDE_ROLES_ID
+            let excludeRoles = process.env.IRIS_VACANCES_EXCLUDE_ROLES_ID.split(',');
+            //Pour chaque rôle de la guild
+            roles.forEach(async role => {
+                if (role.id != process.env.IRIS_PRIVATE_GUILD_ID) {
+                    if (!excludeRoles.includes(role.id)) {
+                        await member.roles.remove(role.id);
+                    }
+                }
+            });
+        } catch (err) {
+            logger.error(err);
+        }
 
         const privateEmbed = emb.generate(null, null, null, `#FF0000`, null, null, `Départ`, serverIcon, null, interaction.member.nickname, null, true);
         const respEmb = emb.generate(null, null, null, `#FF0000`, process.env.LSMS_LOGO_V2, null, `Annonce`, serverIcon, null, interaction.member.nickname, null, true);
@@ -266,7 +270,11 @@ module.exports = {
             await interaction.deleteReply();
         }
 
-        await member.roles.add(process.env.IRIS_LEFT_ROLE_ID);
+        try {
+            await member.roles.add(process.env.IRIS_LEFT_ROLE_ID);
+        } catch (err) {
+            logger.error(err);
+        }
 
         service.setGen(true);
         await workforce.generateWorkforce(interaction.guild, interaction);

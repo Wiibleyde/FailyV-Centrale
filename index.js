@@ -451,43 +451,9 @@ async function updateRadios(client, ws, data, sqlRadio) {
                     for(let i=0;i<doctorsToRemove.length;i++) {
                         const currentDate = new Date();
                         const departureDate = new Date(doctorsToRemove[i].departure_date);
-                        const member = guild.members.cache.get(doctorsToRemove[i].discord_id);
-                        let yearToCheck;
                         let monthToCheck = currentDate.getMonth();
                         if(departureDate.getMonth() == 11) {
                             monthToCheck = 0;
-                        }
-                        const thirtyDaysMonth = [3,5,8,10];
-                        if(doctorsToRemove[i].discord_id != '461880599594926080' && doctorsToRemove[i].discord_id != '461807010086780930' && doctorsToRemove[i].discord_id != '368259650136571904') {
-                            if(departureDate.getHours() >= 6 && departureDate.getHours() <= 23) {
-                                if(currentDate.getDate() == 1 && departureDate.getDate() + 1 == 31 && currentDate.getMonth() == 0 && departureDate.getMonth() == 11 && currentDate.getFullYear() == departureDate.getFullYear() + 1) {
-                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
-                                } else if(currentDate.getDate() == 1 && departureDate.getDate() + 1 == 31 && currentDate.getMonth() == departureDate.getMonth() + 1 && currentDate.getFullYear() == departureDate.getFullYear()) {
-                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
-                                } else if(currentDate.getDate() == 1 && departureDate.getDate() + 1 == 29 && currentDate.getMonth() == 2 && departureDate.getMonth() == 1 && currentDate.getFullYear() == departureDate.getFullYear()) {
-                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
-                                } else if(currentDate.getDate() == 1 && departureDate.getDate() + 1 == 28 && currentDate.getMonth() == 2 && departureDate.getMonth() == 1 && currentDate.getFullYear() == departureDate.getFullYear() && !isLeapYear(currentDate.getFullYear())) {
-                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
-                                } else if(currentDate.getDate() == 1 && departureDate.getDate() + 1 == 30 && thirtyDaysMonth.contains(departureDate.getMonth()) && currentDate.getMonth() == departureDate.getMonth() + 1 && currentDate.getFullYear() == departureDate.getFullYear()) {
-                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
-                                } else if(currentDate.getDate() > departureDate.getDate() + 1 && currentDate.getDate() < departureDate.getDate() + 3 && currentDate.getMonth() == departureDate.getMonth() && currentDate.getFullYear() == departureDate.getFullYear()) {
-                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
-                                }
-                            } else {
-                                if(currentDate.getDate() == 1 && departureDate.getDate() + 2 == 31 && currentDate.getMonth() == 0 && departureDate.getMonth() == 11 && currentDate.getFullYear() == departureDate.getFullYear() + 1) {
-                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
-                                } else if(currentDate.getDate() == 1 && departureDate.getDate() + 2 == 31 && currentDate.getMonth() == departureDate.getMonth() + 1 && currentDate.getFullYear() == departureDate.getFullYear()) {
-                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
-                                } else if(currentDate.getDate() == 1 && departureDate.getDate() + 2 == 29 && currentDate.getMonth() == 2 && departureDate.getMonth() == 1 && currentDate.getFullYear() == departureDate.getFullYear()) {
-                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
-                                } else if(currentDate.getDate() == 1 && departureDate.getDate() + 2 == 28 && currentDate.getMonth() == 2 && departureDate.getMonth() == 1 && currentDate.getFullYear() == departureDate.getFullYear() && !isLeapYear(currentDate.getFullYear())) {
-                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
-                                } else if(currentDate.getDate() == 1 && departureDate.getDate() + 2 == 30 && thirtyDaysMonth.contains(departureDate.getMonth()) && currentDate.getMonth() == departureDate.getMonth() + 1 && currentDate.getFullYear() == departureDate.getFullYear()) {
-                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
-                                } else if(currentDate.getDate() > departureDate.getDate() + 2 && currentDate.getDate() < departureDate.getDate() + 3 && currentDate.getMonth() == departureDate.getMonth() && currentDate.getFullYear() == departureDate.getFullYear()) {
-                                    try { await member.kick({ reason: `Ne fait plus partit de l'effectif du LSMS` }); } catch (err) {}
-                                }
-                            }
                         }
                         let timeToRemove = false;
                         if(departureDate.getMonth() == 11 && currentDate.getMonth() == 0 && currentDate.getFullYear() == departureDate.getFullYear() + 1 && currentDate.getDate() == departureDate.getDate()) {

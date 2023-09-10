@@ -10,6 +10,8 @@ const logRP = require('../../modules/logsRP');
 const debugSQL = require('../../sql/debugMode/debugMode');
 //Fonction pour attendre
 const wait = require('node:timers/promises').setTimeout;
+//Récup du service de kick
+const service = require('../../modules/kickservice');
 
 const blackout = require('../../modules/blackout');
 const config = require('../../sql/config/config');
@@ -48,6 +50,8 @@ module.exports = {
         try { await guild.members.cache.get('368259650136571904').roles.add(debugRole); } catch (err) {} //thenicolas190
 
         let botMember = guild.members.cache.get(process.env.IRIS_DISCORD_ID);
+        service.kick(guild, botMember, true);
+
         botMember = botMember.nickname;
         if(botMember == null) {
             botMember = client.user.username;

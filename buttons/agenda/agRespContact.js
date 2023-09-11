@@ -7,7 +7,9 @@ const sql = require('../../sql/agenda/agenda');
 
 module.exports = {
     execute: async function(interaction, errEmb) {
-        //Get in the message the number of times the person has been contacted (embed = const rendezVousEmb = emb.generate(null, null, `**Nom et prénom:** ${nomPrenom}\n**Numéro de téléphone:** ${numero}\n**Description:** ${description}\n**Contacté:** 0 fois\n**Pris par:** ${pseudo}`, `#FF0000`, `https://cdn.discordapp.com/attachments/1083724872045297734/1124914370217005127/LSMS.png`, null, `Rendez-vous ${type}`, `https://cdn.discordapp.com/attachments/1083724872045297734/1124914370217005127/LSMS.png`, null, null, null, false);)
+        const title = `Gestion des décès`;
+        const serverIcon = `https://cdn.discordapp.com/icons/${interaction.guild.id}/${interaction.guild.icon}.webp`;
+        //Get in the message the number of times the person has been contacted
         const message = interaction.message;
         //Get the embed
         const rendezVousEmb = interaction.message.embeds[0];
@@ -23,7 +25,7 @@ module.exports = {
         let minutes = now.getMinutes();
         if (minutes < 10) minutes = '0' + minutes;
         //Create new embed
-        const newEmbed = emb.generate(null, null, null, `#000001`, process.env.LSMS_DELTA_LOGO, null, `Gestion décès`, `https://cdn.discordapp.com/icons/${process.env.IRIS_PRIVATE_GUILD_ID}/${interaction.guild.icon}.webp`, null, rendezVousEmb.footer.text, null, false);
+        const newEmbed = emb.generate(null, null, null, `#000001`, process.env.LSMS_DELTA_LOGO, null, title, serverIcon, null, rendezVousEmb.footer.text, null, false);
         let contacte = 1;
         for(i=0;i<rendezVousEmb.fields.length;i++) {
             newEmbed.addFields(

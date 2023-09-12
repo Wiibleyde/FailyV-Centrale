@@ -1,3 +1,4 @@
+const { GuildMember } = require('discord.js');
 //Récup du systeme de logs RP
 const logRP = require('./logsRP');
 //Récup du créateur d'embed
@@ -11,19 +12,23 @@ module.exports = {
             const dispatchRole = guild.roles.cache.get(process.env.IRIS_DISPATCH_ROLE_ID);
             const offole = guild.roles.cache.get(process.env.IRIS_OFF_ROLE_ID);
             const allMembers = serviceRole.members;
-            let forcerNickname = forcer.nickname;
+            let forcerNickname = forcer;
+            if(forcerNickname instanceof GuildMember) {
+                forcerNickname = forcer.nickname;
+            }
+            logger.debug(forcerNickname);
             if(forcerNickname == null) {
                 forcerNickname = forcer.user.username;
             }
             allMembers.map(async d => {
                 const user = guild.members.cache.get(d.id);
-                await d.roles.remove(serviceRole);
-                await logRP.fds(guild, d.nickname, forcerNickname);
                 if(d.roles.cache.has(process.env.IRIS_DISPATCH_ROLE_ID)) {
                     await logRP.fdd(guild, d.nickname, forcerNickname);
                 }
                 await d.roles.remove(dispatchRole);
                 await d.roles.remove(offole);
+                await d.roles.remove(serviceRole);
+                await logRP.fds(guild, d.nickname, forcerNickname);
                 if(!isGlobal) {
                     try {
                         let footerText = `Cordialement, `;
